@@ -5,8 +5,11 @@
 
 namespace LacoWikiMobile.App.iOS
 {
+	using System.Threading;
+	using System.Threading.Tasks;
 	using Foundation;
 	using UIKit;
+	using Xamarin;
 	using Xamarin.Forms;
 	using Xamarin.Forms.Platform.iOS;
 
@@ -23,6 +26,10 @@ namespace LacoWikiMobile.App.iOS
 		// You have 17 seconds to return from this method, or iOS will terminate your application.
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
+#if DEBUG
+			Calabash.Start();
+#endif
+
 			Forms.Init();
 			LoadApplication(new App(new PlatformInitializer()));
 
