@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface"
+	x:Class="LacoWikiMobile.App.Views.ValidationSessionOverviewPage" Title="{Binding Title}">
+	<ContentPage.Content>
+		<StackLayout Orientation="Vertical" StyleClass="ListWithImage"
+			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}">
+			<ContentView StyleClass="SubHeader">
+				<Label>Validations</Label>
+			</ContentView>
+			<ActivityIndicator IsRunning="true" IsVisible="{Binding ShowLoading}" />
+			<Label IsVisible="{Binding ShowInstructions}" Margin="16,0,0,0">
+				You don't have any validation sessions. Please go to https://laco-wiki.net/.
+			</Label>
+			<ScrollView IsVisible="{Binding ShowList}">
+				<ui:RepeaterStackLayout ItemsSource="{Binding Items}" StyleClass="List">
+					<ui:RepeaterStackLayout.ItemTemplate>
+						<DataTemplate>
+							<ContentView BackgroundColor="{Binding BackgroundColor}">
+								<ContentView.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
+								</ContentView.GestureRecognizers>
+
+								<Grid BindingContext="{Binding .}">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="56" />
+									</Grid.RowDefinitions>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="56" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+										<Frame>
+											<Image Source="ic_pin_white_24dp" Opacity="{Binding Opacity}" />
+										</Frame>
+									</ContentView>
+
+									<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
+										<Label Margin="0" Text="{Binding Name}" />
+									</ContentView>
+								</Grid>
+							</ContentView>
+						</DataTemplate>
+					</ui:RepeaterStackLayout.ItemTemplate>
+				</ui:RepeaterStackLayout>
+			</ScrollView>
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>

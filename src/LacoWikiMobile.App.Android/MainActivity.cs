@@ -9,12 +9,19 @@ namespace LacoWikiMobile.App.Droid
 	using Android.Content.PM;
 	using Android.OS;
 	using Xamarin.Forms;
+	using Xamarin.Forms.Android.UITests;
+	using Xamarin.Forms.Internals;
 	using Xamarin.Forms.Platform.Android;
 
 	[Activity(Label = "LACO-Wiki Mobile", Theme = "@style/MainTheme", MainLauncher = false,
 		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : FormsAppCompatActivity
 	{
+		public MainActivity()
+		{
+			Registrar.ExtraAssemblies = new[] { typeof(StyleProperties).Assembly };
+		}
+
 		protected override void OnCreate(Bundle bundle)
 		{
 			TabLayoutResource = Resource.Layout.Tabbar;

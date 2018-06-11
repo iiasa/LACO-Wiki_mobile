@@ -97,15 +97,15 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />
   </PropertyGroup>
-    <ItemGroup>
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
-  </ItemGroup>  
+  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />
-    <PackageReference Include="Prism.DryIoc.Forms" Version="7.0.0.396" />
+    <PackageReference Include="Xamarin.Forms" Version="3.1.0.550168-pre3" />
+    <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.135-pre" />
     <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.21.5" />
   </ItemGroup>
   <ItemGroup>
@@ -114,7 +114,9 @@
     <Compile Include="Application.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
-    <None Include="Info.plist" />
+    <None Include="Info.plist">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
@@ -124,8 +126,16 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="*.xcassets\*\*.png">
-			<Visible>false</Visible>
-		</ImageAsset>
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="..\..\shared\**\*.xcassets\*\Contents.json">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="..\..\shared\**\*.xcassets\*\*.png">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Visible>false</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\*.png" />
@@ -135,6 +145,10 @@
     <ProjectReference Include="..\LacoWikiMobile.App\LacoWikiMobile.App.csproj">
       <Project>{A682884C-CB44-4A89-B752-27BB634E0ABE}</Project>
       <Name>LacoWikiMobile.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Forms.Android.UITests\Xamarin.Forms.Android.UITests.csproj">
+      <Project>{ACD018D2-D65E-4F0B-B214-A5727D3BB1FC}</Project>
+      <Name>Xamarin.Forms.Android.UITests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

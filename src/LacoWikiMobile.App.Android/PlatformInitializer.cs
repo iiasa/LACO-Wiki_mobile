@@ -13,6 +13,9 @@ namespace LacoWikiMobile.App.Droid
 		public void RegisterTypes(IContainerRegistry container)
 		{
 			// Register any platform specific implementations
+
+			// Remove after https://github.com/PrismLibrary/Prism/issues/1443 is fixed
+			container.RegisterInstance(Xamarin.Forms.Forms.Context);
 		}
 	}
 }

@@ -1,0 +1,116 @@
+﻿/* Use * because otherwise it does not work for data templates */
+^ContentPage * {
+	color: rgba(0, 0, 0, 0.87);
+}
+
+ActivityIndicator {
+	height-request: 40;
+	margin: 0;
+	horizontal-options: CenterAndExpand;
+	vertical-options: Start;
+}
+
+.Separator {
+	height-request: 1;
+	margin: 0 0 16 0;
+	vertical-options: Fill;
+	background-color: rgba(0, 0, 0, 0.54);
+}
+
+.Header {
+	height-request: 56;
+	padding: 0 16;
+	font-size: large;
+}
+
+.Header label {
+	vertical-text-alignment: center;
+}
+
+label.Primary {
+	font-size: medium;
+}
+
+label.Secondary {
+	color: rgba(0, 0, 0, 0.54);
+	margin: 0 0 16 0;
+}
+
+.FloatingActionButton {
+	width-request: 40;
+	height-request: 40;
+	margin: 0;
+	padding: 16;
+	corner-radius: 30;
+	has-shadow: true;
+	background-color: #512DA8; /* Secondary Color */
+}
+
+.ListWithImage {
+	spacing: 0;
+}
+
+	.ListWithImage .SubHeader {
+		height-request: 48;
+		padding: 0 16;
+	}
+
+		.ListWithImage .SubHeader label {
+			vertical-text-alignment: center;
+		}
+
+	.ListWithImage .List {
+		spacing: 0;
+	}
+
+		.ListWithImage .List grid {
+			row-spacing: 0;
+			column-spacing: 0;
+		}
+
+		.ListWithImage .List .Image {
+			padding: 8 0 8 16;
+		}
+
+			.ListWithImage .List .Image frame {
+				width-request: 40;
+				height-request: 40;
+				margin: 0;
+				padding: 8;
+				corner-radius: 20;
+				has-shadow: false;
+				background-color: #009688; /* Primary Color */
+			}
+
+			.ListWithImage .List .Image image.Inactive {
+				opacity: .3;
+			}
+
+		.ListWithImage .List .FirstLine {
+			margin: 0;
+			padding: 0 12 0 12;
+			font-size: medium;
+		}
+
+			.ListWithImage .List .FirstLine label {
+				vertical-text-alignment: center;
+			}
+
+	.ListWithImage .ListDoubleLine .Image {
+		padding: 16 0 16 16;
+	}
+
+	.ListWithImage .ListDoubleLine .LineContainer {
+		margin: 0;
+		padding: 0 12 0 12;
+	}
+
+	.ListWithImage .ListDoubleLine .FirstLine {
+		margin: 0;
+		font-size: medium;
+	}
+
+	.ListWithImage .ListDoubleLine .SecondLine {
+		margin: 0;
+		color: rgba(0, 0, 0, 0.54);
+	}

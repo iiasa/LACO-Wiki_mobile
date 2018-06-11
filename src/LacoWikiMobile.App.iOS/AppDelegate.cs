@@ -5,8 +5,6 @@
 
 namespace LacoWikiMobile.App.iOS
 {
-	using System.Threading;
-	using System.Threading.Tasks;
 	using Foundation;
 	using UIKit;
 	using Xamarin;
@@ -33,6 +31,7 @@ namespace LacoWikiMobile.App.iOS
 			Forms.Init();
 			LoadApplication(new App(new PlatformInitializer()));
 
+			UIApplication.SharedApplication.StatusBarHidden = false;
 			return base.FinishedLaunching(app, options);
 		}
 	}

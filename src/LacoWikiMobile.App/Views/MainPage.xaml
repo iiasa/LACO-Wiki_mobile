@@ -1,10 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
 	x:Class="LacoWikiMobile.App.Views.MainPage" Title="{Binding Title}">
+	<RelativeLayout>
+		<StackLayout Orientation="Vertical" StyleClass="ListWithImage"
+			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}">
+			<ContentView StyleClass="Header">
+				<Label>Welcome to LACO-Wiki Mobile!</Label>
+			</ContentView>
+			<ContentView StyleClass="SubHeader">
+				<Label>Pinned Validations</Label>
+			</ContentView>
+			<Label IsVisible="{Binding ShowInstructions}" Margin="16,0,0,0" Text="{Binding Instruction}" StyleClass="Secondary" />
+			<ScrollView IsVisible="{Binding ShowList}">
+				<ui:RepeaterStackLayout ItemsSource="{Binding Items}" StyleClass="List">
+					<ui:RepeaterStackLayout.ItemTemplate>
+						<DataTemplate>
+							<ContentView BackgroundColor="{Binding BackgroundColor}">
+								<ContentView.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
+								</ContentView.GestureRecognizers>
 
-	<StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-		<Label AutomationId="WelcomeLabel" Text="Welcome to Xamarin Forms and Prism!" />
-	</StackLayout>
+								<Grid BindingContext="{Binding .}">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="56" />
+									</Grid.RowDefinitions>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="56" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
 
+									<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+										<Frame>
+											<Image Source="ic_pin_white_24dp" Opacity="{Binding Opacity}" />
+										</Frame>
+									</ContentView>
+
+									<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
+										<Label Margin="0" Text="{Binding Name}" />
+									</ContentView>
+								</Grid>
+							</ContentView>
+						</DataTemplate>
+					</ui:RepeaterStackLayout.ItemTemplate>
+				</ui:RepeaterStackLayout>
+			</ScrollView>
+		</StackLayout>
+		<Frame StyleClass="FloatingActionButton"
+			BackgroundColor="{Binding Path=IsPrimaryActionButtonActive,
+					Converter={StaticResource ConditionalConverter},
+					ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
+			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-76}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-76}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=60}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}">
+			<Frame.GestureRecognizers>
+				<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
+			</Frame.GestureRecognizers>
+			<Image Source="ic_add_white_24dp" />
+		</Frame>
+	</RelativeLayout>
 </ContentPage>

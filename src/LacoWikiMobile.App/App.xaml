@@ -2,10 +2,18 @@
 
 <prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms" x:Class="LacoWikiMobile.App.App">
+	xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms"
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
+	x:Class="LacoWikiMobile.App.App">
 	<Application.Resources>
-
-		<!-- Application resource dictionary -->
-
+		<StyleSheet Source="Styles/default.css" />
+		<Style TargetType="NavigationPage">
+			<Setter Property="BarTextColor" Value="White" />
+			<Setter Property="BarBackgroundColor" Value="#009688" />
+		</Style>
+		<ui:ConditionalConverter x:Key="ConditionalConverter" />
+		<ColorTypeConverter x:Key="ColorTypeConverter" />
+		<ui:ConditionalConverterParameter x:Key="PrimaryActionButtonIsActiveColorConverterParameter"
+			TypeConverter="{StaticResource ColorTypeConverter}" IfTrue="#311B92" IfFalse="#512DA8" />
 	</Application.Resources>
 </prism:PrismApplication>

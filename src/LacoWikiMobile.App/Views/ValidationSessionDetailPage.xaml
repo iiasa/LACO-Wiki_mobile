@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
+	x:Class="LacoWikiMobile.App.Views.ValidationSessionDetailPage" Title="{Binding Title}">
+	<ContentPage.Content>
+		<RelativeLayout>
+			<ScrollView Margin="0" Padding="0" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}">
+				<StackLayout Margin="0" Padding="16">
+					<ActivityIndicator IsRunning="true" IsVisible="{Binding ShowLoading}" />
+					<StackLayout Margin="0" Padding="0" Spacing="0" IsVisible="{Binding ShowDetails}">
+						<StackLayout Margin="0" Padding="0" Spacing="0" VerticalOptions="Start" BindingContext="{Binding ViewModel}">
+							<Label Text="Method" StyleClass="Primary" />
+							<Label Text="{Binding ValidationMethodName}" StyleClass="Secondary" />
+							<Label Text="Underlying Dataset" StyleClass="Primary" />
+							<Label Text="{Binding AssociatedDataSetName}" StyleClass="Secondary" />
+							<Label Text="Underlying Sample" StyleClass="Primary" />
+							<Label Text="{Binding AssociatedSampleName}" StyleClass="Secondary" />
+							<Label Text="Description" StyleClass="Primary" />
+							<Label Text="{Binding Description}" StyleClass="Secondary" />
+							<BoxView StyleClass="Separator" />
+							<Label Text="Progress" FontSize="Medium" />
+							<Label Text="{Binding ProgressText}" StyleClass="Secondary" Margin="0,0,0,8" />
+							<RelativeLayout HorizontalOptions="Center" WidthRequest="100" HeightRequest="100" Margin="0,0,0,16">
+								<ui:CircularProgressBar x:Name="circularProgressBar" ProgressColor="#009688" ProgressBackgroundColor="#80CBC4"
+								StrokeWidth="40"
+								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+								RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+								RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+								<Label Text="{Binding Progress, StringFormat='{0:P0}'}" FontSize="Large" TextColor="#009688" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+								RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+								RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+							</RelativeLayout>
+							<BoxView StyleClass="Separator" />
+							<Label Text="Legend" FontSize="Medium" />
+							<ContentView StyleClass="ListWithImage">
+								<ui:RepeaterStackLayout ItemsSource="{Binding LegendItems}" StyleClass="List,ListDoubleLine">
+									<ui:RepeaterStackLayout.ItemTemplate>
+										<DataTemplate>
+											<ContentView BackgroundColor="{Binding BackgroundColor}">
+												<ContentView.GestureRecognizers>
+													<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
+												</ContentView.GestureRecognizers>
+
+												<Grid BindingContext="{Binding .}">
+													<Grid.RowDefinitions>
+														<RowDefinition Height="72" />
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="56" />
+														<ColumnDefinition />
+													</Grid.ColumnDefinitions>
+
+													<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+														<Frame BorderColor="#444444" BackgroundColor="{Binding Color}">
+														</Frame>
+													</ContentView>
+
+													<ContentView Grid.Row="0" Grid.Column="1" StyleClass="LineContainer">
+														<StackLayout Spacing="0" VerticalOptions="Center">
+															<Label Margin="0" Text="{Binding Name}" StyleClass="FirstLine" />
+															<Label Margin="0" Text="{Binding ValueText}" StyleClass="SecondLine" />
+														</StackLayout>
+													</ContentView>
+												</Grid>
+											</ContentView>
+										</DataTemplate>
+									</ui:RepeaterStackLayout.ItemTemplate>
+								</ui:RepeaterStackLayout>
+							</ContentView>
+						</StackLayout>
+					</StackLayout>
+				</StackLayout>
+			</ScrollView>
+			<Frame StyleClass="FloatingActionButton"
+				BackgroundColor="{Binding Path=IsPrimaryActionButtonActive,
+				Converter={StaticResource ConditionalConverter},
+				ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-76}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-76}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=60}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}">
+				<Frame.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
+				</Frame.GestureRecognizers>
+				<Image Source="ic_check_white_24dp" />
+			</Frame>
+		</RelativeLayout>
+	</ContentPage.Content>
+</ContentPage>
