@@ -27,6 +27,15 @@ ActivityIndicator {
 	vertical-text-alignment: center;
 }
 
+.SubHeader {
+	height-request: 48;
+	padding: 0 16;
+}
+
+.SubHeader label {
+	vertical-text-alignment: center;
+}
+
 label.Primary {
 	font-size: medium;
 }
@@ -49,15 +58,6 @@ label.Secondary {
 .ListWithImage {
 	spacing: 0;
 }
-
-	.ListWithImage .SubHeader {
-		height-request: 48;
-		padding: 0 16;
-	}
-
-		.ListWithImage .SubHeader label {
-			vertical-text-alignment: center;
-		}
 
 	.ListWithImage .List {
 		spacing: 0;

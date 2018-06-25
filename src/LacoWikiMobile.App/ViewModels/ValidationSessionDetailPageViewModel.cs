@@ -5,6 +5,7 @@
 
 namespace LacoWikiMobile.App.ViewModels
 {
+	using System.Threading.Tasks;
 	using AutoMapper;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
@@ -35,11 +36,13 @@ namespace LacoWikiMobile.App.ViewModels
 
 		protected IMapper Mapper { get; set; }
 
-		protected override void Initialize(INavigationParameters parameters)
+		protected override async Task InitializeAsync(INavigationParameters parameters)
 		{
+			await base.InitializeAsync(parameters);
+
 			Title = (string)parameters["name"];
 
-			ApiClient.GetValidationSessionById((int)parameters["id"])
+			await ApiClient.GetValidationSessionByIdAsync((int)parameters["id"])
 				.ContinueWith(result =>
 				{
 					ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(result.Result);

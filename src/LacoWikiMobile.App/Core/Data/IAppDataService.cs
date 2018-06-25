@@ -13,6 +13,8 @@ namespace LacoWikiMobile.App.Core.Data
 	{
 		Task AddValidationSessionAsync(ValidationSession validationSession);
 
+		Task EnsureUserExistsAsync();
+
 		Task<IEnumerable<ValidationSession>> GetValidationSessionsAsync();
 	}
 }

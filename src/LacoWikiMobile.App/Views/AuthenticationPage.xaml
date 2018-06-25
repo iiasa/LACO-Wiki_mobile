@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
+	x:Class="LacoWikiMobile.App.Views.AuthenticationPage" Title="{Binding Title}" NavigationPage.HasBackButton="False">
+	<ContentPage.Content>
+		<StackLayout Spacing="0">
+			<ContentView StyleClass="Header">
+				<Label>Select your login provider</Label>
+			</ContentView>
+			<!--<ContentView StyleClass="SubHeader">
+				<Label>Login with one of the following providers:</Label>
+			</ContentView>-->
+			<ScrollView>
+				<StackLayout Spacing="8" Margin="16">
+					<RelativeLayout>
+						<RelativeLayout.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding AuthenticateWithGeoWikiCommand}" />
+						</RelativeLayout.GestureRecognizers>
+						<ContentView Padding="0" BackgroundColor="#444444" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+						RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+						RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+						RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.35, Constant=0}">
+							<Image Source="geowiki" Aspect="AspectFill" />
+						</ContentView>
+					</RelativeLayout>
+					<RelativeLayout>
+						<RelativeLayout.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding AuthenticateWithGoogleCommand}" />
+						</RelativeLayout.GestureRecognizers>
+						<ContentView Padding="0" BackgroundColor="#444444" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+						RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+						RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+						RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.35, Constant=0}">
+							<Image Source="google" Aspect="AspectFill" />
+						</ContentView>
+					</RelativeLayout>
+					<RelativeLayout>
+						<RelativeLayout.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding AuthenticateWithFacebookCommand}" />
+						</RelativeLayout.GestureRecognizers>
+						<ContentView Padding="0" BackgroundColor="#444444" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+							RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.35, Constant=0}">
+							<Image Source="facebook" Aspect="AspectFill" />
+						</ContentView>
+					</RelativeLayout>
+				</StackLayout>
+			</ScrollView>
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>

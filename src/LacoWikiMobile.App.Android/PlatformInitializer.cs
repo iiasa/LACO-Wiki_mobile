@@ -5,17 +5,21 @@
 
 namespace LacoWikiMobile.App.Droid
 {
+	using LacoWikiMobile.App.Core;
+	using LacoWikiMobile.App.Droid.Core;
 	using Prism;
 	using Prism.Ioc;
+	using Xamarin.Forms;
 
 	public class PlatformInitializer : IPlatformInitializer
 	{
 		public void RegisterTypes(IContainerRegistry container)
 		{
 			// Register any platform specific implementations
+			container.Register<INotificationService, NotificationService>();
 
 			// Remove after https://github.com/PrismLibrary/Prism/issues/1443 is fixed
-			container.RegisterInstance(Xamarin.Forms.Forms.Context);
+			container.RegisterInstance(Forms.Context);
 		}
 	}
 }

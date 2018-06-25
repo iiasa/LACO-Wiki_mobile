@@ -5,7 +5,6 @@
 
 namespace LacoWikiMobile.App.Core
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Drawing;
 	using System.Linq;
@@ -38,7 +37,7 @@ namespace LacoWikiMobile.App.Core
 					{
 						IAppDataService appDataService = containerProvider.Resolve<IAppDataService>();
 
-						Task<IEnumerable<ValidationSession>> task = Task.Run(() => appDataService.GetValidationSessionsAsync());
+						Task<IEnumerable<ValidationSession>> task = Task.Run(async () => await appDataService.GetValidationSessionsAsync());
 						task.Wait();
 
 						IEnumerable<ValidationSession> result = task.Result;
@@ -65,14 +64,15 @@ namespace LacoWikiMobile.App.Core
 		{
 			mapperConfigurationExpression.CreateMap<ValidationSession, ViewModels.Main.ItemViewModel>()
 				.ForMember(dest => dest.IsActive, opt => opt.Ignore())
-				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore())
-				.ReverseMap();
+				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore());
 
 			mapperConfigurationExpression.CreateMap<ValidationSession, ViewModels.ValidationSessionOverview.ItemViewModel>()
 				.ForMember(dest => dest.Pinned, opt => opt.Ignore())
 				.ForMember(dest => dest.IsActive, opt => opt.Ignore())
-				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore())
-				.ReverseMap();
+				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore());
+
+			mapperConfigurationExpression.CreateMap<ValidationSessionDetailViewModel, ValidationSession>()
+				.ForMember(dest => dest.User, opt => opt.Ignore());
 		}
 	}
 }

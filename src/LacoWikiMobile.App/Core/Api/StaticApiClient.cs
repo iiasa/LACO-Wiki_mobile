@@ -12,7 +12,7 @@ namespace LacoWikiMobile.App.Core.Api
 
 	public class StaticApiClient : IApiClient
 	{
-		public Task<ValidationSessionDetailModel> GetValidationSessionById(int id)
+		public Task<ValidationSessionDetailModel> GetValidationSessionByIdAsync(int id)
 		{
 			return Task.Run(async () =>
 			{

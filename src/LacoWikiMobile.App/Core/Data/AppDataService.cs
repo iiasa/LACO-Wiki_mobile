@@ -6,28 +6,66 @@
 namespace LacoWikiMobile.App.Core.Data
 {
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Threading.Tasks;
+	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using Microsoft.EntityFrameworkCore;
 
 	public class AppDataService : IAppDataService
 	{
-		public AppDataService(IAppDataContext context)
+		public AppDataService(IApiAuthentication apiAuthentication, IAppDataContext context)
 		{
+			ApiAuthentication = apiAuthentication;
 			Context = context;
 		}
+
+		protected IApiAuthentication ApiAuthentication { get; set; }
 
 		protected IAppDataContext Context { get; set; }
 
 		public async Task AddValidationSessionAsync(ValidationSession validationSession)
 		{
+			await ApiAuthentication.EnsureAuthenticatedAsync();
+
+			int id = await ApiAuthentication.GetUserIdAsync();
+			User user = await Context.Users.SingleAsync(x => x.Id == id);
+
+			validationSession.User = user;
+
 			await Context.ValidationSessions.AddAsync(validationSession);
 			await Context.SaveChangesAsync();
 		}
 
+		public async Task EnsureUserExistsAsync()
+		{
+			await ApiAuthentication.EnsureAuthenticatedAsync();
+
+			int id = await ApiAuthentication.GetUserIdAsync();
+
+			User user = await Context.Users.SingleOrDefaultAsync(x => x.Id == id);
+
+			if (user == null)
+			{
+				user = new User
+				{
+					Id = id,
+					Name = await ApiAuthentication.GetUserNameAsync(),
+				};
+
+				await Context.Users.AddAsync(user);
+				await Context.SaveChangesAsync();
+			}
+		}
+
 		public async Task<IEnumerable<ValidationSession>> GetValidationSessionsAsync()
 		{
-			return await Context.ValidationSessions.ToListAsync();
+			await ApiAuthentication.EnsureAuthenticatedAsync();
+
+			int id = await ApiAuthentication.GetUserIdAsync();
+			User user = await Context.Users.SingleAsync(x => x.Id == id);
+
+			return await Context.ValidationSessions.Where(x => x.User == user).ToListAsync();
 		}
 	}
 }

@@ -17,15 +17,7 @@ namespace LacoWikiMobile.App.Views
 	{
 		public ValidationSessionDetailPage()
 		{
-			try
-			{
-				InitializeComponent();
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				throw;
-			}
+			InitializeComponent();
 		}
 
 		protected override void OnBindingContextChanged()
@@ -47,7 +39,7 @@ namespace LacoWikiMobile.App.Views
 								await Task.Delay(500);
 
 								this.circularProgressBar.Progress = 0;
-								this.circularProgressBar.ProgressTo(viewModel.ViewModel.Progress, 500, Easing.CubicOut);
+								await this.circularProgressBar.ProgressTo(viewModel.ViewModel.Progress, 500, Easing.CubicOut);
 							});
 						}
 					}

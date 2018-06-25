@@ -11,7 +11,7 @@ namespace LacoWikiMobile.App.Core.Api
 
 	public interface IApiClient
 	{
-		Task<ValidationSessionDetailModel> GetValidationSessionById(int id);
+		Task<ValidationSessionDetailModel> GetValidationSessionByIdAsync(int id);
 
 		Task<IEnumerable<ValidationSessionModel>> GetValidationSessionsAsync();
 	}

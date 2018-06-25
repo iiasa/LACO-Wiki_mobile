@@ -12,7 +12,9 @@ namespace LacoWikiMobile.App.Core.Data
 
 	public interface IAppDataContext
 	{
-		DbSet<ValidationSession> ValidationSessions { get; set; }
+		DbSet<User> Users { get; }
+
+		DbSet<ValidationSession> ValidationSessions { get; }
 
 		int SaveChanges();
 

@@ -9,6 +9,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using System.Collections.Generic;
 	using System.Collections.ObjectModel;
 	using System.Linq;
+	using System.Threading.Tasks;
 	using AutoMapper;
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
@@ -40,9 +41,11 @@ namespace LacoWikiMobile.App.ViewModels
 
 		protected IMapper Mapper { get; set; }
 
-		protected override void Initialize(INavigationParameters parameters)
+		protected override async Task InitializeAsync(INavigationParameters parameters)
 		{
-			ApiClient.GetValidationSessionsAsync()
+			await base.InitializeAsync(parameters);
+
+			await ApiClient.GetValidationSessionsAsync()
 				.ContinueWith(result =>
 				{
 					Items = Mapper.Map<IEnumerable<ItemViewModel>>(result.Result);
@@ -54,7 +57,7 @@ namespace LacoWikiMobile.App.ViewModels
 
 		protected void OnItemTapped(object sender, EventArgs args)
 		{
-			ItemViewModel itemViewModel = ((ItemViewModel)sender);
+			ItemViewModel itemViewModel = (ItemViewModel)sender;
 
 			NavigationService.NavigateToValidationSessionDetail(itemViewModel.Id, itemViewModel.Name);
 		}

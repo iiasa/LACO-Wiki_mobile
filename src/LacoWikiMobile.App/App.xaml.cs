@@ -12,14 +12,10 @@ namespace LacoWikiMobile.App
 	using System;
 	using System.Linq;
 	using System.Reflection;
-	using AutoMapper;
-	using AutoMapper.Configuration;
-	using DryIoc;
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Views;
-	using Microsoft.EntityFrameworkCore;
 	using Prism;
 	using Prism.DryIoc;
 	using Prism.Ioc;
@@ -62,45 +58,12 @@ namespace LacoWikiMobile.App
 			}
 
 			// Register services
-			containerRegistry.Register<MapperConfigurationExpression, MapperConfigurationExpression>();
-			containerRegistry.GetContainer()
-				.RegisterInitializer<IMapperConfigurationExpression>((expression, resolver) => { expression.Configure(Container); });
-
-			containerRegistry.Register<IConfigurationProvider, MapperConfiguration>();
-			containerRegistry.GetContainer()
-				.RegisterInitializer<IConfigurationProvider>((provider, resolver) =>
-				{
-					try
-					{
-						provider.AssertConfigurationIsValid();
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine(e);
-						throw;
-					}
-				});
-
-			containerRegistry.GetContainer()
-				.Register<IMapper, Mapper>(reuse: Reuse.Singleton, made: Made.Of(() => new Mapper(Arg.Of<IConfigurationProvider>())));
-
-			containerRegistry.Register<DbContextOptionsBuilder<AppDataContext>, DbContextOptionsBuilder<AppDataContext>>();
-			containerRegistry.GetContainer()
-				.RegisterInitializer<DbContextOptionsBuilder<AppDataContext>>((builder, resolver) => { builder.Configure(); });
-
-			containerRegistry.GetContainer()
-				.Register<DbContextOptions>(made: Made.Of(r => ServiceInfo.Of<DbContextOptionsBuilder<AppDataContext>>(), f => f.Options));
-
-			containerRegistry.RegisterSingleton<IAppDataContext, AppDataContext>();
-			containerRegistry.GetContainer()
-				.RegisterInitializer<IAppDataContext>((context, resolver) =>
-				{
-					((AppDataContext)context).Database.EnsureDeleted();
-					((AppDataContext)context).Database.EnsureCreated();
-				});
+			containerRegistry.RegisterAutoMapper(Container);
+			containerRegistry.RegisterAppDataContext();
+			containerRegistry.RegisterApiAuthentication();
 
 			containerRegistry.RegisterSingleton<IAppDataService, AppDataService>();
-			containerRegistry.Register<IApiClient, StaticApiClient>();
+			containerRegistry.Register<IApiClient, ApiClient>();
 		}
 	}
 }

@@ -9,9 +9,12 @@ namespace LacoWikiMobile.App.ViewModels
 	using System.Collections.Generic;
 	using System.Collections.ObjectModel;
 	using System.Linq;
+	using System.Threading.Tasks;
 	using AutoMapper;
 	using LacoWikiMobile.App.Core;
+	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
+	using LacoWikiMobile.App.Core.Data.Entities;
 	using LacoWikiMobile.App.ViewModels.Main;
 	using LacoWikiMobile.App.Views;
 	using Prism.Navigation;
@@ -19,9 +22,11 @@ namespace LacoWikiMobile.App.ViewModels
 
 	public class MainPageViewModel : ViewModelBase
 	{
-		public MainPageViewModel(INavigationService navigationService, IAppDataService appDataService, IMapper mapper)
+		public MainPageViewModel(INavigationService navigationService, IApiAuthentication apiAuthentication, IAppDataService appDataService,
+			IMapper mapper)
 			: base(navigationService)
 		{
+			ApiAuthentication = apiAuthentication;
 			AppDataService = appDataService;
 			Mapper = mapper;
 
@@ -33,6 +38,8 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public bool ShowList => Items.Any();
 
+		public IApiAuthentication ApiAuthentication { get; set; }
+
 		public IAppDataService AppDataService { get; set; }
 
 		// TODO: LocalizationService
@@ -42,19 +49,19 @@ namespace LacoWikiMobile.App.ViewModels
 
 		protected IMapper Mapper { get; set; }
 
-		protected override void Initialize(INavigationParameters parameters)
+		protected override async Task InitializeAsync(INavigationParameters parameters)
 		{
-			AppDataService.GetValidationSessionsAsync()
-				.ContinueWith(result =>
-				{
-					Items = Mapper.Map<IEnumerable<ItemViewModel>>(result.Result);
-					Items.ForEach(x => x.ItemTapped += OnItemTapped);
-				});
+			await base.InitializeAsync(parameters);
+
+			IEnumerable<ValidationSession> validationSessions = await AppDataService.GetValidationSessionsAsync();
+
+			Items = Mapper.Map<IEnumerable<ItemViewModel>>(validationSessions);
+			Items.ForEach(x => x.ItemTapped += OnItemTapped);
 		}
 
 		protected void OnItemTapped(object sender, EventArgs args)
 		{
-			ItemViewModel itemViewModel = ((ItemViewModel)sender);
+			ItemViewModel itemViewModel = (ItemViewModel)sender;
 
 			NavigationService.NavigateToValidationSessionDetail(itemViewModel.Id, itemViewModel.Name);
 		}
