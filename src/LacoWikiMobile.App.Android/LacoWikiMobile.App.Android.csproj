@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\CustomUrlSchemeInterceptorActivity.cs" />
+    <Compile Include="Core\Localizer.cs" />
     <Compile Include="Core\NotificationService.cs" />
     <Compile Include="PlatformInitializer.cs" />
     <Compile Include="MainActivity.cs" />

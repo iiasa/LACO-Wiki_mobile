@@ -11,13 +11,15 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
+	using Microsoft.Extensions.Localization;
 	using Prism.Navigation;
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
 	{
-		public ValidationSessionDetailPageViewModel(INavigationService navigationService, IApiClient apiClient,
-			IAppDataService appDataService, IMapper mapper)
-			: base(navigationService)
+		public ValidationSessionDetailPageViewModel(INavigationService navigationService,
+			IStringLocalizer<ValidationSessionDetailPageViewModel> localizer, IApiClient apiClient, IAppDataService appDataService,
+			IMapper mapper)
+			: base(navigationService, localizer)
 		{
 			ApiClient = apiClient;
 			AppDataService = appDataService;

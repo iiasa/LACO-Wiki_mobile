@@ -5,16 +5,17 @@
 
 namespace LacoWikiMobile.App.Core
 {
-	using System.Threading.Tasks;
 	using AutoMapper;
 	using AutoMapper.Configuration;
 	using DryIoc;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using Microsoft.EntityFrameworkCore;
+	using Microsoft.Extensions.Localization;
+	using Microsoft.Extensions.Logging.Abstractions;
+	using Microsoft.Extensions.Options;
 	using Prism.DryIoc;
 	using Prism.Ioc;
-	using Xamarin.Essentials;
 
 	public static class ContainerRegistryExtension
 	{
@@ -97,6 +98,23 @@ namespace LacoWikiMobile.App.Core
 
 			containerRegistry.GetContainer()
 				.Register<IMapper, Mapper>(reuse: Reuse.Singleton, made: Made.Of(() => new Mapper(Arg.Of<IConfigurationProvider>())));
+		}
+
+		// Based on ASP.NET Core Localization https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization
+		public static void RegisterLocalization(this IContainerRegistry containerRegistry, string resourcesPath = "Resources")
+		{
+			containerRegistry.GetContainer()
+				.RegisterDelegate<IStringLocalizerFactory>(
+					x =>
+					{
+						return new ResourceManagerStringLocalizerFactory(
+							new OptionsManager<LocalizationOptions>(new OptionsFactory<LocalizationOptions>(
+								new IConfigureOptions<LocalizationOptions>[]
+									{ new ConfigureOptions<LocalizationOptions>(options => options.ResourcesPath = resourcesPath), },
+								new IPostConfigureOptions<LocalizationOptions>[] { })), new NullLoggerFactory());
+					}, new SingletonReuse());
+
+			containerRegistry.GetContainer().Register(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
 		}
 	}
 }

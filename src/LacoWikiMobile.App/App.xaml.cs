@@ -10,11 +10,13 @@ using Xamarin.Forms.Xaml;
 namespace LacoWikiMobile.App
 {
 	using System;
+	using System.Globalization;
 	using System.Linq;
 	using System.Reflection;
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
+	using LacoWikiMobile.App.Core.Localization;
 	using LacoWikiMobile.App.Views;
 	using Prism;
 	using Prism.DryIoc;
@@ -46,6 +48,15 @@ namespace LacoWikiMobile.App
 		{
 			InitializeComponent();
 
+			// See https://docs.microsoft.com/en-us/xamarin/xamarin-forms/app-fundamentals/localization
+			if (Device.RuntimePlatform == Device.iOS || Device.RuntimePlatform == Device.Android)
+			{
+				// Determine the correct, supported .NET culture
+				ILocalizer localizer = Container.Resolve<ILocalizer>();
+				CultureInfo cultureInfo = localizer.GetCurrentCultureInfo();
+				localizer.SetLocale(cultureInfo);
+			}
+
 			await NavigationService.NavigateAsync($"{nameof(NavigationPage)}/{nameof(MainPage)}");
 		}
 
@@ -62,6 +73,7 @@ namespace LacoWikiMobile.App
 			}
 
 			// Register services
+			containerRegistry.RegisterLocalization();
 			containerRegistry.RegisterAutoMapper(Container);
 			containerRegistry.RegisterAppDataContext();
 			containerRegistry.RegisterApiAuthentication();

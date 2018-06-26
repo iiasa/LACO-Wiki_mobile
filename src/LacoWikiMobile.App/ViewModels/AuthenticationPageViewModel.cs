@@ -10,14 +10,15 @@ namespace LacoWikiMobile.App.ViewModels
 	using System.Windows.Input;
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
+	using Microsoft.Extensions.Localization;
 	using Prism.Commands;
 	using Prism.Navigation;
 
 	public class AuthenticationPageViewModel : ViewModelBase
 	{
-		public AuthenticationPageViewModel(INavigationService navigationService, IApiAuthentication apiAuthentication,
-			INotificationService notificationService)
-			: base(navigationService)
+		public AuthenticationPageViewModel(INavigationService navigationService, IStringLocalizer<AuthenticationPageViewModel> localizer,
+			IApiAuthentication apiAuthentication, INotificationService notificationService)
+			: base(navigationService, localizer)
 		{
 			NavigationService = navigationService;
 			ApiAuthentication = apiAuthentication;

@@ -2,6 +2,7 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
+	xmlns:i18n="clr-namespace:LacoWikiMobile.App.Core.Localization;assembly=LacoWikiMobile.App"
 	x:Class="LacoWikiMobile.App.Views.MainPage" Title="{Binding Title}">
 	<RelativeLayout>
 		<StackLayout Orientation="Vertical" StyleClass="ListWithImage"
@@ -10,10 +11,10 @@
 			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
 			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}">
 			<ContentView StyleClass="Header">
-				<Label>Welcome to LACO-Wiki Mobile!</Label>
+				<Label Text="{i18n:Translate Header}"></Label>
 			</ContentView>
 			<ContentView StyleClass="SubHeader">
-				<Label>Pinned Validations</Label>
+				<Label Text="{i18n:Translate SubHeader}"></Label>
 			</ContentView>
 			<Label IsVisible="{Binding ShowInstructions}" Margin="16,0,0,0" Text="{Binding Instruction}" StyleClass="Secondary" />
 			<ScrollView IsVisible="{Binding ShowList}">

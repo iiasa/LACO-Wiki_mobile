@@ -12,14 +12,16 @@ namespace LacoWikiMobile.App.ViewModels
 	using System.Windows.Input;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Views;
+	using Microsoft.Extensions.Localization;
 	using Prism.Commands;
 	using Prism.Navigation;
 
 	public class ViewModelBase : INotifyPropertyChanged, INavigatingAware, INavigatedAware
 	{
-		public ViewModelBase(INavigationService navigationService)
+		public ViewModelBase(INavigationService navigationService, IStringLocalizer stringLocalizer)
 		{
 			NavigationService = navigationService;
+			Localizer = stringLocalizer;
 
 			// TODO: Move to base class, rename to Primary Action Button or similar
 			PrimaryActionButtonTappedCommand = new DelegateCommand(PrimaryActionButtonTapped);
@@ -34,6 +36,8 @@ namespace LacoWikiMobile.App.ViewModels
 		public string Title { get; set; }
 
 		protected INavigationService NavigationService { get; set; }
+
+		protected IStringLocalizer Localizer { get; set; }
 
 		private bool Initialized { get; set; }
 
@@ -80,42 +84,6 @@ namespace LacoWikiMobile.App.ViewModels
 			WasTokenExpiredThrown = false;
 		}
 
-		protected async Task RunAndHandleExceptionsAsync(Func<Task> func)
-		{
-			try
-			{
-				await func();
-			}
-			catch (AggregateException e)
-			{
-				AggregateException aggregateException = e.Flatten();
-
-				if (aggregateException.InnerExceptions.OfType<NotAuthenticatedException>().Any())
-				{
-					WasNotAuthenticatedThrown = true;
-				}
-				else if (aggregateException.InnerExceptions.OfType<TokenExpiredException>().Any())
-				{
-					WasTokenExpiredThrown = true;
-				}
-				else
-				{
-					throw;
-				}
-			}
-			catch (NotAuthenticatedException)
-			{
-				WasNotAuthenticatedThrown = true;
-			}
-			catch (TokenExpiredException)
-			{
-				WasTokenExpiredThrown = true;
-			}
-			////catch (Exception e)
-			////{
-			////}
-		}
-
 		public virtual async void OnNavigatingTo(INavigationParameters parameters)
 		{
 			// This method will not be called when using Hardware Buttons, so prefer OnNavigating but fallback for OnNavigated
@@ -152,6 +120,43 @@ namespace LacoWikiMobile.App.ViewModels
 				await Task.Delay(250);
 				IsPrimaryActionButtonActive = false;
 			});
+		}
+
+		protected async Task RunAndHandleExceptionsAsync(Func<Task> func)
+		{
+			try
+			{
+				await func();
+			}
+			catch (AggregateException e)
+			{
+				AggregateException aggregateException = e.Flatten();
+
+				if (aggregateException.InnerExceptions.OfType<NotAuthenticatedException>().Any())
+				{
+					WasNotAuthenticatedThrown = true;
+				}
+				else if (aggregateException.InnerExceptions.OfType<TokenExpiredException>().Any())
+				{
+					WasTokenExpiredThrown = true;
+				}
+				else
+				{
+					throw;
+				}
+			}
+			catch (NotAuthenticatedException)
+			{
+				WasNotAuthenticatedThrown = true;
+			}
+			catch (TokenExpiredException)
+			{
+				WasTokenExpiredThrown = true;
+			}
+
+			////catch (Exception e)
+			////{
+			////}
 		}
 	}
 }

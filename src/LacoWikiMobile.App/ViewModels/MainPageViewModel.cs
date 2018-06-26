@@ -17,22 +17,25 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using LacoWikiMobile.App.ViewModels.Main;
 	using LacoWikiMobile.App.Views;
+	using Microsoft.Extensions.Localization;
 	using Prism.Navigation;
 	using Xamarin.Forms.Internals;
 
 	public class MainPageViewModel : ViewModelBase
 	{
-		public MainPageViewModel(INavigationService navigationService, IApiAuthentication apiAuthentication, IAppDataService appDataService,
-			IMapper mapper)
-			: base(navigationService)
+		public MainPageViewModel(INavigationService navigationService, IStringLocalizer<MainPageViewModel> localizer,
+			IApiAuthentication apiAuthentication, IAppDataService appDataService, IMapper mapper)
+			: base(navigationService, localizer)
 		{
 			ApiAuthentication = apiAuthentication;
 			AppDataService = appDataService;
 			Mapper = mapper;
 
-			// TODO: LocalizationService
-			Title = "Home";
+			Title = Localizer[nameof(Title)];
+			Instruction = Localizer[nameof(Instruction)];
 		}
+
+		public string Instruction { get; }
 
 		public bool ShowInstructions => !Items.Any();
 
@@ -41,9 +44,6 @@ namespace LacoWikiMobile.App.ViewModels
 		public IApiAuthentication ApiAuthentication { get; set; }
 
 		public IAppDataService AppDataService { get; set; }
-
-		// TODO: LocalizationService
-		public string Instruction { get; set; } = "There is no active validation session, please add one and start validating!";
 
 		public IEnumerable<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
 

@@ -16,6 +16,8 @@
 		<PackageReference Include="AutoMapper" Version="7.0.0" />
 		<PackageReference Include="Flurl.Http" Version="2.3.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="2.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="2.0.3" />
 		<PackageReference Include="PropertyChanged.Fody" Version="2.5.4" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.2.2" />
 		<PackageReference Include="Xamarin.Auth" Version="1.6.0.2" />
@@ -30,6 +32,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Update="Resources\ViewModels\MainPageViewModel.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Views\MainPage.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
 		<EmbeddedResource Update="Views\AuthenticationPage.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 		</EmbeddedResource>

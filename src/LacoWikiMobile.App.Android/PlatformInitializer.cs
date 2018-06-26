@@ -6,6 +6,7 @@
 namespace LacoWikiMobile.App.Droid
 {
 	using LacoWikiMobile.App.Core;
+	using LacoWikiMobile.App.Core.Localization;
 	using LacoWikiMobile.App.Droid.Core;
 	using Prism;
 	using Prism.Ioc;
@@ -16,7 +17,8 @@ namespace LacoWikiMobile.App.Droid
 		public void RegisterTypes(IContainerRegistry container)
 		{
 			// Register any platform specific implementations
-			container.Register<INotificationService, NotificationService>();
+			container.RegisterSingleton<ILocalizer, Localizer>();
+			container.RegisterSingleton<INotificationService, NotificationService>();
 
 			// Remove after https://github.com/PrismLibrary/Prism/issues/1443 is fixed
 			container.RegisterInstance(Forms.Context);
