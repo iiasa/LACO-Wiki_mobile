@@ -22,6 +22,7 @@
 		<PackageReference Include="Xamarin.Essentials" Version="0.7.0.17-preview" />
 		<PackageReference Include="Xamarin.Forms" Version="3.1.0.550168-pre3" />
 		<PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.135-pre" />
+		<PackageReference Include="Xamarin.LiveReload" Version="0.3.27" />
 	</ItemGroup>
 
 	<ItemGroup>

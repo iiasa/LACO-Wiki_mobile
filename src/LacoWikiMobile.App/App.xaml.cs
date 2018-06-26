@@ -36,6 +36,10 @@ namespace LacoWikiMobile.App
 		public App(IPlatformInitializer initializer)
 			: base(initializer)
 		{
+#if DEBUG
+			// Initialize Live Reload.
+			LiveReload.Init();
+#endif
 		}
 
 		protected override async void OnInitialized()
