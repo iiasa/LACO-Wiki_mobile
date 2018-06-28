@@ -125,6 +125,9 @@ namespace LacoWikiMobile.App.Core.Api
 		public async Task SignOutAsync()
 		{
 			await SecureStorage.SetAsync(ApiAuthentication.AccessTokenKey, string.Empty);
+			await SecureStorage.SetAsync(ApiAuthentication.UserIdKey, string.Empty);
+			await SecureStorage.SetAsync(ApiAuthentication.UserNameKey, string.Empty);
+			await SecureStorage.SetAsync(ApiAuthentication.ProviderNameKey, string.Empty);
 		}
 
 		protected void Authenticate(string provider)
