@@ -11,10 +11,10 @@
 			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
 			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}">
 			<ContentView StyleClass="Header">
-				<Label Text="{i18n:Translate Header}"></Label>
+				<Label Text="{i18n:Translate Header}" />
 			</ContentView>
 			<ContentView StyleClass="SubHeader">
-				<Label Text="{i18n:Translate SubHeader}"></Label>
+				<Label Text="{i18n:Translate SubHeader}" />
 			</ContentView>
 			<Label IsVisible="{Binding ShowInstructions}" Margin="16,0,0,0" Text="{Binding Instruction}" StyleClass="Secondary" />
 			<ScrollView IsVisible="{Binding ShowList}">
@@ -53,12 +53,12 @@
 		</StackLayout>
 		<Frame StyleClass="FloatingActionButton"
 			BackgroundColor="{Binding Path=IsPrimaryActionButtonActive,
-					Converter={StaticResource ConditionalConverter},
-					ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
-			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-76}"
-			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-76}"
-			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=60}"
-			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}">
+				Converter={StaticResource ConditionalConverter},
+				ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
+			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-72}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
 			<Frame.GestureRecognizers>
 				<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
 			</Frame.GestureRecognizers>

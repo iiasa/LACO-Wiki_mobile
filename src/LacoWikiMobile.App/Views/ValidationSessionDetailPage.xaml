@@ -82,10 +82,10 @@
 				BackgroundColor="{Binding Path=IsPrimaryActionButtonActive,
 				Converter={StaticResource ConditionalConverter},
 				ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
-				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-76}"
-				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-76}"
-				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=60}"
-				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}">
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-72}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
 				<Frame.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
 				</Frame.GestureRecognizers>

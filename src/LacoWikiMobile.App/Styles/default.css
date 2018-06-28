@@ -46,11 +46,9 @@ label.Secondary {
 }
 
 .FloatingActionButton {
-	width-request: 40;
-	height-request: 40;
 	margin: 0;
 	padding: 16;
-	corner-radius: 30;
+	corner-radius: 28;
 	has-shadow: true;
 	background-color: #512DA8; /* Secondary Color */
 }
