@@ -5,6 +5,9 @@
 
 namespace LacoWikiMobile.App.iOS
 {
+	using LacoWikiMobile.App.Core;
+	using LacoWikiMobile.App.Core.Localization;
+	using LacoWikiMobile.App.iOS.Core;
 	using Prism;
 	using Prism.Ioc;
 
@@ -12,6 +15,9 @@ namespace LacoWikiMobile.App.iOS
 	{
 		public void RegisterTypes(IContainerRegistry container)
 		{
+			// Register any platform specific implementations
+			container.RegisterSingleton<ILocalizer, Localizer>();
+			container.RegisterSingleton<INotificationService, NullNotificationService>();
 		}
 	}
 }

@@ -3,26 +3,21 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using LacoWikiMobile.App.Droid.UserInterface;
+using LacoWikiMobile.App.iOS.UserInterface;
 using LacoWikiMobile.App.UserInterface;
 using Xamarin.Forms;
 
 [assembly: ExportRenderer(typeof(CircularProgressBar), typeof(CircularProgressBarRenderer))]
 
-namespace LacoWikiMobile.App.Droid.UserInterface
+namespace LacoWikiMobile.App.iOS.UserInterface
 {
 	using System.ComponentModel;
-	using Android.Content;
+	using CoreGraphics;
 	using LacoWikiMobile.App.UserInterface;
-	using Xamarin.Forms.Platform.Android;
+	using Xamarin.Forms.Platform.iOS;
 
 	public class CircularProgressBarRenderer : ViewRenderer<CircularProgressBar, CircularProgressBarView>
 	{
-		public CircularProgressBarRenderer(Context context)
-			: base(context)
-		{
-		}
-
 		protected override void OnElementChanged(ElementChangedEventArgs<CircularProgressBar> e)
 		{
 			base.OnElementChanged(e);
@@ -30,12 +25,12 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			if (Control == null)
 			{
 				// Instantiate the native control and assign it to the Control property with the SetNativeControl method
-				CircularProgressBarView view = new CircularProgressBarView(Context)
+				CircularProgressBarView view = new CircularProgressBarView()
 				{
 					Progress = Element.Progress,
-					StrokeWidth = Context.ToPixels(Element.StrokeWidth),
-					ProgressColor = Element.ProgressColor.ToAndroid(),
-					ProgressBackgroundColor = Element.ProgressBackgroundColor.ToAndroid(),
+					StrokeWidth = Element.StrokeWidth,
+					ProgressColor = Element.ProgressColor.ToUIColor(),
+					ProgressBackgroundColor = Element.ProgressBackgroundColor.ToUIColor(),
 				};
 
 				SetNativeControl(view);
@@ -56,6 +51,12 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		{
 			base.OnElementPropertyChanged(sender, e);
 
+			if (e.PropertyName == VisualElement.WidthProperty.PropertyName || e.PropertyName == VisualElement.HeightProperty.PropertyName)
+			{
+				Control.Frame = new CGRect(0, 0, Element.Width, Element.Height);
+				Control.SetNeedsDisplay();
+			}
+
 			if (e.PropertyName == CircularProgressBar.ProgressProperty.PropertyName)
 			{
 				Control.Progress = Element.Progress;
@@ -63,17 +64,17 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 			if (e.PropertyName == CircularProgressBar.StrokeWidthProperty.PropertyName)
 			{
-				Control.StrokeWidth = Context.ToPixels(Element.StrokeWidth);
+				Control.StrokeWidth = Element.StrokeWidth;
 			}
 
 			if (e.PropertyName == CircularProgressBar.ProgressColorProperty.PropertyName)
 			{
-				Control.ProgressColor = Element.ProgressColor.ToAndroid();
+				Control.ProgressColor = Element.ProgressColor.ToUIColor();
 			}
 
 			if (e.PropertyName == CircularProgressBar.ProgressBackgroundColorProperty.PropertyName)
 			{
-				Control.ProgressBackgroundColor = Element.ProgressBackgroundColor.ToAndroid();
+				Control.ProgressBackgroundColor = Element.ProgressBackgroundColor.ToUIColor();
 			}
 		}
 	}

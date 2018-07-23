@@ -26,7 +26,7 @@
 							<Label Text="{Binding ProgressText}" StyleClass="Secondary" Margin="0,0,0,8" />
 							<RelativeLayout HorizontalOptions="Center" WidthRequest="100" HeightRequest="100" Margin="0,0,0,16">
 								<ui:CircularProgressBar x:Name="circularProgressBar" ProgressColor="#009688" ProgressBackgroundColor="#80CBC4"
-								StrokeWidth="40"
+								StrokeWidth="16"
 								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
 								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
 								RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"

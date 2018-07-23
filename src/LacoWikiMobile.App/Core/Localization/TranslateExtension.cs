@@ -1,4 +1,9 @@
-﻿namespace LacoWikiMobile.App.Core.Localization
+﻿// <copyright file="TranslateExtension.cs" company="IIASA">
+// Copyright (c) IIASA. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace LacoWikiMobile.App.Core.Localization
 {
 	using System;
 	using System.Collections.Generic;
@@ -39,7 +44,8 @@
 		{
 			// Little workaround to get page object https://forums.xamarin.com/discussion/33678/x-reference-not-working
 			IRootObjectProvider rootObjectProvider = serviceProvider.GetService(typeof(IRootObjectProvider)) as IRootObjectProvider;
-			SimpleValueTargetProvider valueTargetProvider = serviceProvider.GetService(typeof(IProvideValueTarget)) as SimpleValueTargetProvider;
+			SimpleValueTargetProvider valueTargetProvider =
+				serviceProvider.GetService(typeof(IProvideValueTarget)) as SimpleValueTargetProvider;
 
 			// If XamlCompilation is active, IRootObjectProvider is not available, but SimpleValueTargetProvider is available
 			// If XamlCompilation is inactive, IRootObjectProvider is available, but SimpleValueTargetProvider is not available

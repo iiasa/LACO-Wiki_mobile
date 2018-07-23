@@ -2,7 +2,7 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
-	x:Class="LacoWikiMobile.App.Views.AuthenticationPage" Title="{Binding Title}" NavigationPage.HasBackButton="False">
+	x:Class="LacoWikiMobile.App.Views.AuthenticationPage" Title="{Binding Title}" NavigationPage.HasBackButton="True">
 	<ContentPage.Content>
 		<StackLayout Spacing="0">
 			<ContentView StyleClass="Header">

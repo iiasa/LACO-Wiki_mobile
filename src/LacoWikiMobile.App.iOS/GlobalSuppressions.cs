@@ -8,3 +8,9 @@ using System.Diagnostics.CodeAnalysis;
 [assembly:
 	SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter",
 		Justification = "iOS is what we want.", Scope = "namespace", Target = "~N:LacoWikiMobile.App.iOS")]
+[assembly:
+	SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter",
+		Justification = "iOS is what we want.", Scope = "namespace", Target = "~N:LacoWikiMobile.App.iOS.Core")]
+[assembly:
+	SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter",
+		Justification = "iOS is what we want.", Scope = "namespace", Target = "~N:LacoWikiMobile.App.iOS.UserInterface")]

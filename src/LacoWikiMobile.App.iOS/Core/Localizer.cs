@@ -3,11 +3,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace LacoWikiMobile.App.Droid.Core
+namespace LacoWikiMobile.App.iOS.Core
 {
 	using System.Globalization;
 	using System.Threading;
-	using Java.Util;
+	using Foundation;
 	using LacoWikiMobile.App.Core.Localization;
 
 	// See https://docs.microsoft.com/en-us/xamarin/xamarin-forms/app-fundamentals/localization
@@ -22,8 +22,17 @@ namespace LacoWikiMobile.App.Droid.Core
 
 		public CultureInfo GetCurrentCultureInfo()
 		{
-			Locale androidLocale = Locale.Default;
-			string netLanguage = AndroidToDotNetLanguage(androidLocale.ToString().Replace("_", "-"));
+			string netLanguage;
+
+			if (NSLocale.PreferredLanguages.Length > 0)
+			{
+				string preferredLanguage = NSLocale.PreferredLanguages[0];
+				netLanguage = iOSToDotnetLanguage(preferredLanguage);
+			}
+			else
+			{
+				return DefaultCultureInfo;
+			}
 
 			// This gets called a lot - try/catch can be expensive so consider caching or something
 			CultureInfo cultureInfo = null;
@@ -57,21 +66,18 @@ namespace LacoWikiMobile.App.Droid.Core
 			Thread.CurrentThread.CurrentUICulture = cultureInfo;
 		}
 
-		protected string AndroidToDotNetLanguage(string androidLanguage)
+#pragma warning disable SA1300 // Element should begin with upper-case letter
+		protected string iOSToDotnetLanguage(string iOSLanguage)
+#pragma warning restore SA1300 // Element should begin with upper-case letter
 		{
-			string netLanguage = androidLanguage;
+			string netLanguage = iOSLanguage;
 
 			// Certain languages need to be converted to CultureInfo equivalent
-			switch (androidLanguage)
+			switch (iOSLanguage)
 			{
-				case "ms-BN": // "Malaysian (Brunei)" not supported .NET culture
 				case "ms-MY": // "Malaysian (Malaysia)" not supported .NET culture
 				case "ms-SG": // "Malaysian (Singapore)" not supported .NET culture
 					netLanguage = "ms"; // Closest supported
-					break;
-
-				case "in-ID": // "Indonesian (Indonesia)" has different code in  .NET
-					netLanguage = "id-ID"; // Correct code for .NET
 					break;
 
 				case "gsw-CH": // "Schwiizertüütsch (Swiss German)" not supported .NET culture
@@ -92,6 +98,10 @@ namespace LacoWikiMobile.App.Droid.Core
 
 			switch (platformCulture.LanguageCode)
 			{
+				case "pt":
+					netLanguage = "pt-PT"; // Fallback to Portuguese (Portugal)
+					break;
+
 				case "gsw":
 					netLanguage = "de-CH"; // Equivalent to German (Switzerland) for this app
 					break;

@@ -110,7 +110,9 @@ namespace LacoWikiMobile.App.Core
 						return new ResourceManagerStringLocalizerFactory(
 							new OptionsManager<LocalizationOptions>(new OptionsFactory<LocalizationOptions>(
 								new IConfigureOptions<LocalizationOptions>[]
-									{ new ConfigureOptions<LocalizationOptions>(options => options.ResourcesPath = resourcesPath), },
+								{
+									new ConfigureOptions<LocalizationOptions>(options => options.ResourcesPath = resourcesPath),
+								},
 								new IPostConfigureOptions<LocalizationOptions>[] { })), new NullLoggerFactory());
 					}, new SingletonReuse());
 

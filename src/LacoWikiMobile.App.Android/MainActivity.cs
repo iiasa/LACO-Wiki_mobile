@@ -21,8 +21,6 @@ namespace LacoWikiMobile.App.Droid
 		public MainActivity()
 		{
 			Registrar.ExtraAssemblies = new[] { typeof(StyleProperties).Assembly };
-
-			Xamarin.Auth.CustomTabsConfiguration.CustomTabsClosingMessage = null;
 		}
 
 		protected override void OnCreate(Bundle bundle)
@@ -33,8 +31,11 @@ namespace LacoWikiMobile.App.Droid
 			base.OnCreate(bundle);
 
 			Forms.Init(this, bundle);
+
+			Xamarin.Auth.CustomTabsConfiguration.CustomTabsClosingMessage = null;
 			Xamarin.Auth.Presenters.XamarinAndroid.AuthenticationConfiguration.Init(this, bundle);
 			CrossCurrentActivity.Current.Init(this, bundle);
+
 			LoadApplication(new App(new PlatformInitializer()));
 		}
 	}

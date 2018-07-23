@@ -5,7 +5,11 @@
 
 namespace LacoWikiMobile.App.iOS
 {
+	using System;
 	using Foundation;
+	using LacoWikiMobile.App.Core.Api;
+	using Prism;
+	using Prism.Ioc;
 	using UIKit;
 	using Xamarin;
 	using Xamarin.Forms;
@@ -29,10 +33,26 @@ namespace LacoWikiMobile.App.iOS
 #endif
 
 			Forms.Init();
+
+			global::Xamarin.Auth.Presenters.XamarinIOS.AuthenticationConfiguration.Init();
+			UIApplication.SharedApplication.StatusBarHidden = false;
+
 			LoadApplication(new App(new PlatformInitializer()));
 
-			UIApplication.SharedApplication.StatusBarHidden = false;
 			return base.FinishedLaunching(app, options);
+		}
+
+		public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+		{
+			// Convert NSUrl to Uri
+			Uri uri = new Uri(url.AbsoluteString);
+
+			// Load redirectUrl page
+			IApiAuthentication apiAuthentication =
+				((PrismApplicationBase)Xamarin.Forms.Application.Current).Container.Resolve<IApiAuthentication>();
+			apiAuthentication.Authenticator.OnPageLoading(uri);
+
+			return true;
 		}
 	}
 }

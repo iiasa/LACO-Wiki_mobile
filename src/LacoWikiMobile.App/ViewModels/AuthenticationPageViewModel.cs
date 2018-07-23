@@ -13,6 +13,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using Microsoft.Extensions.Localization;
 	using Prism.Commands;
 	using Prism.Navigation;
+	using Xamarin.Forms;
 
 	public class AuthenticationPageViewModel : ViewModelBase
 	{
@@ -24,12 +25,15 @@ namespace LacoWikiMobile.App.ViewModels
 			ApiAuthentication = apiAuthentication;
 			NotificationService = notificationService;
 
-			ApiAuthentication.Authenticated += async (sender, args) =>
+			ApiAuthentication.Authenticated += (sender, args) =>
 			{
-				await NavigationService.GoBackAsync();
+				Device.BeginInvokeOnMainThread(async () =>
+				{
+					await NavigationService.GoBackAsync();
 
-				// TODO: LocalizationService
-				NotificationService.Notify("Login successful");
+					// TODO: LocalizationService
+					NotificationService.Notify("Login successful");
+				});
 			};
 
 			// TODO: LocalizationService
