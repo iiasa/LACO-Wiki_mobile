@@ -28,8 +28,8 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 			await ApiAuthentication.EnsureAuthenticatedAsync();
 
-			int id = await ApiAuthentication.GetUserIdAsync();
-			User user = await Context.Users.SingleAsync(x => x.Id == id);
+			int userId = await ApiAuthentication.GetUserIdAsync();
+			User user = await Context.Users.SingleAsync(x => x.Id == userId);
 
 			validationSession.User = user;
 
@@ -41,15 +41,14 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 			await ApiAuthentication.EnsureAuthenticatedAsync();
 
-			int id = await ApiAuthentication.GetUserIdAsync();
-
-			User user = await Context.Users.SingleOrDefaultAsync(x => x.Id == id);
+			int userId = await ApiAuthentication.GetUserIdAsync();
+			User user = await Context.Users.SingleOrDefaultAsync(x => x.Id == userId);
 
 			if (user == null)
 			{
 				user = new User
 				{
-					Id = id,
+					Id = userId,
 					Name = await ApiAuthentication.GetUserNameAsync(),
 				};
 
@@ -62,10 +61,26 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 			await ApiAuthentication.EnsureAuthenticatedAsync();
 
-			int id = await ApiAuthentication.GetUserIdAsync();
-			User user = await Context.Users.SingleAsync(x => x.Id == id);
+			int userId = await ApiAuthentication.GetUserIdAsync();
+			User user = await Context.Users.SingleAsync(x => x.Id == userId);
 
 			return await Context.ValidationSessions.Where(x => x.User == user).ToListAsync();
+		}
+
+		public async Task RemoveValidationSessionAsync(int id)
+		{
+			await ApiAuthentication.EnsureAuthenticatedAsync();
+
+			int userId = await ApiAuthentication.GetUserIdAsync();
+
+			ValidationSession validationSession =
+				await Context.ValidationSessions.SingleOrDefaultAsync(x => x.User.Id == userId && x.Id == id);
+
+			if (validationSession != null)
+			{
+				Context.ValidationSessions.Remove(validationSession);
+				await Context.SaveChangesAsync();
+			}
 		}
 	}
 }

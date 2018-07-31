@@ -64,7 +64,8 @@ namespace LacoWikiMobile.App.Core
 		{
 			mapperConfigurationExpression.CreateMap<ValidationSession, ViewModels.Main.ItemViewModel>()
 				.ForMember(dest => dest.IsActive, opt => opt.Ignore())
-				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore());
+				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore())
+				.ForMember(dest => dest.IsChecked, opt => opt.Ignore());
 
 			mapperConfigurationExpression.CreateMap<ValidationSession, ViewModels.ValidationSessionOverview.ItemViewModel>()
 				.ForMember(dest => dest.Pinned, opt => opt.Ignore())

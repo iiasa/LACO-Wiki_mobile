@@ -10,6 +10,7 @@ namespace LacoWikiMobile.App.Core.Api
 	using System.Threading.Tasks;
 	using Xamarin.Auth.Presenters;
 	using Xamarin.Essentials;
+	using Xamarin.Forms;
 
 	public class ApiAuthentication : IApiAuthentication
 	{
@@ -134,8 +135,11 @@ namespace LacoWikiMobile.App.Core.Api
 		{
 			Authenticator.AcrValues = $"idp:{provider}";
 
-			OAuthLoginPresenter presenter = new OAuthLoginPresenter();
-			presenter.Login(Authenticator);
+			Helper.RunOnMainThreadIfRequired(() =>
+			{
+				OAuthLoginPresenter presenter = new OAuthLoginPresenter();
+				presenter.Login(Authenticator);
+			});
 		}
 	}
 }

@@ -5,27 +5,22 @@
 
 namespace LacoWikiMobile.App.UserInterface
 {
+	using System;
 	using System.Collections;
-	using System.Collections.Generic;
-	using System.Collections.ObjectModel;
 	using System.Collections.Specialized;
-	using System.Linq;
-	using System.Reflection;
 	using Xamarin.Forms;
 
 	public class RepeaterStackLayout : StackLayout
 	{
-		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable),
-			typeof(RepeaterStackLayout), default(IEnumerable<object>), BindingMode.TwoWay, null, ItemsSourceChanged);
+		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource), typeof(IList),
+			typeof(RepeaterStackLayout), default(IList), BindingMode.TwoWay, null, ItemsSourceChanged);
 
-		public static readonly BindableProperty ItemTemplateProperty =
-			BindableProperty.Create(nameof(ItemTemplate), typeof(DataTemplate), typeof(RepeaterStackLayout), default(DataTemplate));
+		public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create(nameof(ItemTemplate), typeof(DataTemplate),
+			typeof(RepeaterStackLayout), default(DataTemplate));
 
-		private ObservableCollection<object> observableSource;
-
-		public IEnumerable ItemsSource
+		public IList ItemsSource
 		{
-			get => (IEnumerable)GetValue(RepeaterStackLayout.ItemsSourceProperty);
+			get => (IList)GetValue(RepeaterStackLayout.ItemsSourceProperty);
 			set => SetValue(RepeaterStackLayout.ItemsSourceProperty, value);
 		}
 
@@ -33,26 +28,6 @@ namespace LacoWikiMobile.App.UserInterface
 		{
 			get => (DataTemplate)GetValue(RepeaterStackLayout.ItemTemplateProperty);
 			set => SetValue(RepeaterStackLayout.ItemTemplateProperty, value);
-		}
-
-		protected ObservableCollection<object> ObservableSource
-		{
-			get => this.observableSource;
-
-			set
-			{
-				if (this.observableSource != null)
-				{
-					this.observableSource.CollectionChanged -= CollectionChanged;
-				}
-
-				this.observableSource = value;
-
-				if (this.observableSource != null)
-				{
-					this.observableSource.CollectionChanged += CollectionChanged;
-				}
-			}
 		}
 
 		protected virtual View GetItemView(object item)
@@ -77,7 +52,6 @@ namespace LacoWikiMobile.App.UserInterface
 
 			if (ItemsSource == null)
 			{
-				ObservableSource = null;
 				return;
 			}
 
@@ -85,28 +59,49 @@ namespace LacoWikiMobile.App.UserInterface
 			{
 				Children.Add(GetItemView(item));
 			}
-
-			bool isObservable = ItemsSource.GetType().GetTypeInfo().IsGenericType &&
-				(ItemsSource.GetType().GetGenericTypeDefinition() == typeof(ObservableCollection<>));
-
-			if (isObservable)
-			{
-				ObservableSource = new ObservableCollection<object>(ItemsSource.Cast<object>());
-			}
 		}
 
 		private static void ItemsSourceChanged(BindableObject bindable, object value, object newValue)
 		{
-			RepeaterStackLayout itemsLayout = (RepeaterStackLayout)bindable;
-			itemsLayout.SetItems();
+			if (Device.IsInvokeRequired)
+			{
+				throw new NotSupportedException($"Modification of {nameof(ItemsSource)} only allowed in GUI thread.");
+			}
+
+			RepeaterStackLayout repeaterStackLayout = (RepeaterStackLayout)bindable;
+
+			// Detach
+			INotifyCollectionChanged oldItemsSourceNotifyCollectionChanged = value as INotifyCollectionChanged;
+
+			if (oldItemsSourceNotifyCollectionChanged != null)
+			{
+				oldItemsSourceNotifyCollectionChanged.CollectionChanged -= repeaterStackLayout.ItemsSourceOnCollectionChanged;
+			}
+
+			// Attach
+			INotifyCollectionChanged newItemsSourceNotifyCollectionChanged = newValue as INotifyCollectionChanged;
+
+			if (newItemsSourceNotifyCollectionChanged != null)
+			{
+				newItemsSourceNotifyCollectionChanged.CollectionChanged += repeaterStackLayout.ItemsSourceOnCollectionChanged;
+			}
+
+			repeaterStackLayout.SetItems();
 		}
 
-		private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		private void ItemsSourceOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			switch (e.Action)
 			{
 				case NotifyCollectionChangedAction.Add:
 				{
+					// If Action is NotifyCollectionChangedAction.Add, then NewItems contains the items that were added.
+					// In addition, if NewStartingIndex is not -1, then it contains the index where the new items were added.
+					if (e.NewStartingIndex == -1)
+					{
+						throw new NotSupportedException();
+					}
+
 					int index = e.NewStartingIndex;
 
 					foreach (object item in e.NewItems)
@@ -119,31 +114,67 @@ namespace LacoWikiMobile.App.UserInterface
 
 				case NotifyCollectionChangedAction.Move:
 				{
-					object item = ObservableSource[e.OldStartingIndex];
+					// If Action is NotifyCollectionChangedAction.Move, then NewItems and OldItems are logically equivalent
+					// (i.e., they are SequenceEqual, even if they are different instances), and they contain the items that
+					// moved. In addition, OldStartingIndex contains the index where the items were moved from, and NewStartingIndex
+					// contains the index where the items were moved to. A Move operation is logically treated as a Remove followed
+					// by an Add, so NewStartingIndex is interpreted as though the items had already been removed.
+					int index = e.NewStartingIndex;
 
-					Children.RemoveAt(e.OldStartingIndex);
-					Children.Insert(e.NewStartingIndex, GetItemView(item));
+					foreach (object item in e.NewItems)
+					{
+						Children.RemoveAt(e.OldStartingIndex);
+						Children.Insert(index++, GetItemView(item));
+					}
 
 					break;
 				}
 
 				case NotifyCollectionChangedAction.Remove:
 				{
-					Children.RemoveAt(e.OldStartingIndex);
+					// If Action is NotifyCollectionChangedAction.Remove, then OldItems contains the items that were removed.
+					// In addition, if OldStartingIndex is not -1, then it contains the index where the old items were removed.
+					if (e.OldStartingIndex == -1)
+					{
+						throw new NotSupportedException();
+					}
+
+					foreach (object item in e.OldItems)
+					{
+						Children.RemoveAt(e.OldStartingIndex);
+					}
 
 					break;
 				}
 
 				case NotifyCollectionChangedAction.Replace:
 				{
-					Children.RemoveAt(e.OldStartingIndex);
-					Children.Insert(e.NewStartingIndex, GetItemView(ObservableSource[e.NewStartingIndex]));
+					// If Action is NotifyCollectionChangedAction.Replace, then OldItems contains the replaced items and NewItems contains
+					// the replacement items. In addition, NewStartingIndex and OldStartingIndex are equal, and if they are not -1, then
+					// they contain the index where the items were replaced.
+					if (e.NewStartingIndex == -1 || e.OldStartingIndex == -1)
+					{
+						throw new NotSupportedException();
+					}
+
+					foreach (object item in e.OldItems)
+					{
+						Children.RemoveAt(e.OldStartingIndex);
+					}
+
+					int index = e.NewStartingIndex;
+
+					foreach (object item in e.NewItems)
+					{
+						Children.Insert(index++, GetItemView(item));
+					}
 
 					break;
 				}
 
 				case NotifyCollectionChangedAction.Reset:
 				{
+					// If Action is NotifyCollectionChangedAction.Reset, then no other properties are valid.
 					Children.Clear();
 
 					foreach (object item in ItemsSource)

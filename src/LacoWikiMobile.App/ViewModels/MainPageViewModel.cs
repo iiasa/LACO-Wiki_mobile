@@ -33,6 +33,11 @@ namespace LacoWikiMobile.App.ViewModels
 
 			Title = Localizer[nameof(Title)];
 			Instruction = Localizer[nameof(Instruction)];
+
+			Items = new ObservableCollection<ItemViewModel>().OnChildrenPropertyChanged((sender, args) =>
+			{
+				OnPropertyChanged(nameof(Items));
+			});
 		}
 
 		public string Instruction { get; }
@@ -41,37 +46,65 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public bool ShowList => Items.Any();
 
+		public bool ShowSecondaryAction => !ShowPrimaryAction;
+
 		public IApiAuthentication ApiAuthentication { get; set; }
 
 		public IAppDataService AppDataService { get; set; }
 
-		public IEnumerable<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
+		public ICollection<ItemViewModel> Items { get; set; }
+
+		public bool ShowPrimaryAction { get; set; } = true;
 
 		protected IMapper Mapper { get; set; }
 
 		protected override async Task InitializeAsync(INavigationParameters parameters)
 		{
 			await base.InitializeAsync(parameters);
-
-			IEnumerable<ValidationSession> validationSessions = await AppDataService.GetValidationSessionsAsync();
-
-			Items = Mapper.Map<IEnumerable<ItemViewModel>>(validationSessions);
-			Items.ForEach(x => x.ItemTapped += OnItemTapped);
+			await LoadValidationSessionsAsync();
 		}
 
-		protected void OnItemTapped(object sender, EventArgs args)
+		protected void ItemTapped(object sender, EventArgs args)
 		{
 			ItemViewModel itemViewModel = (ItemViewModel)sender;
 
 			NavigationService.NavigateToValidationSessionDetail(itemViewModel.Id, itemViewModel.Name);
 		}
 
-		protected override void PrimaryActionButtonTapped()
+		protected async Task LoadValidationSessionsAsync()
 		{
-			base.PrimaryActionButtonTapped();
+			IEnumerable<ValidationSession> validationSessions = await AppDataService.GetValidationSessionsAsync();
 
-			// TODO: Block Navigation
-			NavigationService.NavigateAsync(nameof(ValidationSessionOverviewPage));
+			Items = new ObservableCollection<ItemViewModel>(Mapper.Map<IEnumerable<ItemViewModel>>(validationSessions)).OnPropertyChanged(
+					(sender, args) =>
+					{
+						OnPropertyChanged(nameof(ShowInstructions));
+						OnPropertyChanged(nameof(ShowList));
+
+						ShowPrimaryAction = !Items.Any(x => x.IsChecked);
+					})
+				.OnChildrenPropertyChanged((sender, args) => { ShowPrimaryAction = !Items.Any(x => x.IsChecked); });
+
+			Items.ForEach(x => { x.ItemTapped += ItemTapped; });
+		}
+
+		protected override async Task PrimaryActionButtonTappedAsync()
+		{
+			await base.PrimaryActionButtonTappedAsync();
+
+			if (ShowPrimaryAction)
+			{
+				// TODO: Block Navigation
+				await NavigationService.NavigateAsync(nameof(ValidationSessionOverviewPage));
+			}
+			else
+			{
+				foreach (ItemViewModel itemViewModel in Items.Where(x => x.IsChecked).ToList())
+				{
+					await AppDataService.RemoveValidationSessionAsync(itemViewModel.Id);
+					Items.Remove(itemViewModel);
+				}
+			}
 		}
 	}
 }

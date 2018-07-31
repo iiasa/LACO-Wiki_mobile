@@ -50,7 +50,7 @@ label.Secondary {
 	padding: 16;
 	corner-radius: 28;
 	has-shadow: true;
-	background-color: #512DA8; /* Secondary Color */
+	background-color: #673AB7; /* Secondary Color */
 }
 
 .ListWithImage {

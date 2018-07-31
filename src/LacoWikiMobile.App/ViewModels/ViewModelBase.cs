@@ -10,6 +10,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using System.Linq;
 	using System.Threading.Tasks;
 	using System.Windows.Input;
+	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Views;
 	using Microsoft.Extensions.Localization;
@@ -24,7 +25,12 @@ namespace LacoWikiMobile.App.ViewModels
 			Localizer = stringLocalizer;
 
 			// TODO: Move to base class, rename to Primary Action Button or similar
-			PrimaryActionButtonTappedCommand = new DelegateCommand(PrimaryActionButtonTapped);
+			PrimaryActionButtonTappedCommand = new DelegateCommand(() =>
+			{
+#pragma warning disable 4014
+				PrimaryActionButtonTappedAsync();
+#pragma warning restore 4014
+			});
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -35,9 +41,9 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public string Title { get; set; }
 
-		protected INavigationService NavigationService { get; set; }
-
 		protected IStringLocalizer Localizer { get; set; }
+
+		protected INavigationService NavigationService { get; set; }
 
 		private bool Initialized { get; set; }
 
@@ -51,54 +57,71 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 		}
 
-		public virtual async void OnNavigatedTo(INavigationParameters parameters)
+		public virtual void OnNavigatedTo(INavigationParameters parameters)
 		{
 			// This method will always be called, fallback for Initialize calls if not called by OnNavigating
 			if (!InitializedOnce)
 			{
-				await RunAndHandleExceptionsAsync(() => InitializeOnceAsync(parameters));
+#pragma warning disable 4014
+				RunAndHandleExceptionsAsync(() => InitializeOnceAsync(parameters));
+#pragma warning restore 4014
+
+				InitializedOnce = true;
 			}
 
 			if (!Initialized)
 			{
-				await RunAndHandleExceptionsAsync(() => InitializeAsync(parameters));
-			}
-
-			if (WasNotAuthenticatedThrown)
-			{
-				await NavigationService.NavigateAsync(nameof(AuthenticationPage));
-			}
-
-			if (WasTokenExpiredThrown)
-			{
-				await NavigationService.NavigateAsync(nameof(AuthenticationPage), new NavigationParameters()
-				{
-					{ "useLastKnownProvider", true },
-				});
+#pragma warning disable 4014
+				RunAndHandleExceptionsAsync(() => InitializeAsync(parameters));
+#pragma warning restore 4014
 			}
 
 			InitializedOnce = true;
 			Initialized = false;
 
+			if (WasNotAuthenticatedThrown)
+			{
+				Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateAsync(nameof(AuthenticationPage)));
+			}
+
+			if (WasTokenExpiredThrown)
+			{
+				Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateAsync(nameof(AuthenticationPage),
+					new NavigationParameters()
+					{
+						{ "useLastKnownProvider", true },
+					}));
+			}
+
 			WasNotAuthenticatedThrown = false;
 			WasTokenExpiredThrown = false;
 		}
 
-		public virtual async void OnNavigatingTo(INavigationParameters parameters)
+		public virtual void OnNavigatingTo(INavigationParameters parameters)
 		{
 			// This method will not be called when using Hardware Buttons, so prefer OnNavigating but fallback for OnNavigated
 			if (!InitializedOnce)
 			{
-				await RunAndHandleExceptionsAsync(() => InitializeOnceAsync(parameters));
+				InitializedOnce = true;
+
+#pragma warning disable 4014
+				RunAndHandleExceptionsAsync(() => InitializeOnceAsync(parameters));
+#pragma warning restore 4014
 			}
 
 			if (!Initialized)
 			{
-				await RunAndHandleExceptionsAsync(() => InitializeAsync(parameters));
-			}
+				Initialized = true;
 
-			Initialized = true;
-			InitializedOnce = true;
+#pragma warning disable 4014
+				RunAndHandleExceptionsAsync(() => InitializeAsync(parameters));
+#pragma warning restore 4014
+			}
+		}
+
+		public virtual void OnPropertyChanged(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		protected virtual Task InitializeAsync(INavigationParameters parameters)
@@ -111,11 +134,14 @@ namespace LacoWikiMobile.App.ViewModels
 			return Task.CompletedTask;
 		}
 
-		protected virtual void PrimaryActionButtonTapped()
+		protected virtual async Task PrimaryActionButtonTappedAsync()
 		{
 			IsPrimaryActionButtonActive = true;
+			await Task.Delay(10);
 
+#pragma warning disable 4014
 			Task.Run(async () =>
+#pragma warning restore 4014
 			{
 				await Task.Delay(250);
 				IsPrimaryActionButtonActive = false;
@@ -153,10 +179,9 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				WasTokenExpiredThrown = true;
 			}
-
-			////catch (Exception e)
-			////{
-			////}
+			catch (Exception e)
+			{
+			}
 		}
 	}
 }

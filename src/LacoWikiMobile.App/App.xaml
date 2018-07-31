@@ -14,6 +14,6 @@
 		<ui:ConditionalConverter x:Key="ConditionalConverter" />
 		<ColorTypeConverter x:Key="ColorTypeConverter" />
 		<ui:ConditionalConverterParameter x:Key="PrimaryActionButtonIsActiveColorConverterParameter"
-			TypeConverter="{StaticResource ColorTypeConverter}" IfTrue="#311B92" IfFalse="#512DA8" />
+			TypeConverter="{StaticResource ColorTypeConverter}" IfTrue="#311B92" IfFalse="#673AB7" />
 	</Application.Resources>
 </prism:PrismApplication>

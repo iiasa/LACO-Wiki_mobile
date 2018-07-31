@@ -3,6 +3,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
 	xmlns:i18n="clr-namespace:LacoWikiMobile.App.Core.Localization;assembly=LacoWikiMobile.App"
+	xmlns:ve="clr-namespace:LacoWikiMobile.App.UserInterface.VisualElementExtensions;assembly=LacoWikiMobile.App"
 	x:Class="LacoWikiMobile.App.Views.MainPage" Title="{Binding Title}">
 	<RelativeLayout>
 		<StackLayout Orientation="Vertical" StyleClass="ListWithImage"
@@ -16,45 +17,61 @@
 			<ContentView StyleClass="SubHeader">
 				<Label Text="{i18n:Translate SubHeader}" />
 			</ContentView>
-			<Label IsVisible="{Binding ShowInstructions}" Margin="16,0,0,0" Text="{Binding Instruction}" StyleClass="Secondary" />
-			<ScrollView IsVisible="{Binding ShowList}">
-				<ui:RepeaterStackLayout ItemsSource="{Binding Items}" StyleClass="List">
-					<ui:RepeaterStackLayout.ItemTemplate>
-						<DataTemplate>
-							<ContentView BackgroundColor="{Binding BackgroundColor}">
-								<ContentView.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
-								</ContentView.GestureRecognizers>
+			<RelativeLayout>
+				<Label ve:Extensions.AnimatedIsVisible="{Binding ShowInstructions}" Margin="16,0,16,0" Text="{Binding Instruction}" StyleClass="Secondary" />
+				<ScrollView ve:Extensions.AnimatedIsVisible="{Binding ShowList}">
+					<ui:RepeaterStackLayout ItemsSource="{Binding Items}" StyleClass="List">
+						<ui:RepeaterStackLayout.ItemTemplate>
+							<DataTemplate>
+								<ContentView BackgroundColor="{Binding BackgroundColor}">
+									<ContentView.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
+									</ContentView.GestureRecognizers>
 
-								<Grid BindingContext="{Binding .}">
-									<Grid.RowDefinitions>
-										<RowDefinition Height="56" />
-									</Grid.RowDefinitions>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="56" />
-										<ColumnDefinition />
-									</Grid.ColumnDefinitions>
+									<Grid BindingContext="{Binding .}">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="56" />
+										</Grid.RowDefinitions>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="56" />
+											<ColumnDefinition />
+											<ColumnDefinition Width="56" />
+										</Grid.ColumnDefinitions>
 
-									<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
-										<Frame>
-											<Image Source="ic_pin_white_24dp" Opacity="{Binding Opacity}" />
-										</Frame>
-									</ContentView>
+										<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+											<Frame>
+												<Image Source="ic_pin_white_24dp" Opacity="{Binding Opacity}" />
+											</Frame>
+										</ContentView>
 
-									<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
-										<Label Margin="0" Text="{Binding Name}" />
-									</ContentView>
-								</Grid>
-							</ContentView>
-						</DataTemplate>
-					</ui:RepeaterStackLayout.ItemTemplate>
-				</ui:RepeaterStackLayout>
-			</ScrollView>
+										<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
+											<Label Margin="0" Text="{Binding Name}" />
+										</ContentView>
+
+										<ContentView Grid.Row="0" Grid.Column="2" Padding="0,0,16,0">
+											<ContentView>
+												<ui:Checkbox HorizontalOptions="End" VerticalOptions="Center" WidthRequest="26" HeightRequest="26" CheckColor="#009688" IsChecked="{Binding IsChecked}">
+													<ui:Checkbox.Margin>
+														<OnPlatform x:TypeArguments="Thickness">
+															<!-- See https://stackoverflow.com/questions/40990664/android-appcompatcheckbox-padding-margin-gravity -->
+															<On Platform="Android" Value="0,0,-1,0" />
+														</OnPlatform>
+													</ui:Checkbox.Margin>
+												</ui:Checkbox>
+											</ContentView>
+										</ContentView>
+									</Grid>
+								</ContentView>
+							</DataTemplate>
+						</ui:RepeaterStackLayout.ItemTemplate>
+					</ui:RepeaterStackLayout>
+				</ScrollView>
+			</RelativeLayout>
 		</StackLayout>
 		<Frame StyleClass="FloatingActionButton"
 			BackgroundColor="{Binding Path=IsPrimaryActionButtonActive,
-				Converter={StaticResource ConditionalConverter},
-				ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
+			Converter={StaticResource ConditionalConverter},
+			ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
 			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
 			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-72}"
 			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
@@ -62,7 +79,20 @@
 			<Frame.GestureRecognizers>
 				<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
 			</Frame.GestureRecognizers>
-			<Image Source="ic_add_white_24dp" />
+			<RelativeLayout>
+				<Image Source="ic_add_white_24dp" Opacity="1"
+					ve:Extensions.AnimatedIsVisible="{Binding ShowPrimaryAction}"
+					RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+					RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+				<Image Source="ic_pin_off_white_24dp" Opacity="0"
+					ve:Extensions.AnimatedIsVisible="{Binding ShowSecondaryAction}"
+					RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+					RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+			</RelativeLayout>
 		</Frame>
 	</RelativeLayout>
 </ContentPage>

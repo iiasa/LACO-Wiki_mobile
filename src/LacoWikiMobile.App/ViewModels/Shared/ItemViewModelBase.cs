@@ -18,15 +18,9 @@ namespace LacoWikiMobile.App.ViewModels.Shared
 		{
 			ItemTappedCommand = new DelegateCommand(() =>
 			{
-				IsActive = true;
-
-				Task.Run(async () =>
-				{
-					await Task.Delay(250);
-					IsActive = false;
-				});
-
-				ItemTapped?.Invoke(this, EventArgs.Empty);
+#pragma warning disable 4014
+				TapItem();
+#pragma warning restore 4014
 			});
 		}
 
@@ -40,5 +34,21 @@ namespace LacoWikiMobile.App.ViewModels.Shared
 		public bool IsActive { get; set; }
 
 		public ICommand ItemTappedCommand { get; set; }
+
+		protected async Task TapItem()
+		{
+			IsActive = true;
+			await Task.Delay(10);
+
+#pragma warning disable 4014
+			Task.Run(async () =>
+#pragma warning restore 4014
+			{
+				await Task.Delay(250);
+				IsActive = false;
+			});
+
+			ItemTapped?.Invoke(this, EventArgs.Empty);
+		}
 	}
 }

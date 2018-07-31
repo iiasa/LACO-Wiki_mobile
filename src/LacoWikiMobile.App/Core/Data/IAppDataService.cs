@@ -16,5 +16,7 @@ namespace LacoWikiMobile.App.Core.Data
 		Task EnsureUserExistsAsync();
 
 		Task<IEnumerable<ValidationSession>> GetValidationSessionsAsync();
+
+		Task RemoveValidationSessionAsync(int id);
 	}
 }

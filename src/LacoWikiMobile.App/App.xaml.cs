@@ -13,6 +13,7 @@ namespace LacoWikiMobile.App
 	using System.Globalization;
 	using System.Linq;
 	using System.Reflection;
+	using DryIoc;
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
@@ -21,6 +22,7 @@ namespace LacoWikiMobile.App
 	using Prism;
 	using Prism.DryIoc;
 	using Prism.Ioc;
+	using Prism.Navigation;
 	using Xamarin.Forms;
 
 	public partial class App : PrismApplication
@@ -62,6 +64,8 @@ namespace LacoWikiMobile.App
 
 		protected override void RegisterTypes(IContainerRegistry containerRegistry)
 		{
+			containerRegistry.GetContainer().Register<INavigationService, NavigationService>(setup: Setup.Decorator);
+
 			containerRegistry.RegisterForNavigation<NavigationPage>();
 
 			// Register all pages

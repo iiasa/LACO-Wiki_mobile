@@ -38,9 +38,9 @@ namespace LacoWikiMobile.App.ViewModels
 
 		protected IMapper Mapper { get; set; }
 
-		protected override async Task InitializeAsync(INavigationParameters parameters)
+		protected override async Task InitializeOnceAsync(INavigationParameters parameters)
 		{
-			await base.InitializeAsync(parameters);
+			await base.InitializeOnceAsync(parameters);
 
 			Title = (string)parameters["name"];
 
@@ -53,13 +53,12 @@ namespace LacoWikiMobile.App.ViewModels
 		}
 
 		// TODO: Disable primary action button until data is loaded
-		protected override void PrimaryActionButtonTapped()
+		protected override async Task PrimaryActionButtonTappedAsync()
 		{
-			base.PrimaryActionButtonTapped();
+			await base.PrimaryActionButtonTappedAsync();
 
-			AppDataService.AddValidationSessionAsync(Mapper.Map<ValidationSessionDetailViewModel, ValidationSession>(ViewModel));
-
-			NavigationService.NavigateAsync($"../../");
+			await AppDataService.AddValidationSessionAsync(Mapper.Map<ValidationSessionDetailViewModel, ValidationSession>(ViewModel));
+			await NavigationService.NavigateAsync($"../../");
 		}
 	}
 }
