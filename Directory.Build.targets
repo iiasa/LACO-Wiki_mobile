@@ -4,7 +4,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="StyleCop.Analyzers">
-			<Version>1.1.0-beta006</Version>
+			<Version>1.1.0-beta008</Version>
 		</PackageReference>
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json">
 		<Link>stylecop.json</Link>

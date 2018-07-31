@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LacoWikiMobile.App.UITest",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{077B2754-9B1A-463B-9A5D-EAA9F86190D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Forms.Android.UITests", "src\Xamarin.Forms.Android.UITests\Xamarin.Forms.Android.UITests.csproj", "{ACD018D2-D65E-4F0B-B214-A5727D3BB1FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Forms.Android.UITests", "src\Xamarin.Forms.Android.UITests\Xamarin.Forms.Android.UITests.csproj", "{ACD018D2-D65E-4F0B-B214-A5727D3BB1FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
