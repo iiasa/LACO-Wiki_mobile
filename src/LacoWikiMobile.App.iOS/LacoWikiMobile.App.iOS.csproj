@@ -109,11 +109,12 @@
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.135-pre" />
     <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.21.5" />
     <PackageReference Include="SaturdayMP.XPlugins.iOS.BEMCheckBox" Version="1.4.3" />
+    <PackageReference Include="TTGSnackbar" Version="1.3.5" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Localizer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Core\NullNotificationService.cs" />
+    <Compile Include="Core\TTGSnackbarNotificationService.cs" />
     <Compile Include="PlatformInitializer.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="AppDelegate.cs" />

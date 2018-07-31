@@ -17,7 +17,7 @@ namespace LacoWikiMobile.App.iOS
 		{
 			// Register any platform specific implementations
 			container.RegisterSingleton<ILocalizer, Localizer>();
-			container.RegisterSingleton<INotificationService, NullNotificationService>();
+			container.RegisterSingleton<INotificationService, TTGSnackbarNotificationService>();
 		}
 	}
 }
