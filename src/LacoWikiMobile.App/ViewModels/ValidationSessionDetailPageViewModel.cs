@@ -12,7 +12,9 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
+	using LacoWikiMobile.App.Views;
 	using Microsoft.Extensions.Localization;
+	using Plugin.Permissions.Abstractions;
 	using Prism.Navigation;
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
@@ -58,8 +60,19 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			await base.PrimaryActionButtonTappedAsync();
 
-			await AppDataService.AddValidationSessionAsync(Mapper.Map<ValidationSessionDetailViewModel, ValidationSession>(ViewModel));
-			await NavigationService.NavigateAsync($"../../");
+			if (await AppDataService.TryGetValidationSessionByIdAsync(ViewModel.Id) == null)
+			{
+				await AppDataService.AddValidationSessionAsync(Mapper.Map<ValidationSessionDetailViewModel, ValidationSession>(ViewModel));
+			}
+
+			await PermissionService.CheckAndRequestPermissionIfRequiredAsync(Permission.Location)
+				.ContinueIfTrueWith(() =>
+				{
+					Helper.RunOnMainThreadIfRequired(() =>
+					{
+						NavigationService.NavigateAsync($"{NavigationService.ToRelativePath(nameof(MainPage))}{nameof(MapPage)}");
+					});
+				});
 		}
 	}
 }

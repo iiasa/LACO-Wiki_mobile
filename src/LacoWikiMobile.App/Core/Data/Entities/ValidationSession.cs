@@ -6,9 +6,11 @@
 namespace LacoWikiMobile.App.Core.Data.Entities
 {
 	using System.ComponentModel.DataAnnotations;
+	using System.ComponentModel.DataAnnotations.Schema;
 
 	public class ValidationSession
 	{
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public int Id { get; set; }
 
 		public string Name { get; set; }

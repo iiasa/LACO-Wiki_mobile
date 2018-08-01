@@ -67,14 +67,19 @@ namespace LacoWikiMobile.App.Core.Data
 			return await Context.ValidationSessions.Where(x => x.User == user).ToListAsync();
 		}
 
-		public async Task RemoveValidationSessionAsync(int id)
+		public async Task<ValidationSession> TryGetValidationSessionByIdAsync(int id)
 		{
 			await ApiAuthentication.EnsureAuthenticatedAsync();
 
 			int userId = await ApiAuthentication.GetUserIdAsync();
+			User user = await Context.Users.SingleAsync(x => x.Id == userId);
 
-			ValidationSession validationSession =
-				await Context.ValidationSessions.SingleOrDefaultAsync(x => x.User.Id == userId && x.Id == id);
+			return await Context.ValidationSessions.SingleOrDefaultAsync(x => x.User == user && x.Id == id);
+		}
+
+		public async Task TryRemoveValidationSessionAsync(int id)
+		{
+			ValidationSession validationSession = await TryGetValidationSessionByIdAsync(id);
 
 			if (validationSession != null)
 			{

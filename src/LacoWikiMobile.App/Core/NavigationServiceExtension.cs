@@ -5,6 +5,7 @@
 
 namespace LacoWikiMobile.App.Core
 {
+	using System.Linq;
 	using LacoWikiMobile.App.Views;
 	using Prism.Navigation;
 
@@ -17,6 +18,12 @@ namespace LacoWikiMobile.App.Core
 				{ "id", id },
 				{ "name", name },
 			});
+		}
+
+		public static string ToRelativePath(this INavigationService navigationService, string pageName)
+		{
+			return string.Concat(Enumerable.Repeat("../",
+				navigationService.GetNavigationUriPath().Split('/').Reverse().ToList().IndexOf(pageName)));
 		}
 	}
 }

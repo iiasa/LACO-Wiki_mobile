@@ -102,7 +102,7 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				foreach (ItemViewModel itemViewModel in Items.Where(x => x.IsChecked).ToList())
 				{
-					await AppDataService.RemoveValidationSessionAsync(itemViewModel.Id);
+					await AppDataService.TryRemoveValidationSessionAsync(itemViewModel.Id);
 					Items.Remove(itemViewModel);
 				}
 			}

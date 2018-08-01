@@ -5,11 +5,8 @@
 
 namespace LacoWikiMobile.App.iOS.Core
 {
-	using System;
 	using LacoWikiMobile.App.Core;
 	using TTGSnackBar;
-	using UIKit;
-	using Xamarin.Forms;
 
 	public class TTGSnackbarNotificationService : INotificationService
 	{
