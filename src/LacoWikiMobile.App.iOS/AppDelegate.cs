@@ -12,6 +12,7 @@ namespace LacoWikiMobile.App.iOS
 	using Prism.Ioc;
 	using UIKit;
 	using Xamarin;
+	using Xamarin.Auth.Presenters.XamarinIOS;
 	using Xamarin.Forms;
 	using Xamarin.Forms.Platform.iOS;
 
@@ -34,8 +35,10 @@ namespace LacoWikiMobile.App.iOS
 
 			Forms.Init();
 
-			global::Xamarin.Auth.Presenters.XamarinIOS.AuthenticationConfiguration.Init();
+			AuthenticationConfiguration.Init();
 			UIApplication.SharedApplication.StatusBarHidden = false;
+
+			FormsMaps.Init();
 
 			LoadApplication(new App(new PlatformInitializer()));
 

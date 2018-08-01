@@ -20,9 +20,9 @@ namespace LacoWikiMobile.App.ViewModels
 
 	public class ValidationSessionOverviewPageViewModel : ViewModelBase
 	{
-		public ValidationSessionOverviewPageViewModel(INavigationService navigationService,
+		public ValidationSessionOverviewPageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<ValidationSessionOverviewPageViewModel> localizer, IApiClient apiClient, IMapper mapper)
-			: base(navigationService, localizer)
+			: base(navigationService, permissionService, localizer)
 		{
 			ApiClient = apiClient;
 			Mapper = mapper;

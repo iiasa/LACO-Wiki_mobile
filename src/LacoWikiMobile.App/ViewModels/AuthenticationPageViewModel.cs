@@ -17,9 +17,10 @@ namespace LacoWikiMobile.App.ViewModels
 
 	public class AuthenticationPageViewModel : ViewModelBase
 	{
-		public AuthenticationPageViewModel(INavigationService navigationService, IStringLocalizer<AuthenticationPageViewModel> localizer,
-			IApiAuthentication apiAuthentication, INotificationService notificationService)
-			: base(navigationService, localizer)
+		public AuthenticationPageViewModel(INavigationService navigationService, IPermissionService permissionService,
+			IStringLocalizer<AuthenticationPageViewModel> localizer, IApiAuthentication apiAuthentication,
+			INotificationService notificationService)
+			: base(navigationService, permissionService, localizer)
 		{
 			NavigationService = navigationService;
 			ApiAuthentication = apiAuthentication;

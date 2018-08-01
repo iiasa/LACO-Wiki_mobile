@@ -82,6 +82,7 @@ namespace LacoWikiMobile.App
 			containerRegistry.RegisterAppDataContext();
 			containerRegistry.RegisterApiAuthentication();
 
+			containerRegistry.RegisterSingleton<IPermissionService, PermissionService>();
 			containerRegistry.RegisterSingleton<IAppDataService, AppDataService>();
 			containerRegistry.Register<IApiClient, ApiClient>();
 		}

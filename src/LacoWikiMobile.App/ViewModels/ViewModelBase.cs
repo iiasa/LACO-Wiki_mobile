@@ -19,9 +19,10 @@ namespace LacoWikiMobile.App.ViewModels
 
 	public class ViewModelBase : INotifyPropertyChanged, INavigatingAware, INavigatedAware
 	{
-		public ViewModelBase(INavigationService navigationService, IStringLocalizer stringLocalizer)
+		public ViewModelBase(INavigationService navigationService, IPermissionService permissionService, IStringLocalizer stringLocalizer)
 		{
 			NavigationService = navigationService;
+			PermissionService = permissionService;
 			Localizer = stringLocalizer;
 
 			// TODO: Move to base class, rename to Primary Action Button or similar
@@ -44,6 +45,8 @@ namespace LacoWikiMobile.App.ViewModels
 		protected IStringLocalizer Localizer { get; set; }
 
 		protected INavigationService NavigationService { get; set; }
+
+		protected IPermissionService PermissionService { get; set; }
 
 		private bool Initialized { get; set; }
 

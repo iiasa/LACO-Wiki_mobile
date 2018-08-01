@@ -7,6 +7,7 @@ namespace LacoWikiMobile.App.ViewModels
 {
 	using System.Threading.Tasks;
 	using AutoMapper;
+	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
@@ -16,10 +17,10 @@ namespace LacoWikiMobile.App.ViewModels
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
 	{
-		public ValidationSessionDetailPageViewModel(INavigationService navigationService,
+		public ValidationSessionDetailPageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<ValidationSessionDetailPageViewModel> localizer, IApiClient apiClient, IAppDataService appDataService,
 			IMapper mapper)
-			: base(navigationService, localizer)
+			: base(navigationService, permissionService, localizer)
 		{
 			ApiClient = apiClient;
 			AppDataService = appDataService;
