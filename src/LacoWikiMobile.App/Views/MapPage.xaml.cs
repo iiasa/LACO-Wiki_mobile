@@ -6,8 +6,9 @@
 namespace LacoWikiMobile.App.Views
 {
 	using Xamarin.Forms;
+	using Xamarin.Forms.Xaml;
 
-	//[XamlCompilation(XamlCompilationOptions.Compile)]
+	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MapPage : ContentPage
 	{
 		public MapPage()

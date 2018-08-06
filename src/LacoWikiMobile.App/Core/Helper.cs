@@ -21,5 +21,13 @@ namespace LacoWikiMobile.App.Core
 				Device.BeginInvokeOnMainThread(action);
 			}
 		}
+
+		public static void EnsureOnMainThread()
+		{
+			if (Device.IsInvokeRequired)
+			{
+				throw new InvalidOperationException("Not on main thread.");
+			}
+		}
 	}
 }
