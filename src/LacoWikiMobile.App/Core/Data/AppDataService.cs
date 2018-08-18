@@ -12,6 +12,7 @@ namespace LacoWikiMobile.App.Core.Data
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using Microsoft.EntityFrameworkCore;
 
+	// TODO: Add thread safety
 	public class AppDataService : IAppDataService
 	{
 		public AppDataService(IApiAuthentication apiAuthentication, IAppDataContext context)
@@ -34,7 +35,17 @@ namespace LacoWikiMobile.App.Core.Data
 			validationSession.User = user;
 
 			await Context.ValidationSessions.AddAsync(validationSession);
-			await Context.SaveChangesAsync();
+			await SaveChangesAsync();
+		}
+
+		public void DisableDetectChanges()
+		{
+			Context.DisableDetectChanges();
+		}
+
+		public void EnableDetectChanges()
+		{
+			Context.EnableDetectChanges();
 		}
 
 		public async Task EnsureUserExistsAsync()
@@ -53,8 +64,35 @@ namespace LacoWikiMobile.App.Core.Data
 				};
 
 				await Context.Users.AddAsync(user);
-				await Context.SaveChangesAsync();
+				await SaveChangesAsync();
 			}
+		}
+
+		public async Task<LegendItem> GetLegendItemByIdAsync(int id, int validationSessionId)
+		{
+			await ApiAuthentication.EnsureAuthenticatedAsync();
+
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+			return await Context.LegendItems.SingleAsync(x => x.Id == id && x.ValidationSession == validationSession);
+		}
+
+		public async Task<SampleItem> GetSampleItemByIdAsync(int id, int validationSessionId)
+		{
+			await ApiAuthentication.EnsureAuthenticatedAsync();
+
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+
+			return await Context.SampleItems.SingleAsync(x => x.Id == id && x.ValidationSession == validationSession);
+		}
+
+		public async Task<ValidationSession> GetValidationSessionByIdAsync(int id)
+		{
+			await ApiAuthentication.EnsureAuthenticatedAsync();
+
+			int userId = await ApiAuthentication.GetUserIdAsync();
+			User user = await Context.Users.SingleAsync(x => x.Id == userId);
+
+			return await Context.ValidationSessions.SingleAsync(x => x.User == user && x.Id == id);
 		}
 
 		public async Task<IEnumerable<ValidationSession>> GetValidationSessionsAsync()
@@ -65,6 +103,11 @@ namespace LacoWikiMobile.App.Core.Data
 			User user = await Context.Users.SingleAsync(x => x.Id == userId);
 
 			return await Context.ValidationSessions.Where(x => x.User == user).ToListAsync();
+		}
+
+		public Task SaveChangesAsync()
+		{
+			return Context.SaveChangesAsync();
 		}
 
 		public async Task<ValidationSession> TryGetValidationSessionByIdAsync(int id)
@@ -84,7 +127,7 @@ namespace LacoWikiMobile.App.Core.Data
 			if (validationSession != null)
 			{
 				Context.ValidationSessions.Remove(validationSession);
-				await Context.SaveChangesAsync();
+				await SaveChangesAsync();
 			}
 		}
 	}

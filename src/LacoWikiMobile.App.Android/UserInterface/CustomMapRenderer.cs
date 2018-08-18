@@ -11,6 +11,7 @@ using Xamarin.Forms;
 
 namespace LacoWikiMobile.App.Droid.UserInterface
 {
+	using System;
 	using System.ComponentModel;
 	using Android.Content;
 	using Android.Gms.Maps;
@@ -36,8 +37,10 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		{
 			if (disposing)
 			{
-				PointHandler.GoogleMap = null;
 				PointHandler.Points = null;
+				PointHandler.Map = null;
+				PointHandler.OnMapClicked -= OnMapClicked;
+				PointHandler = null;
 			}
 
 			base.Dispose(disposing);
@@ -50,12 +53,12 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			if (e.OldElement != null)
 			{
 				// Unsubscribe from event handlers and cleanup any resources
+				// TODO: Copy Dispose logic?
 			}
 
 			if (e.NewElement != null)
 			{
 				// Configure the control and subscribe to event handlers
-				CustomMap formsMap = (CustomMap)e.NewElement;
 				Control.GetMapAsync(this);
 			}
 
@@ -78,16 +81,14 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			}
 		}
 
+		protected void OnMapClicked(object sender, EventArgs e)
+		{
+			CustomMap.MapClickCommand?.Execute(null);
+		}
+
 		protected override void OnMapReady(GoogleMap map)
 		{
 			base.OnMapReady(map);
-
-			if (IsInitialized)
-			{
-				return;
-			}
-
-			IsInitialized = true;
 
 			// Disable the zoom-in and zoom-out buttons in any case
 			map.UiSettings.ZoomControlsEnabled = false;
@@ -97,11 +98,20 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 			map.MapType = GoogleMap.MapTypeTerrain;
 
+			if (IsInitialized)
+			{
+				return;
+			}
+
+			IsInitialized = true;
+
 			PointHandler = new PointHandler()
 			{
-				GoogleMap = map,
+				Map = map,
 				Points = CustomMap.Points,
 			};
+
+			PointHandler.OnMapClicked += OnMapClicked;
 		}
 	}
 }

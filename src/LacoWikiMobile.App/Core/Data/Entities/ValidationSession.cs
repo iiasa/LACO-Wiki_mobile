@@ -5,17 +5,69 @@
 
 namespace LacoWikiMobile.App.Core.Data.Entities
 {
+	using System.Collections.Generic;
 	using System.ComponentModel.DataAnnotations;
 	using System.ComponentModel.DataAnnotations.Schema;
+	using Microsoft.EntityFrameworkCore.Infrastructure;
 
 	public class ValidationSession
 	{
+		private ICollection<LegendItem> legendItems = new List<LegendItem>();
+
+		private ICollection<SampleItem> sampleItems = new List<SampleItem>();
+
+		private User user;
+
+		public ValidationSession()
+		{
+		}
+
+		private ValidationSession(ILazyLoader lazyLoader)
+		{
+			LazyLoader = lazyLoader;
+		}
+
+		public string AssociatedDataSetName { get; set; }
+
+		public string AssociatedSampleName { get; set; }
+
+		public string Description { get; set; }
+
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
-		public int Id { get; set; }
+		public int Id
+		{
+			get;
+			set;
+		}
+
+		public ICollection<LegendItem> LegendItems
+		{
+			get => LazyLoader.Load(this, ref this.legendItems);
+			set => this.legendItems = value;
+		}
 
 		public string Name { get; set; }
 
+		public int ProgressSamplesTotal { get; set; }
+
+		public int ProgressSamplesValidated { get; set; }
+
+		public ICollection<SampleItem> SampleItems
+		{
+			get => LazyLoader.Load(this, ref this.sampleItems);
+			set => this.sampleItems = value;
+		}
+
 		[Required]
-		public User User { get; set; }
+		public User User
+		{
+			get => LazyLoader.Load(this, ref this.user);
+			set => this.user = value;
+		}
+
+		// TODO: Use ValidationMethod enum and LocalizationService
+		public string ValidationMethodName { get; set; }
+
+		private ILazyLoader LazyLoader { get; set; }
 	}
 }

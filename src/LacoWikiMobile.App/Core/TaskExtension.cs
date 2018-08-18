@@ -10,14 +10,56 @@ namespace LacoWikiMobile.App.Core
 
 	public static class TaskExtension
 	{
-		public static Task ContinueIfTrueWith(this Task<bool> task, Action nextTask)
+		public static Task ContinueIfTrueWith(this Task<bool> task, Action continuationAction)
 		{
 			return task.ContinueWith((result) =>
 			{
 				if (result.Result)
 				{
-					nextTask();
+					continuationAction();
 				}
+
+				return Task.CompletedTask;
+			});
+		}
+
+		public static Task ContinueIfTrueWith(this Task<bool> task, Func<Task> continuationAction)
+		{
+			return task.ContinueWith((result) =>
+			{
+				if (result.Result)
+				{
+					return continuationAction();
+				}
+
+				return Task.CompletedTask;
+			});
+		}
+
+		public static Task<bool> ContinueIfTrueWith(this Task<bool> task, Func<Task<bool>> continuationFunction)
+		{
+			return task.ContinueWith((result) =>
+				{
+					if (result.Result)
+					{
+						return continuationFunction();
+					}
+
+					return Task.FromResult(false);
+				})
+				.Unwrap();
+		}
+
+		public static Task<bool> ContinueIfTrueWith(this Task<bool> task, Func<bool> continuationFunction)
+		{
+			return task.ContinueWith((result) =>
+			{
+				if (result.Result)
+				{
+					return continuationFunction();
+				}
+
+				return false;
 			});
 		}
 	}

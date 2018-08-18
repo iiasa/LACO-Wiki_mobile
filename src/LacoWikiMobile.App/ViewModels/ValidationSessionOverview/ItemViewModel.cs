@@ -9,7 +9,8 @@ namespace LacoWikiMobile.App.ViewModels.ValidationSessionOverview
 
 	public class ItemViewModel : ItemViewModelBase
 	{
-		// Move Opacity to Xaml (ConditionalConverter)
+		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
+		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
 		public double Opacity => Pinned ? 1 : 0.3;
 
 		public int Id { get; set; }

@@ -5,6 +5,8 @@
 
 namespace LacoWikiMobile.App.UserInterface.VisualElementExtensions
 {
+	using System;
+	using LacoWikiMobile.App.Core.Sensor;
 	using Xamarin.Forms;
 
 	// See https://www.jimbobbennett.io/animating-xamarin-forms-progress-bars/
@@ -12,13 +14,23 @@ namespace LacoWikiMobile.App.UserInterface.VisualElementExtensions
 	{
 		public static readonly BindableProperty AnimatedIsVisibleProperty = BindableProperty.CreateAttached("AnimatedIsVisible",
 			typeof(bool), typeof(VisualElement), true, BindingMode.OneWay,
-			propertyChanged: (b, o, n) => { DoAnimation((VisualElement)b, (bool)n); });
+			propertyChanged: (b, o, n) => { DoIsVisibleAnimation((VisualElement)b, (bool)n); });
 
 		public static readonly BindableProperty AnimatedIsVisibleAnimationEasingProperty =
 			BindableProperty.Create("AnimatedIsVisibleAnimationEasing", typeof(string), typeof(VisualElement), default(string));
 
 		public static readonly BindableProperty AnimatedIsVisibleAnimationLengthProperty =
 			BindableProperty.Create("AnimatedIsVisibleAnimationLength", typeof(uint), typeof(VisualElement), 250U);
+
+		public static readonly BindableProperty AnimatedRotationProperty = BindableProperty.CreateAttached("AnimatedRotation",
+			typeof(double), typeof(VisualElement), default(double), BindingMode.OneWay,
+			propertyChanged: (b, o, n) => { DoRotationAnimation((VisualElement)b, (double)o, (double)n); });
+
+		public static readonly BindableProperty AnimatedRotationAnimationEasingProperty =
+			BindableProperty.Create("AnimatedRotationAnimationEasing", typeof(string), typeof(VisualElement), default(string));
+
+		public static readonly BindableProperty AnimatedRotationAnimationLengthProperty =
+			BindableProperty.Create("AnimatedRotationAnimationLength", typeof(uint), typeof(VisualElement), 250U);
 
 		public static bool GetAnimatedIsVisible(BindableObject view)
 		{
@@ -33,6 +45,21 @@ namespace LacoWikiMobile.App.UserInterface.VisualElementExtensions
 		public static uint GetAnimatedIsVisibleAnimationLength(BindableObject view)
 		{
 			return (uint)view.GetValue(Extensions.AnimatedIsVisibleAnimationLengthProperty);
+		}
+
+		public static double GetAnimatedRotation(BindableObject view)
+		{
+			return (double)view.GetValue(Extensions.AnimatedRotationProperty);
+		}
+
+		public static string GetAnimatedRotationAnimationEasing(BindableObject view)
+		{
+			return (string)view.GetValue(Extensions.AnimatedRotationAnimationEasingProperty);
+		}
+
+		public static uint GetAnimatedRotationAnimationLength(BindableObject view)
+		{
+			return (uint)view.GetValue(Extensions.AnimatedRotationAnimationLengthProperty);
 		}
 
 		public static void SetAnimatedIsVisible(BindableObject view, bool value)
@@ -50,7 +77,22 @@ namespace LacoWikiMobile.App.UserInterface.VisualElementExtensions
 			view.SetValue(Extensions.AnimatedIsVisibleAnimationLengthProperty, value);
 		}
 
-		private static void DoAnimation(VisualElement view, bool isVisible)
+		public static void SetAnimatedRotation(BindableObject view, double value)
+		{
+			view.SetValue(Extensions.AnimatedRotationProperty, value);
+		}
+
+		public static void SetAnimatedRotationAnimationEasing(BindableObject view, string value)
+		{
+			view.SetValue(Extensions.AnimatedRotationAnimationEasingProperty, value);
+		}
+
+		public static void SetAnimatedRotationAnimationLength(BindableObject view, uint value)
+		{
+			view.SetValue(Extensions.AnimatedRotationAnimationLengthProperty, value);
+		}
+
+		private static void DoIsVisibleAnimation(VisualElement view, bool isVisible)
 		{
 			ViewExtensions.CancelAnimations(view);
 
@@ -59,6 +101,22 @@ namespace LacoWikiMobile.App.UserInterface.VisualElementExtensions
 				: null;
 
 			view.FadeTo(isVisible ? 1 : 0, GetAnimatedIsVisibleAnimationLength(view), easing);
+		}
+
+		private static void DoRotationAnimation(VisualElement view, double oldRotation, double newRotation)
+		{
+			ViewExtensions.CancelAnimations(view);
+
+			Easing easing = !string.IsNullOrEmpty(GetAnimatedRotationAnimationEasing(view))
+				? GetAnimatedRotationAnimationEasing(view).ToEasing()
+				: null;
+
+			double differenceViewToNew = view.Rotation.Normalize().DifferenceTo(newRotation);
+
+			uint length = (uint)Math.Min(GetAnimatedRotationAnimationLength(view),
+				Math.Max(50, GetAnimatedRotationAnimationLength(view) * (180 / differenceViewToNew)));
+
+			view.RotateTo(view.Rotation - differenceViewToNew, length, easing);
 		}
 	}
 }

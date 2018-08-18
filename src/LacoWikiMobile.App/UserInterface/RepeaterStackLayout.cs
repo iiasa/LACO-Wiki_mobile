@@ -8,6 +8,7 @@ namespace LacoWikiMobile.App.UserInterface
 	using System;
 	using System.Collections;
 	using System.Collections.Specialized;
+	using System.Linq;
 	using Xamarin.Forms;
 
 	public class RepeaterStackLayout : StackLayout
@@ -55,7 +56,8 @@ namespace LacoWikiMobile.App.UserInterface
 				return;
 			}
 
-			foreach (object item in ItemsSource)
+			// Clone to avoid exceptions when ItemSource gets modified while iterating
+			foreach (object item in ItemsSource.Cast<object>().ToList())
 			{
 				Children.Add(GetItemView(item));
 			}

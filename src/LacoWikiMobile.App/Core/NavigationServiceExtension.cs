@@ -6,14 +6,26 @@
 namespace LacoWikiMobile.App.Core
 {
 	using System.Linq;
+	using System.Threading.Tasks;
 	using LacoWikiMobile.App.Views;
 	using Prism.Navigation;
 
 	public static class NavigationServiceExtension
 	{
-		public static void NavigateToValidationSessionDetail(this INavigationService navigationService, int id, string name)
+		public static Task<INavigationResult> NavigateToMapAsync(this INavigationService navigationService, int id, string name)
 		{
-			navigationService.NavigateAsync(nameof(ValidationSessionDetailPage), new NavigationParameters()
+			return navigationService.NavigateAsync($"{navigationService.ToRelativePath(nameof(MainPage))}{nameof(MapPage)}",
+				new NavigationParameters()
+				{
+					{ "id", id },
+					{ "name", name },
+				});
+		}
+
+		public static Task<INavigationResult> NavigateToValidationSessionDetailAsync(this INavigationService navigationService, int id,
+			string name)
+		{
+			return navigationService.NavigateAsync(nameof(ValidationSessionDetailPage), new NavigationParameters()
 			{
 				{ "id", id },
 				{ "name", name },

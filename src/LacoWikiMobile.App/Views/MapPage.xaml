@@ -3,14 +3,53 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
 	xmlns:customMap="clr-namespace:LacoWikiMobile.App.UserInterface.CustomMap;assembly=LacoWikiMobile.App"
-	x:Class="LacoWikiMobile.App.Views.MapPage">
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
+	xmlns:ve="clr-namespace:LacoWikiMobile.App.UserInterface.VisualElementExtensions;assembly=LacoWikiMobile.App"
+	x:Class="LacoWikiMobile.App.Views.MapPage" Title="{Binding Title}">
 	<ContentPage.Content>
-		<StackLayout>
-			<customMap:CustomMap WidthRequest="320" HeightRequest="200" Points="{Binding Points}"
-				x:Name="MyMap"
-				IsShowingUser="true"
-				MapType="Hybrid"
-			/>
-		</StackLayout>
+		<RelativeLayout>
+			<customMap:CustomMap StyleClass="Map" Points="{Binding ValidationPointsViewModel.Points}" MapClickCommand="{Binding MapClickCommand}" x:Name="MyMap"
+				IsShowingUser="true" MapType="Hybrid"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-52}" />
+
+			<RelativeLayout BackgroundColor="{Binding NavigationPaneBackgroundColor}"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-52}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=52}">
+				<ui:AutoFontSizedLabel Text="{Binding NavigationText}" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+					RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=52}"
+					RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=8}"
+					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-104}"
+					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-16}" />
+				<Image Source="ic_navigation_white_36dp" ve:Extensions.AnimatedRotation="{Binding NavigationDirection}" IsVisible="{Binding ShowNavigationDirection}" Margin="8"
+					RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-60}"
+					RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=52}"
+					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=52}" />
+			</RelativeLayout>
+
+			<Frame StyleClass="FloatingActionButton"
+			BackgroundColor="{Binding PrimaryActionButtonBackgroundColor}"
+			IsVisible="{Binding ShowPrimaryActionButton}"
+			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-124}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
+				<Frame.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
+				</Frame.GestureRecognizers>
+				<RelativeLayout>
+					<Image Source="ic_check_white_24dp"
+					RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+					RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+				</RelativeLayout>
+			</Frame>
+		</RelativeLayout>
 	</ContentPage.Content>
 </ContentPage>

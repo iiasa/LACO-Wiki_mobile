@@ -13,6 +13,8 @@ namespace LacoWikiMobile.App.Core.Api
 	{
 		Task<ValidationSessionDetailModel> GetValidationSessionByIdAsync(int id);
 
+		Task<IEnumerable<SampleItemModel>> GetValidationSessionSampleItemsByIdAsync(int id);
+
 		Task<IEnumerable<ValidationSessionModel>> GetValidationSessionsAsync();
 	}
 }

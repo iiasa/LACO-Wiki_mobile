@@ -12,7 +12,6 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
-	using LacoWikiMobile.App.Views;
 	using Microsoft.Extensions.Localization;
 	using Plugin.Permissions.Abstractions;
 	using Prism.Navigation;
@@ -41,24 +40,12 @@ namespace LacoWikiMobile.App.ViewModels
 
 		protected IMapper Mapper { get; set; }
 
-		protected override async Task InitializeOnceAsync(INavigationParameters parameters)
-		{
-			await base.InitializeOnceAsync(parameters);
-
-			Title = (string)parameters["name"];
-
-			await ApiClient.GetValidationSessionByIdAsync((int)parameters["id"])
-				.ContinueWith(result =>
-				{
-					ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(result.Result);
-					ShowLoading = false;
-				});
-		}
+		protected int ValidationSessionId { get; set; }
 
 		// TODO: Disable primary action button until data is loaded
-		protected override async Task PrimaryActionButtonTappedAsync()
+		protected override async Task ExecutePrimaryActionAsync()
 		{
-			await base.PrimaryActionButtonTappedAsync();
+			await base.ExecutePrimaryActionAsync();
 
 			if (await AppDataService.TryGetValidationSessionByIdAsync(ViewModel.Id) == null)
 			{
@@ -68,10 +55,53 @@ namespace LacoWikiMobile.App.ViewModels
 			await PermissionService.CheckAndRequestPermissionIfRequiredAsync(Permission.Location)
 				.ContinueIfTrueWith(() =>
 				{
-					Helper.RunOnMainThreadIfRequired(() =>
+					Helper.RunOnMainThreadIfRequired(() => { NavigationService.NavigateToMapAsync(ViewModel.Id, ViewModel.Name); });
+				});
+		}
+
+		protected override async Task InitializeAsync(INavigationParameters parameters)
+		{
+			await base.InitializeAsync(parameters);
+
+			// Could be null if InitializeOnceAsync redirects to AuthenticationPage
+			if (ViewModel == null)
+			{
+				await LoadValidationSessionAsync();
+			}
+		}
+
+		protected override async Task InitializeOnceAsync(INavigationParameters parameters)
+		{
+			await base.InitializeOnceAsync(parameters);
+
+			Title = (string)parameters["name"];
+			ValidationSessionId = (int)parameters["id"];
+
+			ValidationSession validationSession = await AppDataService.TryGetValidationSessionByIdAsync((int)parameters["id"]);
+
+			if (validationSession != null)
+			{
+				ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(validationSession);
+				ShowLoading = false;
+			}
+
+			await LoadValidationSessionAsync();
+		}
+
+		protected async Task LoadValidationSessionAsync()
+		{
+			await ApiClient.GetValidationSessionByIdAsync(ValidationSessionId)
+				.ContinueWith(result =>
+				{
+					if (ViewModel == null)
 					{
-						NavigationService.NavigateAsync($"{NavigationService.ToRelativePath(nameof(MainPage))}{nameof(MapPage)}");
-					});
+						ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(result.Result);
+						ShowLoading = false;
+					}
+					else
+					{
+						Mapper.Map(result.Result, ViewModel);
+					}
 				});
 		}
 	}

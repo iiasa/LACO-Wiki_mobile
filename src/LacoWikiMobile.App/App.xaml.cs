@@ -18,7 +18,10 @@ namespace LacoWikiMobile.App
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Localization;
+	using LacoWikiMobile.App.Core.Sensor;
 	using LacoWikiMobile.App.Views;
+	using Plugin.Geolocator;
+	using Plugin.Geolocator.Abstractions;
 	using Prism;
 	using Prism.DryIoc;
 	using Prism.Ioc;
@@ -83,7 +86,11 @@ namespace LacoWikiMobile.App
 			containerRegistry.RegisterApiAuthentication();
 
 			containerRegistry.RegisterSingleton<IPermissionService, PermissionService>();
-			containerRegistry.RegisterSingleton<IAppDataService, AppDataService>();
+
+			containerRegistry.GetContainer().Register<IGeolocator>(made: Made.Of(() => CrossGeolocator.Current));
+			containerRegistry.RegisterSingleton<ISensorService, SensorService>();
+
+			containerRegistry.Register<IAppDataService, AppDataService>();
 			containerRegistry.Register<IApiClient, ApiClient>();
 		}
 	}

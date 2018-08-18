@@ -16,6 +16,10 @@ namespace LacoWikiMobile.App.Core.Data
 
 		DbSet<ValidationSession> ValidationSessions { get; }
 
+		DbSet<LegendItem> LegendItems { get; set; }
+
+		DbSet<SampleItem> SampleItems { get; set; }
+
 		int SaveChanges();
 
 		int SaveChanges(bool acceptAllChangesOnSuccess);
@@ -23,5 +27,9 @@ namespace LacoWikiMobile.App.Core.Data
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 
 		Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken));
+
+		void DisableDetectChanges();
+
+		void EnableDetectChanges();
 	}
 }

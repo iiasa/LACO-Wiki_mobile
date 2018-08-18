@@ -61,7 +61,7 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			ItemViewModel itemViewModel = (ItemViewModel)sender;
 
-			NavigationService.NavigateToValidationSessionDetail(itemViewModel.Id, itemViewModel.Name);
+			NavigationService.NavigateToValidationSessionDetailAsync(itemViewModel.Id, itemViewModel.Name);
 		}
 	}
 }

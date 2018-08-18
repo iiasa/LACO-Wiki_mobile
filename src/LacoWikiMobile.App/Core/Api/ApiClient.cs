@@ -37,6 +37,13 @@ namespace LacoWikiMobile.App.Core.Api
 			}
 		}
 
+		public async Task<IEnumerable<SampleItemModel>> GetValidationSessionSampleItemsByIdAsync(int id)
+		{
+			return await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
+				.AppendPathSegment($"validationsessions/{id}/sampleitems")
+				.GetJsonAsync<IEnumerable<SampleItemModel>>();
+		}
+
 		public async Task<IEnumerable<ValidationSessionModel>> GetValidationSessionsAsync()
 		{
 			try

@@ -8,6 +8,7 @@ namespace LacoWikiMobile.App.Core.Data
 	using System;
 	using System.IO;
 	using Microsoft.EntityFrameworkCore;
+	using Xamarin.Forms;
 
 	public static class DbContextOptionsBuilderExtension
 	{
@@ -19,12 +20,12 @@ namespace LacoWikiMobile.App.Core.Data
 
 		private static string GetPlatformFolder()
 		{
-			switch (Xamarin.Forms.Device.RuntimePlatform)
+			switch (Device.RuntimePlatform)
 			{
-				case Xamarin.Forms.Device.iOS:
+				case Device.iOS:
 					return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library");
 
-				case Xamarin.Forms.Device.Android:
+				case Device.Android:
 					return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
 				default:

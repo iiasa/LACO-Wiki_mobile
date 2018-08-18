@@ -5,8 +5,10 @@
 
 namespace LacoWikiMobile.App.Core
 {
+	using System;
 	using AutoMapper;
 	using AutoMapper.Configuration;
+	using AutoMapper.EquivalencyExpression;
 	using DryIoc;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
@@ -76,10 +78,11 @@ namespace LacoWikiMobile.App.Core
 
 		public static void RegisterAutoMapper(this IContainerRegistry containerRegistry, IContainerProvider containerProvider)
 		{
-			containerRegistry.Register<MapperConfigurationExpression, MapperConfigurationExpression>();
+			containerRegistry.Register<IMapperConfigurationExpression, MapperConfigurationExpression>();
 			containerRegistry.GetContainer()
 				.RegisterInitializer<IMapperConfigurationExpression>((expression, resolver) =>
 				{
+					expression.AddCollectionMappers();
 					expression.Configure(containerProvider);
 				});
 
@@ -87,13 +90,15 @@ namespace LacoWikiMobile.App.Core
 			containerRegistry.GetContainer()
 				.RegisterInitializer<IConfigurationProvider>((provider, resolver) =>
 				{
-					////try
-					////{
-					provider.AssertConfigurationIsValid();
-					////}
-					////catch (Exception e)
-					////{
-					////}
+					try
+					{
+						provider.AssertConfigurationIsValid();
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine(e.ToString());
+						throw;
+					}
 				});
 
 			containerRegistry.GetContainer()

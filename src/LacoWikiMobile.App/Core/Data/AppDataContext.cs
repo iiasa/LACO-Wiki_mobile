@@ -5,11 +5,8 @@
 
 namespace LacoWikiMobile.App.Core.Data
 {
-	using System.Linq;
-	using System.Text.RegularExpressions;
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using Microsoft.EntityFrameworkCore;
-	using Microsoft.EntityFrameworkCore.Metadata;
 
 	public class AppDataContext : DbContext, IAppDataContext
 	{
@@ -18,35 +15,40 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 		}
 
+		public DbSet<LegendItem> LegendItems { get; set; }
+
+		public DbSet<SampleItem> SampleItems { get; set; }
+
 		public DbSet<User> Users { get; set; }
 
 		public DbSet<ValidationSession> ValidationSessions { get; set; }
+
+		public void DisableDetectChanges()
+		{
+			ChangeTracker.AutoDetectChangesEnabled = false;
+		}
+
+		public void EnableDetectChanges()
+		{
+			ChangeTracker.AutoDetectChangesEnabled = true;
+			ChangeTracker.DetectChanges();
+		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
 
-			// Formatting the table and attribute names in sqlite (snake_case)
-			foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
-			{
-				Regex underscoreRegex = new Regex(@"(?<=.)([A-Z])");
+			modelBuilder.Entity<ValidationSession>().Property<int>($"{nameof(ValidationSession.User)}Id");
 
-				entity.Relational().TableName = underscoreRegex.Replace(entity.Relational().TableName, @"_$0").ToLower();
+			modelBuilder.Entity<ValidationSession>().HasKey(nameof(ValidationSession.Id), $"{nameof(ValidationSession.User)}Id");
 
-				entity.GetProperties()
-					.ToList()
-					.ForEach(x => x.Relational().ColumnName = underscoreRegex.Replace(x.Relational().ColumnName, @"_$0").ToLower());
+			modelBuilder.Entity<LegendItem>()
+				.HasKey(nameof(LegendItem.Id), $"{nameof(LegendItem.ValidationSession)}Id",
+					$"{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}Id");
 
-				if (entity.FindPrimaryKey() != null)
-				{
-					entity.FindPrimaryKey().Relational().Name = entity.FindPrimaryKey().Relational().Name.ToLower();
-				}
-
-				entity.GetForeignKeys().ToList().ForEach(x => x.Relational().Name = x.Relational().Name.ToLower());
-				entity.GetIndexes().ToList().ForEach(x => x.Relational().Name = x.Relational().Name.ToLower());
-			}
-
-			modelBuilder.Entity<ValidationSession>().Property(x => x.Id).ValueGeneratedNever();
+			modelBuilder.Entity<SampleItem>()
+				.HasKey(nameof(LegendItem.Id), $"{nameof(LegendItem.ValidationSession)}Id",
+					$"{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}Id");
 		}
 	}
 }

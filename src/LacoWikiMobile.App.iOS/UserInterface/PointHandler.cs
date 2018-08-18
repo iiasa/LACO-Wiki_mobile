@@ -3,23 +3,26 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace LacoWikiMobile.App.Droid.UserInterface
+namespace LacoWikiMobile.App.iOS.UserInterface
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Collections.Specialized;
 	using System.ComponentModel;
 	using System.Linq;
-	using Android.Gms.Maps;
-	using Android.Gms.Maps.Model;
+	using CoreGraphics;
+	using CoreLocation;
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
+	using MapKit;
+	using ObjCRuntime;
+	using UIKit;
 	using Xamarin.Forms;
-	using Xamarin.Forms.Platform.Android;
+	using Xamarin.Forms.Platform.iOS;
 
 	public class PointHandler
 	{
-		private GoogleMap map;
+		private MKMapView map;
 
 		private IEnumerable<IPoint> points;
 
@@ -68,27 +71,49 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 					RemovePoints();
 				});
 			});
+
+			ClickGestureRecognizer = new UITapGestureRecognizer(recognizer =>
+			{
+				CGPoint tapPoint = recognizer.LocationInView(Map);
+				CLLocationCoordinate2D tapCoordinate = Map.ConvertPoint(tapPoint, Map);
+				MKMapPoint mapPoint = MKMapPoint.FromCoordinate(tapCoordinate);
+
+				// TODO: Optimize access if necessary (use R tree, k-d tree or similar)
+				MKCircle firstOrDefault = PointsToCirclesMapping.Values.FirstOrDefault(x => x.BoundingMapRect.Contains(mapPoint));
+
+				if (firstOrDefault != null)
+				{
+					if (PointsToCirclesMapping[firstOrDefault] is ISelectable selectable)
+					{
+						selectable.Selected = !selectable.Selected;
+					}
+				}
+				else
+				{
+					OnMapClicked?.Invoke(this, EventArgs.Empty);
+				}
+			});
 		}
 
 		public event EventHandler<EventArgs> OnMapClicked;
 
-		public GoogleMap Map
+		public MKMapView Map
 		{
 			get => this.map;
 			set
 			{
 				if (this.map != null)
 				{
-					this.map.MapClick -= MapClick;
-					this.map.CircleClick -= OnCircleClick;
+					this.map.OverlayRenderer = null;
+					this.map.RemoveGestureRecognizer(ClickGestureRecognizer);
 				}
 
 				this.map = value;
 
 				if (this.map != null)
 				{
-					this.map.MapClick += MapClick;
-					this.map.CircleClick += OnCircleClick;
+					this.map.OverlayRenderer = OverlayRenderer;
+					this.map.AddGestureRecognizer(ClickGestureRecognizer);
 				}
 			}
 		}
@@ -117,9 +142,13 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			}
 		}
 
+		protected IDictionary<IPoint, MKCircleRenderer> CircleRenderers { get; set; } = new Dictionary<IPoint, MKCircleRenderer>();
+
+		protected UITapGestureRecognizer ClickGestureRecognizer { get; set; }
+
 		protected NotifyCollectionChangedEventHandler PointsOnCollectionChanged { get; set; }
 
-		protected IBictionary<IPoint, Circle> PointsToCirclesMapping { get; set; } = new CircleBictionary<IPoint>();
+		protected IBictionary<IPoint, MKCircle> PointsToCirclesMapping { get; set; } = new Bictionary<IPoint, MKCircle>();
 
 		protected void AddPoint(IPoint point)
 		{
@@ -130,32 +159,21 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				return;
 			}
 
-			CircleOptions circleOptions = new CircleOptions();
-
-			if (point is ISelectable selectable)
-			{
-				circleOptions.Clickable(true);
-			}
+			double radius;
 
 			if (point is IStyleable styleable)
 			{
-				circleOptions.InvokeFillColor(styleable.FillColor.ToAndroid());
-				circleOptions.InvokeStrokeColor(styleable.StrokeColor.ToAndroid());
-				circleOptions.InvokeStrokeWidth((float)styleable.StrokeWidth);
-				circleOptions.InvokeRadius((float)styleable.Radius);
+				radius = styleable.Radius;
 			}
 			else
 			{
-				circleOptions.InvokeFillColor(Color.DodgerBlue.ToAndroid());
-				circleOptions.InvokeStrokeColor(Color.DodgerBlue.AddLuminosity(-0.5).ToAndroid());
-				circleOptions.InvokeStrokeWidth(1);
-				circleOptions.InvokeRadius(100);
+				radius = 100;
 			}
 
-			circleOptions.InvokeCenter(new LatLng(point.Latitude, point.Longitude));
-
-			Circle circle = Map.AddCircle(circleOptions);
+			MKCircle circle = MKCircle.Circle(new CLLocationCoordinate2D(point.Latitude, point.Longitude), radius);
 			PointsToCirclesMapping[point] = circle;
+
+			Map.AddOverlay(circle);
 
 			if (point is INotifyPropertyChanged notifyPropertyChanged)
 			{
@@ -165,23 +183,40 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		protected void AddPoints()
 		{
-			foreach (IPoint point in Points.ToList())
+			foreach (IPoint point in Points)
 			{
 				AddPoint(point);
 			}
 		}
 
-		protected void MapClick(object sender, GoogleMap.MapClickEventArgs e)
+		protected MKOverlayRenderer OverlayRenderer(MKMapView mapview, IMKOverlay overlay)
 		{
-			OnMapClicked?.Invoke(this, EventArgs.Empty);
-		}
+			MKCircle circle = Runtime.GetNSObject(overlay.Handle) as MKCircle;
+			IPoint point = PointsToCirclesMapping[circle];
 
-		protected void OnCircleClick(object sender, GoogleMap.CircleClickEventArgs e)
-		{
-			if (PointsToCirclesMapping[e.Circle] is ISelectable selectable)
+			if (CircleRenderers.ContainsKey(point))
 			{
-				selectable.Selected = !selectable.Selected;
+				return CircleRenderers[point];
 			}
+
+			MKCircleRenderer circleRenderer = new MKCircleRenderer(overlay as MKCircle);
+
+			if (point is IStyleable styleable)
+			{
+				circleRenderer.FillColor = styleable.FillColor.ToUIColor();
+				circleRenderer.StrokeColor = styleable.StrokeColor.ToUIColor();
+				circleRenderer.LineWidth = (float)styleable.StrokeWidth;
+			}
+			else
+			{
+				circleRenderer.FillColor = Color.DodgerBlue.ToUIColor();
+				circleRenderer.StrokeColor = Color.DodgerBlue.AddLuminosity(-0.5).ToUIColor();
+				circleRenderer.LineWidth = 1f;
+			}
+
+			CircleRenderers[point] = circleRenderer;
+
+			return circleRenderer;
 		}
 
 		protected void PointPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -195,33 +230,20 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 					return;
 				}
 
-				Circle circle = PointsToCirclesMapping[point];
-
-				if (e.PropertyName == nameof(IPoint.Latitude) || e.PropertyName == nameof(IPoint.Longitude))
+				if (e.PropertyName == nameof(IPoint.Latitude) || e.PropertyName == nameof(IPoint.Longitude) ||
+					e.PropertyName == nameof(IStyleable.Radius))
 				{
-					circle.Center = new LatLng(point.Latitude, point.Longitude);
+					// See https://stackoverflow.com/questions/4759317/moving-mkcircle-in-mkmapview
+					RemovePoint(point);
+					AddPoint(point);
 				}
 
 				if (sender is IStyleable styleable)
 				{
-					if (e.PropertyName == nameof(IStyleable.FillColor))
+					if (e.PropertyName == nameof(IStyleable.FillColor) || e.PropertyName == nameof(IStyleable.StrokeColor) ||
+						e.PropertyName == nameof(IStyleable.StrokeWidth))
 					{
-						circle.FillColor = styleable.FillColor.ToAndroid();
-					}
-
-					if (e.PropertyName == nameof(IStyleable.StrokeColor))
-					{
-						circle.StrokeColor = styleable.StrokeColor.ToAndroid();
-					}
-
-					if (e.PropertyName == nameof(IStyleable.StrokeWidth))
-					{
-						circle.StrokeWidth = (float)styleable.StrokeWidth;
-					}
-
-					if (e.PropertyName == nameof(IStyleable.Radius))
-					{
-						circle.Radius = styleable.Radius;
+						CircleRenderers.Remove(point);
 					}
 				}
 			});
@@ -236,8 +258,9 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				return;
 			}
 
-			PointsToCirclesMapping[point].Remove();
+			Map.RemoveOverlay(PointsToCirclesMapping[point]);
 			PointsToCirclesMapping.Remove(point);
+			CircleRenderers.Remove(point);
 
 			if (point is INotifyPropertyChanged notifyPropertyChanged)
 			{

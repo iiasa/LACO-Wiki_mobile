@@ -28,7 +28,8 @@ namespace LacoWikiMobile.App.ViewModels.Shared
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		// Move Color to Xaml (ConditionalConverter)
+		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
+		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
 		public Color BackgroundColor => IsActive ? Color.FromHex("#EEEEEE") : Color.Default;
 
 		public bool IsActive { get; set; }

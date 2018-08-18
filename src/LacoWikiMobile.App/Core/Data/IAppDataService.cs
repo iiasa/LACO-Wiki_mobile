@@ -13,12 +13,24 @@ namespace LacoWikiMobile.App.Core.Data
 	{
 		Task AddValidationSessionAsync(ValidationSession validationSession);
 
+		void DisableDetectChanges();
+
+		void EnableDetectChanges();
+
 		Task EnsureUserExistsAsync();
+
+		Task<LegendItem> GetLegendItemByIdAsync(int id, int validationSessionId);
+
+		Task<SampleItem> GetSampleItemByIdAsync(int id, int validationSessionId);
+
+		Task<ValidationSession> GetValidationSessionByIdAsync(int id);
 
 		Task<IEnumerable<ValidationSession>> GetValidationSessionsAsync();
 
-		Task TryRemoveValidationSessionAsync(int id);
+		Task SaveChangesAsync();
 
 		Task<ValidationSession> TryGetValidationSessionByIdAsync(int id);
+
+		Task TryRemoveValidationSessionAsync(int id);
 	}
 }

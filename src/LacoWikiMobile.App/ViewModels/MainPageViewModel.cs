@@ -34,11 +34,6 @@ namespace LacoWikiMobile.App.ViewModels
 
 			Title = Localizer[nameof(Title)];
 			Instruction = Localizer[nameof(Instruction)];
-
-			Items = new ObservableCollection<ItemViewModel>().OnChildrenPropertyChanged((sender, args) =>
-			{
-				OnPropertyChanged(nameof(Items));
-			});
 		}
 
 		public string Instruction { get; }
@@ -53,45 +48,15 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public IAppDataService AppDataService { get; set; }
 
-		public ICollection<ItemViewModel> Items { get; set; }
+		public ICollection<ItemViewModel> Items { get; set; } = new List<ItemViewModel>();
 
 		public bool ShowPrimaryAction { get; set; } = true;
 
 		protected IMapper Mapper { get; set; }
 
-		protected override async Task InitializeAsync(INavigationParameters parameters)
+		protected override async Task ExecutePrimaryActionAsync()
 		{
-			await base.InitializeAsync(parameters);
-			await LoadValidationSessionsAsync();
-		}
-
-		protected void ItemTapped(object sender, EventArgs args)
-		{
-			ItemViewModel itemViewModel = (ItemViewModel)sender;
-
-			NavigationService.NavigateToValidationSessionDetail(itemViewModel.Id, itemViewModel.Name);
-		}
-
-		protected async Task LoadValidationSessionsAsync()
-		{
-			IEnumerable<ValidationSession> validationSessions = await AppDataService.GetValidationSessionsAsync();
-
-			Items = new ObservableCollection<ItemViewModel>(Mapper.Map<IEnumerable<ItemViewModel>>(validationSessions)).OnPropertyChanged(
-					(sender, args) =>
-					{
-						OnPropertyChanged(nameof(ShowInstructions));
-						OnPropertyChanged(nameof(ShowList));
-
-						ShowPrimaryAction = !Items.Any(x => x.IsChecked);
-					})
-				.OnChildrenPropertyChanged((sender, args) => { ShowPrimaryAction = !Items.Any(x => x.IsChecked); });
-
-			Items.ForEach(x => { x.ItemTapped += ItemTapped; });
-		}
-
-		protected override async Task PrimaryActionButtonTappedAsync()
-		{
-			await base.PrimaryActionButtonTappedAsync();
+			await base.ExecutePrimaryActionAsync();
 
 			if (ShowPrimaryAction)
 			{
@@ -106,6 +71,41 @@ namespace LacoWikiMobile.App.ViewModels
 					Items.Remove(itemViewModel);
 				}
 			}
+		}
+
+		protected override async Task InitializeAsync(INavigationParameters parameters)
+		{
+			await base.InitializeAsync(parameters);
+			await LoadValidationSessionsAsync();
+		}
+
+		protected void ItemTapped(object sender, EventArgs args)
+		{
+			ItemViewModel itemViewModel = (ItemViewModel)sender;
+
+			NavigationService.NavigateToValidationSessionDetailAsync(itemViewModel.Id, itemViewModel.Name);
+		}
+
+		protected async Task LoadValidationSessionsAsync()
+		{
+			if (await ApiAuthentication.IsAuthenticatedAsync())
+			{
+				await AppDataService.EnsureUserExistsAsync();
+			}
+
+			IEnumerable<ValidationSession> validationSessions = await AppDataService.GetValidationSessionsAsync();
+
+			Items = new ObservableCollection<ItemViewModel>(Mapper.Map<IEnumerable<ItemViewModel>>(validationSessions)).OnPropertyChanged(
+					(sender, args) =>
+					{
+						OnPropertyChanged(nameof(ShowInstructions));
+						OnPropertyChanged(nameof(ShowList));
+
+						ShowPrimaryAction = !Items.Any(x => x.IsChecked);
+					})
+				.OnChildrenPropertyChanged((sender, args) => { ShowPrimaryAction = !Items.Any(x => x.IsChecked); });
+
+			Items.ForEach(x => { x.ItemTapped += ItemTapped; });
 		}
 	}
 }

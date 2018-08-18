@@ -16,6 +16,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using Microsoft.Extensions.Localization;
 	using Prism.Commands;
 	using Prism.Navigation;
+	using Xamarin.Forms;
 
 	public class ViewModelBase : INotifyPropertyChanged, INavigatingAware, INavigatedAware
 	{
@@ -31,12 +32,34 @@ namespace LacoWikiMobile.App.ViewModels
 #pragma warning disable 4014
 				PrimaryActionButtonTappedAsync();
 #pragma warning restore 4014
-			});
+			}, () => PrimaryActionButtonEnabled).ObservesProperty(() => PrimaryActionButtonEnabled);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public bool IsPrimaryActionButtonActive { get; set; }
+		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
+		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
+		public virtual Color PrimaryActionButtonBackgroundColor
+		{
+			get
+			{
+				if (!PrimaryActionButtonEnabled)
+				{
+					return Color.FromHex("#E0E0E0");
+				}
+
+				if (!IsPrimaryActionButtonActive)
+				{
+					return Color.FromHex("#673AB7");
+				}
+
+				return Color.FromHex("#311B92");
+			}
+		}
+
+		public virtual bool IsPrimaryActionButtonActive { get; set; }
+
+		public virtual bool PrimaryActionButtonEnabled { get; set; } = true;
 
 		public ICommand PrimaryActionButtonTappedCommand { get; set; }
 
@@ -52,6 +75,8 @@ namespace LacoWikiMobile.App.ViewModels
 
 		private bool InitializedOnce { get; set; }
 
+		private bool OnNavigatedToCalled { get; set; }
+
 		private bool WasNotAuthenticatedThrown { get; set; }
 
 		private bool WasTokenExpiredThrown { get; set; }
@@ -62,69 +87,87 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public virtual void OnNavigatedTo(INavigationParameters parameters)
 		{
-			// This method will always be called, fallback for Initialize calls if not called by OnNavigating
+			OnNavigatedToCalled = true;
+
+			Task<bool> task = Task.FromResult(true);
+
+			// This method will not be called when using Hardware Buttons, so prefer OnNavigating but fallback for OnNavigated
 			if (!InitializedOnce)
 			{
-#pragma warning disable 4014
-				RunAndHandleExceptionsAsync(() => InitializeOnceAsync(parameters));
-#pragma warning restore 4014
-
 				InitializedOnce = true;
+				task = task.ContinueWith(async (r) => await RunAndHandleExceptionsAsync(InitializeOnceAsync(parameters))).Unwrap();
 			}
 
 			if (!Initialized)
 			{
-#pragma warning disable 4014
-				RunAndHandleExceptionsAsync(() => InitializeAsync(parameters));
-#pragma warning restore 4014
+				Initialized = true;
+				task = task.ContinueIfTrueWith(async () => await RunAndHandleExceptionsAsync(InitializeAsync(parameters)));
 			}
 
 			InitializedOnce = true;
 			Initialized = false;
 
+			task.ContinueWith(r => HandleExceptions());
+		}
+
+		public virtual void OnNavigatingTo(INavigationParameters parameters)
+		{
+			OnNavigatedToCalled = false;
+
+			Task<bool> task = Task.FromResult(true);
+
+			// This method will not be called when using Hardware Buttons, so prefer OnNavigating but fallback for OnNavigated
+			if (!InitializedOnce)
+			{
+				InitializedOnce = true;
+				task = task.ContinueWith(async (r) => await RunAndHandleExceptionsAsync(InitializeOnceAsync(parameters))).Unwrap();
+			}
+
+			if (!Initialized)
+			{
+				Initialized = true;
+				task = task.ContinueIfTrueWith(async () => await RunAndHandleExceptionsAsync(InitializeAsync(parameters)));
+			}
+
+			task.ContinueWith(r =>
+			{
+				// If OnNavigatedTo wasn't called, let OnNavigatedTo handle the exceptions
+				if (OnNavigatedToCalled)
+				{
+					HandleExceptions();
+				}
+			});
+		}
+
+		public virtual void OnPropertyChanged(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		protected virtual Task ExecutePrimaryActionAsync()
+		{
+			return Task.CompletedTask;
+		}
+
+		protected void HandleExceptions()
+		{
 			if (WasNotAuthenticatedThrown)
 			{
+				WasNotAuthenticatedThrown = false;
+
 				Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateAsync(nameof(AuthenticationPage)));
 			}
 
 			if (WasTokenExpiredThrown)
 			{
+				WasTokenExpiredThrown = false;
+
 				Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateAsync(nameof(AuthenticationPage),
 					new NavigationParameters()
 					{
 						{ "useLastKnownProvider", true },
 					}));
 			}
-
-			WasNotAuthenticatedThrown = false;
-			WasTokenExpiredThrown = false;
-		}
-
-		public virtual void OnNavigatingTo(INavigationParameters parameters)
-		{
-			// This method will not be called when using Hardware Buttons, so prefer OnNavigating but fallback for OnNavigated
-			if (!InitializedOnce)
-			{
-				InitializedOnce = true;
-
-#pragma warning disable 4014
-				RunAndHandleExceptionsAsync(() => InitializeOnceAsync(parameters));
-#pragma warning restore 4014
-			}
-
-			if (!Initialized)
-			{
-				Initialized = true;
-
-#pragma warning disable 4014
-				RunAndHandleExceptionsAsync(() => InitializeAsync(parameters));
-#pragma warning restore 4014
-			}
-		}
-
-		public virtual void OnPropertyChanged(string propertyName)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		protected virtual Task InitializeAsync(INavigationParameters parameters)
@@ -149,13 +192,25 @@ namespace LacoWikiMobile.App.ViewModels
 				await Task.Delay(250);
 				IsPrimaryActionButtonActive = false;
 			});
+
+			try
+			{
+				await ExecutePrimaryActionAsync();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+
+				// TODO: Swallow and ignore?
+				Helper.RunOnMainThreadIfRequired(() => throw e);
+			}
 		}
 
-		protected async Task RunAndHandleExceptionsAsync(Func<Task> func)
+		protected async Task<bool> RunAndHandleExceptionsAsync(Task task)
 		{
 			try
 			{
-				await func();
+				await task;
 			}
 			catch (AggregateException e)
 			{
@@ -164,27 +219,40 @@ namespace LacoWikiMobile.App.ViewModels
 				if (aggregateException.InnerExceptions.OfType<NotAuthenticatedException>().Any())
 				{
 					WasNotAuthenticatedThrown = true;
+					return false;
 				}
 				else if (aggregateException.InnerExceptions.OfType<TokenExpiredException>().Any())
 				{
 					WasTokenExpiredThrown = true;
+					return false;
 				}
 				else
 				{
-					throw;
+					Console.WriteLine(e.ToString());
+
+					// TODO: Swallow and ignore?
+					Helper.RunOnMainThreadIfRequired(() => throw e);
 				}
 			}
 			catch (NotAuthenticatedException)
 			{
 				WasNotAuthenticatedThrown = true;
+				return false;
 			}
 			catch (TokenExpiredException)
 			{
 				WasTokenExpiredThrown = true;
+				return false;
 			}
 			catch (Exception e)
 			{
+				Console.WriteLine(e.ToString());
+
+				// TODO: Swallow and ignore?
+				Helper.RunOnMainThreadIfRequired(() => throw e);
 			}
+
+			return true;
 		}
 	}
 }
