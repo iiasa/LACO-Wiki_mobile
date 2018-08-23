@@ -20,6 +20,9 @@ namespace LacoWikiMobile.App
 	using LacoWikiMobile.App.Core.Localization;
 	using LacoWikiMobile.App.Core.Sensor;
 	using LacoWikiMobile.App.Views;
+	using Microsoft.AppCenter;
+	using Microsoft.AppCenter.Analytics;
+	using Microsoft.AppCenter.Crashes;
 	using Plugin.Geolocator;
 	using Plugin.Geolocator.Abstractions;
 	using Prism;
@@ -44,7 +47,8 @@ namespace LacoWikiMobile.App
 			: base(initializer)
 		{
 #if DEBUG
-			// Initialize Live Reload.
+
+// Initialize Live Reload.
 			LiveReload.Init();
 #endif
 		}
@@ -54,7 +58,8 @@ namespace LacoWikiMobile.App
 			InitializeComponent();
 
 			// See https://docs.microsoft.com/en-us/xamarin/xamarin-forms/app-fundamentals/localization
-			if (Device.RuntimePlatform == Device.iOS || Device.RuntimePlatform == Device.Android)
+			if (Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.iOS ||
+				Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android)
 			{
 				// Determine the correct, supported .NET culture
 				ILocalizer localizer = Container.Resolve<ILocalizer>();
@@ -63,6 +68,14 @@ namespace LacoWikiMobile.App
 			}
 
 			await NavigationService.NavigateAsync($"{nameof(NavigationPage)}/{nameof(MainPage)}");
+		}
+
+		protected override void OnStart()
+		{
+			base.OnStart();
+
+			AppCenter.Start("android=056a6b63-f9db-47bc-bbd0-dbeea3782d3d;ios=bc0abf6e-1ea1-4144-8f0a-1e46f07eb010", typeof(Analytics),
+				typeof(Crashes));
 		}
 
 		protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -87,7 +100,7 @@ namespace LacoWikiMobile.App
 
 			containerRegistry.RegisterSingleton<IPermissionService, PermissionService>();
 
-			containerRegistry.GetContainer().Register<IGeolocator>(made: Made.Of(() => CrossGeolocator.Current));
+			containerRegistry.GetContainer().Register<IGeolocator>(Made.Of(() => CrossGeolocator.Current));
 			containerRegistry.RegisterSingleton<ISensorService, SensorService>();
 
 			containerRegistry.Register<IAppDataService, AppDataService>();
