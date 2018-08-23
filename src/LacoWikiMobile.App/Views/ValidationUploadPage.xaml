@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:localization="clr-namespace:LacoWikiMobile.App.Core.Localization;assembly=LacoWikiMobile.App"
+	xmlns:visualElementExtensions="clr-namespace:LacoWikiMobile.App.UserInterface.VisualElementExtensions;assembly=LacoWikiMobile.App"
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
+	x:Class="LacoWikiMobile.App.Views.ValidationUploadPage" Title="{Binding Title}">
+	<ContentPage.Content>
+		<RelativeLayout>
+			<StackLayout Orientation="Vertical" StyleClass="ListWithImage"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}">
+				<ContentView StyleClass="SubHeader">
+					<Label Text="Pending Uploads" />
+				</ContentView>
+				<RelativeLayout>
+					<Label visualElementExtensions:Extensions.AnimatedIsVisible="{Binding ShowInfo}" Margin="16,0,0,0"
+						Text="No pending uploads" StyleClass="Secondary" />
+					<ScrollView visualElementExtensions:Extensions.AnimatedIsVisible="{Binding ShowList}">
+						<ui:RepeaterStackLayout ItemsSource="{Binding Items}" StyleClass="List">
+							<ui:RepeaterStackLayout.ItemTemplate>
+								<DataTemplate>
+									<ContentView BackgroundColor="{Binding BackgroundColor}">
+										<ContentView.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
+										</ContentView.GestureRecognizers>
+
+										<Grid BindingContext="{Binding .}">
+											<Grid.RowDefinitions>
+												<RowDefinition Height="56" />
+											</Grid.RowDefinitions>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="56" />
+												<ColumnDefinition />
+											</Grid.ColumnDefinitions>
+
+											<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+												<Frame BackgroundColor="{Binding Color}">
+													<Image Source="{Binding ImageSource}" />
+												</Frame>
+											</ContentView>
+
+											<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
+												<Label Margin="0" Text="{Binding Name}" />
+											</ContentView>
+										</Grid>
+									</ContentView>
+								</DataTemplate>
+							</ui:RepeaterStackLayout.ItemTemplate>
+						</ui:RepeaterStackLayout>
+					</ScrollView>
+				</RelativeLayout>
+			</StackLayout>
+			<Frame StyleClass="FloatingActionButton"
+				BackgroundColor="{Binding Path=IsPrimaryActionButtonActive,
+				Converter={StaticResource ConditionalConverter},
+				ConverterParameter={StaticResource PrimaryActionButtonIsActiveColorConverterParameter}}"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-72}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
+				<Frame.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
+				</Frame.GestureRecognizers>
+				<Image Source="ic_upload_white_24dp" />
+			</Frame>
+		</RelativeLayout>
+	</ContentPage.Content>
+</ContentPage>

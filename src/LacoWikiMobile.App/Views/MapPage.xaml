@@ -6,9 +6,12 @@
 	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
 	xmlns:ve="clr-namespace:LacoWikiMobile.App.UserInterface.VisualElementExtensions;assembly=LacoWikiMobile.App"
 	x:Class="LacoWikiMobile.App.Views.MapPage" Title="{Binding Title}">
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Icon="ic_upload_white_24dp" Command="{Binding NavigateToValidationUploadCommand}"></ToolbarItem>
+	</ContentPage.ToolbarItems>
 	<ContentPage.Content>
 		<RelativeLayout>
-			<customMap:CustomMap StyleClass="Map" Points="{Binding ValidationPointsViewModel.Points}" MapClickCommand="{Binding MapClickCommand}" x:Name="MyMap"
+			<customMap:CustomMap StyleClass="Map" Points="{Binding SamplePointsViewModel.Points}" MapClickCommand="{Binding MapClickCommand}" x:Name="MyMap"
 				IsShowingUser="true" MapType="Hybrid"
 				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
 				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"

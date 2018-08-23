@@ -17,6 +17,8 @@ namespace LacoWikiMobile.App.Core.Data
 
 		public DbSet<LegendItem> LegendItems { get; set; }
 
+		public DbSet<LocalValidation> LocalValidations { get; set; }
+
 		public DbSet<SampleItem> SampleItems { get; set; }
 
 		public DbSet<User> Users { get; set; }
@@ -37,18 +39,27 @@ namespace LacoWikiMobile.App.Core.Data
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-
-			modelBuilder.Entity<ValidationSession>().Property<int>($"{nameof(ValidationSession.User)}Id");
-
-			modelBuilder.Entity<ValidationSession>().HasKey(nameof(ValidationSession.Id), $"{nameof(ValidationSession.User)}Id");
+			modelBuilder.Entity<ValidationSession>().HasKey(nameof(ValidationSession.Id), nameof(ValidationSession.UserId));
 
 			modelBuilder.Entity<LegendItem>()
 				.HasKey(nameof(LegendItem.Id), $"{nameof(LegendItem.ValidationSession)}Id",
 					$"{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}Id");
 
 			modelBuilder.Entity<SampleItem>()
-				.HasKey(nameof(LegendItem.Id), $"{nameof(LegendItem.ValidationSession)}Id",
+				.HasKey(nameof(SampleItem.Id), $"{nameof(LegendItem.ValidationSession)}Id",
 					$"{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}Id");
+
+			modelBuilder.Entity<LocalValidation>()
+				.HasOne(x => x.SampleItem)
+				.WithOne(x => x.LocalValidation)
+				.HasForeignKey<LocalValidation>($"{nameof(SampleItem)}{nameof(SampleItem.Id)}",
+					$"{nameof(SampleItem)}{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.Id)}",
+					$"{nameof(SampleItem)}{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}{nameof(User.Id)}");
+
+			modelBuilder.Entity<LocalValidation>()
+				.HasKey($"{nameof(SampleItem)}{nameof(SampleItem.Id)}",
+					$"{nameof(SampleItem)}{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.Id)}",
+					$"{nameof(SampleItem)}{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}{nameof(User.Id)}");
 		}
 	}
 }

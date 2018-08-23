@@ -7,6 +7,8 @@ namespace LacoWikiMobile.App.UserInterface.CustomMap
 {
 	public interface ISelectable
 	{
+		bool IsSelectable { get; }
+
 		bool Selected { get; set; }
 	}
 }

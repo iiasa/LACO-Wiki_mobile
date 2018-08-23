@@ -21,50 +21,50 @@
 				<Label ve:Extensions.AnimatedIsVisible="{Binding ShowInstructions}" Margin="16,0,16,0" Text="{Binding Instruction}" StyleClass="Secondary" />
 				<ScrollView ve:Extensions.AnimatedIsVisible="{Binding ShowList}">
 					<ui:RepeaterStackLayout ItemsSource="{Binding Items}" StyleClass="List">
-						<ui:RepeaterStackLayout.ItemTemplate>
-							<DataTemplate>
-								<ContentView BackgroundColor="{Binding BackgroundColor}">
-									<ContentView.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
-									</ContentView.GestureRecognizers>
+							<ui:RepeaterStackLayout.ItemTemplate>
+								<DataTemplate>
+									<ContentView BackgroundColor="{Binding BackgroundColor}">
+										<ContentView.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
+										</ContentView.GestureRecognizers>
 
-									<Grid BindingContext="{Binding .}">
-										<Grid.RowDefinitions>
-											<RowDefinition Height="56" />
-										</Grid.RowDefinitions>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="56" />
-											<ColumnDefinition />
-											<ColumnDefinition Width="56" />
-										</Grid.ColumnDefinitions>
+										<Grid BindingContext="{Binding .}">
+											<Grid.RowDefinitions>
+												<RowDefinition Height="56" />
+											</Grid.RowDefinitions>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="56" />
+												<ColumnDefinition />
+												<ColumnDefinition Width="56" />
+											</Grid.ColumnDefinitions>
 
-										<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
-											<Frame>
-												<Image Source="ic_pin_white_24dp" Opacity="{Binding Opacity}" />
-											</Frame>
-										</ContentView>
-
-										<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
-											<Label Margin="0" Text="{Binding Name}" />
-										</ContentView>
-
-										<ContentView Grid.Row="0" Grid.Column="2" Padding="0,0,16,0">
-											<ContentView>
-												<ui:Checkbox HorizontalOptions="End" VerticalOptions="Center" WidthRequest="26" HeightRequest="26" CheckColor="#009688" IsChecked="{Binding IsChecked}">
-													<ui:Checkbox.Margin>
-														<OnPlatform x:TypeArguments="Thickness">
-															<!-- See https://stackoverflow.com/questions/40990664/android-appcompatcheckbox-padding-margin-gravity -->
-															<On Platform="Android" Value="0,0,-1,0" />
-														</OnPlatform>
-													</ui:Checkbox.Margin>
-												</ui:Checkbox>
+											<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+												<Frame>
+													<Image Source="ic_pin_white_24dp" Opacity="{Binding Opacity}" />
+												</Frame>
 											</ContentView>
-										</ContentView>
-									</Grid>
-								</ContentView>
-							</DataTemplate>
-						</ui:RepeaterStackLayout.ItemTemplate>
-					</ui:RepeaterStackLayout>
+
+											<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
+												<Label Margin="0" Text="{Binding Name}" />
+											</ContentView>
+
+											<ContentView Grid.Row="0" Grid.Column="2" Padding="0,0,16,0">
+												<ContentView>
+													<ui:Checkbox HorizontalOptions="End" VerticalOptions="Center" WidthRequest="26" HeightRequest="26" CheckColor="#009688" IsChecked="{Binding IsChecked}">
+														<ui:Checkbox.Margin>
+															<OnPlatform x:TypeArguments="Thickness">
+																<!-- See https://stackoverflow.com/questions/40990664/android-appcompatcheckbox-padding-margin-gravity -->
+																<On Platform="Android" Value="0,0,-1,0" />
+															</OnPlatform>
+														</ui:Checkbox.Margin>
+													</ui:Checkbox>
+												</ContentView>
+											</ContentView>
+										</Grid>
+									</ContentView>
+								</DataTemplate>
+							</ui:RepeaterStackLayout.ItemTemplate>
+						</ui:RepeaterStackLayout>
 				</ScrollView>
 			</RelativeLayout>
 		</StackLayout>

@@ -6,13 +6,17 @@
 namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 {
 	using System.Collections.Generic;
+	using System.ComponentModel;
+	using LacoWikiMobile.App.Core.Api.Models;
 
-	public class ValidationSessionDetailViewModel
+	public class ValidationSessionDetailViewModel : INotifyPropertyChanged
 	{
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public double Progress => (double)ProgressSamplesValidated / ProgressSamplesTotal;
 
 		// TODO: LocalizationService
-		public string ProgressText => string.Format("{0} / {1} validated", ProgressSamplesValidated, ProgressSamplesTotal);
+		public string ProgressText => $"{ProgressSamplesValidated} / {ProgressSamplesTotal} validated";
 
 		public string AssociatedDataSetName { get; set; }
 
@@ -30,6 +34,6 @@ namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 
 		public int ProgressSamplesValidated { get; set; }
 
-		public string ValidationMethodName { get; set; }
+		public ValidationMethodEnum ValidationMethod { get; set; }
 	}
 }

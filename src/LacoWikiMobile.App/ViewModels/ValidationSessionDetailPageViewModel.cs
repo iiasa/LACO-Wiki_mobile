@@ -15,6 +15,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using Microsoft.Extensions.Localization;
 	using Plugin.Permissions.Abstractions;
 	using Prism.Navigation;
+	using Xamarin.Essentials;
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
 	{
@@ -63,11 +64,8 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			await base.InitializeAsync(parameters);
 
-			// Could be null if InitializeOnceAsync redirects to AuthenticationPage
-			if (ViewModel == null)
-			{
-				await LoadValidationSessionAsync();
-			}
+			// InitializeAsync could be called a second time if InitializeOnceAsync redirects to AuthenticationPage
+			await LoadValidationSessionAsync();
 		}
 
 		protected override async Task InitializeOnceAsync(INavigationParameters parameters)
@@ -84,25 +82,27 @@ namespace LacoWikiMobile.App.ViewModels
 				ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(validationSession);
 				ShowLoading = false;
 			}
-
-			await LoadValidationSessionAsync();
 		}
 
 		protected async Task LoadValidationSessionAsync()
 		{
-			await ApiClient.GetValidationSessionByIdAsync(ValidationSessionId)
-				.ContinueWith(result =>
-				{
-					if (ViewModel == null)
+			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+			{
+				await ApiClient.GetValidationSessionByIdAsync(ValidationSessionId)
+					.ContinueWith(result =>
 					{
-						ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(result.Result);
-						ShowLoading = false;
-					}
-					else
-					{
-						Mapper.Map(result.Result, ViewModel);
-					}
-				});
+						if (ViewModel == null)
+						{
+							ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(result.Result);
+							ShowLoading = false;
+						}
+						else
+						{
+							// TODO: Save updated progress
+							Mapper.Map(result.Result, ViewModel);
+						}
+					});
+			}
 		}
 	}
 }

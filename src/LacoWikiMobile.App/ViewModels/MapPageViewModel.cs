@@ -6,6 +6,7 @@
 namespace LacoWikiMobile.App.ViewModels
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Collections.ObjectModel;
 	using System.Linq;
 	using System.Threading.Tasks;
@@ -18,7 +19,6 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Sensor;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
 	using LacoWikiMobile.App.ViewModels.Map;
-	using LacoWikiMobile.App.Views;
 	using Microsoft.Extensions.Localization;
 	using Prism.AppModel;
 	using Prism.Commands;
@@ -30,7 +30,8 @@ namespace LacoWikiMobile.App.ViewModels
 
 	public class MapPageViewModel : ViewModelBase, IApplicationLifecycleAware, ITargetPositionObserver
 	{
-		protected const double MinimumPointDistanceForValidation = 0.1;
+		// TODO: Discuss threshold
+		protected const double MinimumPointDistanceForValidation = 1;
 
 		public MapPageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<MapPageViewModel> stringLocalizer, IEventAggregator eventAggregator, IApiClient apiClient,
@@ -44,17 +45,21 @@ namespace LacoWikiMobile.App.ViewModels
 			NotificationService = notificationService;
 			SensorService = sensorService;
 
-			ValidationPointsViewModel = new ValidationPointsViewModel
+			SamplePointsViewModel = new SamplePointsViewModel
 			{
-				Points = new ObservableCollection<ValidationPointViewModel>().OnObservableCollectionChildrenPropertyChanged(
-					(sender, args) =>
+				Points = new ObservableCollection<SamplePointViewModel>().OnObservableCollectionChildrenPropertyChanged((sender, args) =>
+				{
+					if (args.PropertyName == nameof(ISelectable.Selected))
 					{
-						if (args.PropertyName == nameof(ISelectable.Selected))
-						{
-							OnPointSelectedChanged((IPoint)sender);
-						}
-					}),
+						OnPointSelectedChanged((SamplePointViewModel)sender);
+					}
+				}),
 			};
+
+			NavigateToValidationUploadCommand = new DelegateCommand(() =>
+			{
+				NavigationService.NavigateToValidationUploadAsync(ValidationSessionId);
+			});
 		}
 
 		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
@@ -97,7 +102,6 @@ namespace LacoWikiMobile.App.ViewModels
 					return NavigationStateEnum.Initializing;
 				}
 
-				// TODO: Discuss threshold
 				if (NavigationDistance < MapPageViewModel.MinimumPointDistanceForValidation)
 				{
 					return NavigationStateEnum.PointReached;
@@ -144,15 +148,17 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public ICommand MapClickCommand { get; set; }
 
+		public ICommand NavigateToValidationUploadCommand { get; set; }
+
 		public int NavigationDirection { get; set; }
 
 		public double? NavigationDistance { get; set; }
 
 		public override bool PrimaryActionButtonEnabled => NavigationState == NavigationStateEnum.PointReached;
 
-		public IPoint SelectedPoint { get; set; }
+		public SamplePointsViewModel SamplePointsViewModel { get; set; }
 
-		public ValidationPointsViewModel ValidationPointsViewModel { get; set; }
+		public SamplePointViewModel SelectedPoint { get; set; }
 
 		protected IApiClient ApiClient { get; set; }
 
@@ -170,7 +176,7 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public async void MapClickAsync()
 		{
-			foreach (ISelectable point in ValidationPointsViewModel.Points)
+			foreach (ISelectable point in SamplePointsViewModel.Points)
 			{
 				point.Selected = false;
 			}
@@ -215,6 +221,28 @@ namespace LacoWikiMobile.App.ViewModels
 			SensorService.UnsubscribeToTargetPositionEventsAsync(this);
 		}
 
+		protected override async Task InitializeAsync(INavigationParameters parameters)
+		{
+			await base.InitializeAsync(parameters);
+
+			IEnumerable<LocalValidation> localValidations =
+				(await AppDataService.GetLocalValidationsWhereNotUploadedByIdAsync(ValidationSessionId)).ToList();
+
+			foreach (SamplePointViewModel samplePointViewModel in SamplePointsViewModel.Points)
+			{
+				if (localValidations.Any(x => x.SampleItem.Id == samplePointViewModel.Id))
+				{
+					samplePointViewModel.Selected = false;
+					samplePointViewModel.IsValidated = true;
+
+					if (ReferenceEquals(SelectedPoint, samplePointViewModel))
+					{
+						SelectedPoint = null;
+					}
+				}
+			}
+		}
+
 		protected override async Task InitializeOnceAsync(INavigationParameters parameters)
 		{
 			await base.InitializeOnceAsync(parameters);
@@ -223,7 +251,7 @@ namespace LacoWikiMobile.App.ViewModels
 			Title = (string)parameters["name"];
 
 			ValidationSession validationSession = await AppDataService.GetValidationSessionByIdAsync(ValidationSessionId);
-			Mapper.Map(validationSession, ValidationPointsViewModel);
+			Mapper.Map(validationSession, SamplePointsViewModel);
 
 			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
 			{
@@ -233,10 +261,10 @@ namespace LacoWikiMobile.App.ViewModels
 				await ApiClient.GetValidationSessionSampleItemsByIdAsync(ValidationSessionId)
 					.ContinueWith(async (result) =>
 					{
-						Mapper.Map(result.Result, ValidationPointsViewModel,
+						Mapper.Map(result.Result, SamplePointsViewModel,
 							opt => opt.Items[nameof(ValidationSession.Id)] = ValidationSessionId);
 
-						Extent extent = ValidationPointsViewModel.Points.GroupBy(x => true)
+						Extent extent = SamplePointsViewModel.Points.GroupBy(x => true)
 							.Select(x => new
 							{
 								top = x.Max(y => y.Latitude),
@@ -251,7 +279,7 @@ namespace LacoWikiMobile.App.ViewModels
 
 						AppDataService.DisableDetectChanges();
 
-						Mapper.Map(ValidationPointsViewModel, validationSession, opt =>
+						Mapper.Map(SamplePointsViewModel, validationSession, opt =>
 						{
 							opt.Items[nameof(ValidationSession)] = validationSession;
 							opt.Items[nameof(LegendItem)] = validationSession.LegendItems.ToDictionary(x => x.Id, x => x);
@@ -264,11 +292,26 @@ namespace LacoWikiMobile.App.ViewModels
 						NotificationService.Notify("Points successfully synchronized!");
 					});
 			}
+			else
+			{
+				Extent extent = SamplePointsViewModel.Points.GroupBy(x => true)
+					.Select(x => new
+					{
+						top = x.Max(y => y.Latitude),
+						right = x.Max(y => y.Longitude),
+						bottom = x.Min(y => y.Latitude),
+						left = x.Min(y => y.Longitude),
+					})
+					.Select(x => new Extent(x.top, x.left, x.right, x.bottom))
+					.Single();
+
+				EventAggregator.GetEvent<ZoomToExtentEvent>().Publish(extent);
+			}
 
 			MapClickCommand = new DelegateCommand(MapClickAsync);
 		}
 
-		protected void OnPointSelectedChanged(IPoint point)
+		protected void OnPointSelectedChanged(SamplePointViewModel point)
 		{
 			if (point is ISelectable selectable)
 			{
@@ -288,7 +331,7 @@ namespace LacoWikiMobile.App.ViewModels
 						SelectedPoint = point;
 					});
 
-					foreach (ISelectable otherPoint in ValidationPointsViewModel.Points)
+					foreach (ISelectable otherPoint in SamplePointsViewModel.Points)
 					{
 						if (otherPoint == point)
 						{
@@ -305,7 +348,7 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			await base.PrimaryActionButtonTappedAsync();
 
-			Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateAsync(nameof(ValidatePage)));
+			Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateToValidatePageAsync(SelectedPoint.Id, ValidationSessionId));
 		}
 	}
 }

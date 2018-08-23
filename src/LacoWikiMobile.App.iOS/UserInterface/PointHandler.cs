@@ -85,7 +85,10 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 				{
 					if (PointsToCirclesMapping[firstOrDefault] is ISelectable selectable)
 					{
-						selectable.Selected = !selectable.Selected;
+						if (selectable.IsSelectable)
+						{
+							selectable.Selected = !selectable.Selected;
+						}
 					}
 				}
 				else

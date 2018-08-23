@@ -1,10 +1,100 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	x:Class="LacoWikiMobile.App.Views.ValidatePage">
+	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
+	xmlns:ve="clr-namespace:LacoWikiMobile.App.UserInterface.VisualElementExtensions;assembly=LacoWikiMobile.App"
+	x:Class="LacoWikiMobile.App.Views.ValidatePage" Title="{Binding Title}">
 	<ContentPage.Content>
-		<StackLayout>
-			<Label Text="Welcome to Xamarin.Forms!" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-		</StackLayout>
+		<RelativeLayout>
+			<StackLayout Margin="0" Padding="0" Spacing="0"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}">
+				<ContentView StyleClass="Header">
+					<Label Text="Validate sample item" />
+				</ContentView>
+				<StackLayout Margin="0" Padding="0" Spacing="0" IsVisible="{Binding ShowCorrectSection}">
+					<ContentView StyleClass="SubHeader">
+						<Label>Step 1: Class correct?</Label>
+					</ContentView>
+					<Grid Margin="0" Padding="16,0,16,8">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"></RowDefinition>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Button Grid.Row="0" Grid.Column="0" Text="Correct" BackgroundColor="{Binding CorrectButtonBackgroundColor}"
+							BorderColor="{Binding CorrectButtonBorderColor}" TextColor="{Binding CorrectButtonTextColor}"
+							Margin="{Binding CorrectButtonMargin}" BorderWidth="1" CornerRadius="0"
+							Command="{Binding IsCorrectTappedCommand}" />
+						<Button Grid.Row="0" Grid.Column="1" Text="Not Correct"
+							BackgroundColor="{Binding NotCorrectButtonBackgroundColor}" BorderColor="{Binding NotCorrectButtonBorderColor}"
+							TextColor="{Binding NotCorrectButtonTextColor}" Margin="{Binding NotCorrectButtonMargin}" BorderWidth="1"
+							CornerRadius="0" Command="{Binding IsNotCorrectTappedCommand}" />
+					</Grid>
+				</StackLayout>
+				<StackLayout Margin="0" Padding="0,8,0,0" Spacing="0" ve:Extensions.AnimatedIsVisible="{Binding ShowLegendSection}">
+					<ContentView StyleClass="SubHeader">
+						<Label>Step 2: Choose the correct class</Label>
+					</ContentView>
+					<ScrollView>
+						<ContentView StyleClass="ListWithImage">
+							<ui:RepeaterStackLayout ItemsSource="{Binding LegendItems}" StyleClass="List,ListDoubleLine">
+								<ui:RepeaterStackLayout.ItemTemplate>
+									<DataTemplate>
+										<ContentView BackgroundColor="{Binding BackgroundColor}">
+											<ContentView.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding ItemSelectedCommand}" />
+											</ContentView.GestureRecognizers>
+
+											<Grid BindingContext="{Binding .}">
+												<Grid.RowDefinitions>
+													<RowDefinition Height="72" />
+												</Grid.RowDefinitions>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="56" />
+													<ColumnDefinition />
+												</Grid.ColumnDefinitions>
+
+												<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+													<Frame BorderColor="#444444" BackgroundColor="{Binding Color}" />
+												</ContentView>
+
+												<ContentView Grid.Row="0" Grid.Column="1" StyleClass="LineContainer">
+													<StackLayout Spacing="0" VerticalOptions="Center">
+														<Label Margin="0" Text="{Binding Name}" StyleClass="FirstLine" />
+														<Label Margin="0" Text="{Binding ValueText}" StyleClass="SecondLine" />
+													</StackLayout>
+												</ContentView>
+											</Grid>
+										</ContentView>
+									</DataTemplate>
+								</ui:RepeaterStackLayout.ItemTemplate>
+							</ui:RepeaterStackLayout>
+						</ContentView>
+					</ScrollView>
+				</StackLayout>
+			</StackLayout>
+			<Frame StyleClass="FloatingActionButton" BackgroundColor="{Binding PrimaryActionButtonBackgroundColor}"
+				IsVisible="{Binding ShowPrimaryActionButton}"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-72}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
+				<Frame.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
+				</Frame.GestureRecognizers>
+				<RelativeLayout>
+					<Image Source="ic_check_white_24dp"
+						RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+						RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+						RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+						RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+				</RelativeLayout>
+			</Frame>
+		</RelativeLayout>
 	</ContentPage.Content>
 </ContentPage>

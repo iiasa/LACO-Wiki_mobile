@@ -14,7 +14,7 @@
 					<StackLayout Margin="0" Padding="0" Spacing="0" IsVisible="{Binding ShowDetails}">
 						<StackLayout Margin="0" Padding="0" Spacing="0" VerticalOptions="Start" BindingContext="{Binding ViewModel}">
 							<Label Text="Method" StyleClass="Primary" />
-							<Label Text="{Binding ValidationMethodName}" StyleClass="Secondary" />
+							<Label Text="{Binding ValidationMethod}" StyleClass="Secondary" />
 							<Label Text="Underlying Dataset" StyleClass="Primary" />
 							<Label Text="{Binding AssociatedDataSetName}" StyleClass="Secondary" />
 							<Label Text="Underlying Sample" StyleClass="Primary" />

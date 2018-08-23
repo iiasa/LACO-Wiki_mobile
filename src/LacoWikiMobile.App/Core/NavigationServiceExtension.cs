@@ -17,9 +17,18 @@ namespace LacoWikiMobile.App.Core
 			return navigationService.NavigateAsync($"{navigationService.ToRelativePath(nameof(MainPage))}{nameof(MapPage)}",
 				new NavigationParameters()
 				{
-					{ "id", id },
-					{ "name", name },
+					{ nameof(id), id },
+					{ nameof(name), name },
 				});
+		}
+
+		public static Task<INavigationResult> NavigateToValidatePageAsync(this INavigationService navigationService, int sampleItemId, int validationSessionId)
+		{
+			return navigationService.NavigateAsync(nameof(ValidatePage), new NavigationParameters()
+			{
+				{ nameof(sampleItemId), sampleItemId },
+				{ nameof(validationSessionId), validationSessionId },
+			});
 		}
 
 		public static Task<INavigationResult> NavigateToValidationSessionDetailAsync(this INavigationService navigationService, int id,
@@ -27,8 +36,16 @@ namespace LacoWikiMobile.App.Core
 		{
 			return navigationService.NavigateAsync(nameof(ValidationSessionDetailPage), new NavigationParameters()
 			{
-				{ "id", id },
-				{ "name", name },
+				{ nameof(id), id },
+				{ nameof(name), name },
+			});
+		}
+
+		public static Task<INavigationResult> NavigateToValidationUploadAsync(this INavigationService navigationService, int id)
+		{
+			return navigationService.NavigateAsync(nameof(ValidationUploadPage), new NavigationParameters()
+			{
+				{ nameof(id), id },
 			});
 		}
 

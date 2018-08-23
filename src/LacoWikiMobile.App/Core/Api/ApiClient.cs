@@ -39,9 +39,16 @@ namespace LacoWikiMobile.App.Core.Api
 
 		public async Task<IEnumerable<SampleItemModel>> GetValidationSessionSampleItemsByIdAsync(int id)
 		{
-			return await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
-				.AppendPathSegment($"validationsessions/{id}/sampleitems")
-				.GetJsonAsync<IEnumerable<SampleItemModel>>();
+			try
+			{
+				return await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
+					.AppendPathSegment($"validationsessions/{id}/sampleitems")
+					.GetJsonAsync<IEnumerable<SampleItemModel>>();
+			}
+			catch (FlurlHttpException e)
+			{
+				throw TokenExpiredOrOriginalException(e);
+			}
 		}
 
 		public async Task<IEnumerable<ValidationSessionModel>> GetValidationSessionsAsync()
@@ -51,6 +58,20 @@ namespace LacoWikiMobile.App.Core.Api
 				return await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
 					.AppendPathSegment("validationsessions")
 					.GetJsonAsync<IEnumerable<ValidationSessionModel>>();
+			}
+			catch (FlurlHttpException e)
+			{
+				throw TokenExpiredOrOriginalException(e);
+			}
+		}
+
+		public async Task PostValidationAsync(int validationSessionId, int sampleItemId, ValidationCreateModel model)
+		{
+			try
+			{
+				await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
+					.AppendPathSegment($"validationsessions/{validationSessionId}/sampleitems/{sampleItemId}/validations")
+					.PostJsonAsync(model);
 			}
 			catch (FlurlHttpException e)
 			{

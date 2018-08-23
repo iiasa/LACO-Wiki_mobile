@@ -22,7 +22,11 @@ namespace LacoWikiMobile.App.ViewModels.Shared
 				TapItem();
 #pragma warning restore 4014
 			});
+
+			ItemSelectedCommand = new DelegateCommand(SelectItem);
 		}
+
+		public event EventHandler ItemSelected;
 
 		public event EventHandler ItemTapped;
 
@@ -30,11 +34,22 @@ namespace LacoWikiMobile.App.ViewModels.Shared
 
 		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
 		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
-		public Color BackgroundColor => IsActive ? Color.FromHex("#EEEEEE") : Color.Default;
+		public Color BackgroundColor => IsActive || IsSelected ? Color.FromHex("#EEEEEE") : Color.Default;
 
 		public bool IsActive { get; set; }
 
+		public bool IsSelected { get; set; }
+
+		public ICommand ItemSelectedCommand { get; set; }
+
 		public ICommand ItemTappedCommand { get; set; }
+
+		protected void SelectItem()
+		{
+			IsSelected = !IsSelected;
+
+			ItemSelected?.Invoke(this, EventArgs.Empty);
+		}
 
 		protected async Task TapItem()
 		{

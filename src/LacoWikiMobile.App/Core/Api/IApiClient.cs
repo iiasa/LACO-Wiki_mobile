@@ -16,5 +16,7 @@ namespace LacoWikiMobile.App.Core.Api
 		Task<IEnumerable<SampleItemModel>> GetValidationSessionSampleItemsByIdAsync(int id);
 
 		Task<IEnumerable<ValidationSessionModel>> GetValidationSessionsAsync();
+
+		Task PostValidationAsync(int validationSessionId, int sampleItemId, ValidationCreateModel model);
 	}
 }

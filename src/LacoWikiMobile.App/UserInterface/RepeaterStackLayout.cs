@@ -9,6 +9,7 @@ namespace LacoWikiMobile.App.UserInterface
 	using System.Collections;
 	using System.Collections.Specialized;
 	using System.Linq;
+	using LacoWikiMobile.App.Core;
 	using Xamarin.Forms;
 
 	public class RepeaterStackLayout : StackLayout
@@ -49,18 +50,21 @@ namespace LacoWikiMobile.App.UserInterface
 
 		protected virtual void SetItems()
 		{
-			Children.Clear();
-
-			if (ItemsSource == null)
+			Helper.RunOnMainThreadIfRequired(() =>
 			{
-				return;
-			}
+				Children.Clear();
 
-			// Clone to avoid exceptions when ItemSource gets modified while iterating
-			foreach (object item in ItemsSource.Cast<object>().ToList())
-			{
-				Children.Add(GetItemView(item));
-			}
+				if (ItemsSource == null)
+				{
+					return;
+				}
+
+				// Clone to avoid exceptions when ItemSource gets modified while iterating
+				foreach (object item in ItemsSource.Cast<object>().ToList())
+				{
+					Children.Add(GetItemView(item));
+				}
+			});
 		}
 
 		private static void ItemsSourceChanged(BindableObject bindable, object value, object newValue)
@@ -104,12 +108,15 @@ namespace LacoWikiMobile.App.UserInterface
 						throw new NotSupportedException();
 					}
 
-					int index = e.NewStartingIndex;
-
-					foreach (object item in e.NewItems)
+					Helper.RunOnMainThreadIfRequired(() =>
 					{
-						Children.Insert(index++, GetItemView(item));
-					}
+						int index = e.NewStartingIndex;
+
+						foreach (object item in e.NewItems)
+						{
+							Children.Insert(index++, GetItemView(item));
+						}
+					});
 
 					break;
 				}
@@ -121,13 +128,16 @@ namespace LacoWikiMobile.App.UserInterface
 					// moved. In addition, OldStartingIndex contains the index where the items were moved from, and NewStartingIndex
 					// contains the index where the items were moved to. A Move operation is logically treated as a Remove followed
 					// by an Add, so NewStartingIndex is interpreted as though the items had already been removed.
-					int index = e.NewStartingIndex;
-
-					foreach (object item in e.NewItems)
+					Helper.RunOnMainThreadIfRequired(() =>
 					{
-						Children.RemoveAt(e.OldStartingIndex);
-						Children.Insert(index++, GetItemView(item));
-					}
+						int index = e.NewStartingIndex;
+
+						foreach (object item in e.NewItems)
+						{
+							Children.RemoveAt(e.OldStartingIndex);
+							Children.Insert(index++, GetItemView(item));
+						}
+					});
 
 					break;
 				}
@@ -141,10 +151,13 @@ namespace LacoWikiMobile.App.UserInterface
 						throw new NotSupportedException();
 					}
 
-					foreach (object item in e.OldItems)
+					Helper.RunOnMainThreadIfRequired(() =>
 					{
-						Children.RemoveAt(e.OldStartingIndex);
-					}
+						foreach (object item in e.OldItems)
+						{
+							Children.RemoveAt(e.OldStartingIndex);
+						}
+					});
 
 					break;
 				}
@@ -159,17 +172,20 @@ namespace LacoWikiMobile.App.UserInterface
 						throw new NotSupportedException();
 					}
 
-					foreach (object item in e.OldItems)
+					Helper.RunOnMainThreadIfRequired(() =>
 					{
-						Children.RemoveAt(e.OldStartingIndex);
-					}
+						foreach (object item in e.OldItems)
+						{
+							Children.RemoveAt(e.OldStartingIndex);
+						}
 
-					int index = e.NewStartingIndex;
+						int index = e.NewStartingIndex;
 
-					foreach (object item in e.NewItems)
-					{
-						Children.Insert(index++, GetItemView(item));
-					}
+						foreach (object item in e.NewItems)
+						{
+							Children.Insert(index++, GetItemView(item));
+						}
+					});
 
 					break;
 				}
@@ -177,12 +193,15 @@ namespace LacoWikiMobile.App.UserInterface
 				case NotifyCollectionChangedAction.Reset:
 				{
 					// If Action is NotifyCollectionChangedAction.Reset, then no other properties are valid.
-					Children.Clear();
-
-					foreach (object item in ItemsSource)
+					Helper.RunOnMainThreadIfRequired(() =>
 					{
-						Children.Add(GetItemView(item));
-					}
+						Children.Clear();
+
+						foreach (object item in ItemsSource)
+						{
+							Children.Add(GetItemView(item));
+						}
+					});
 
 					break;
 				}

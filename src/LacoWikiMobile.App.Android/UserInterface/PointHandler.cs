@@ -180,7 +180,10 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		{
 			if (PointsToCirclesMapping[e.Circle] is ISelectable selectable)
 			{
-				selectable.Selected = !selectable.Selected;
+				if (selectable.IsSelectable)
+				{
+					selectable.Selected = !selectable.Selected;
+				}
 			}
 		}
 

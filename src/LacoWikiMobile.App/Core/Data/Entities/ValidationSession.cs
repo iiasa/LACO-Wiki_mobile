@@ -34,11 +34,7 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 		public string Description { get; set; }
 
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
-		public int Id
-		{
-			get;
-			set;
-		}
+		public int Id { get; set; }
 
 		public ICollection<LegendItem> LegendItems
 		{
@@ -65,8 +61,9 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 			set => this.user = value;
 		}
 
-		// TODO: Use ValidationMethod enum and LocalizationService
-		public string ValidationMethodName { get; set; }
+		public int UserId { get; set; }
+
+		public ValidationMethodEnum ValidationMethod { get; set; }
 
 		private ILazyLoader LazyLoader { get; set; }
 	}

@@ -13,6 +13,8 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 	{
 		private LegendItem legendItem;
 
+		private LocalValidation localValidation;
+
 		private ValidationSession validationSession;
 
 		public SampleItem()
@@ -36,6 +38,12 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 		{
 			get => LazyLoader.Load(this, ref this.legendItem);
 			set => this.legendItem = value;
+		}
+
+		public LocalValidation LocalValidation
+		{
+			get => LazyLoader.Load(this, ref this.localValidation);
+			set => this.localValidation = value;
 		}
 
 		[Required]

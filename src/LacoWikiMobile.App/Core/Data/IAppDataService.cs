@@ -11,6 +11,8 @@ namespace LacoWikiMobile.App.Core.Data
 
 	public interface IAppDataService
 	{
+		Task AddLocalValidationAsync(LocalValidation localValidation);
+
 		Task AddValidationSessionAsync(ValidationSession validationSession);
 
 		void DisableDetectChanges();
@@ -20,6 +22,12 @@ namespace LacoWikiMobile.App.Core.Data
 		Task EnsureUserExistsAsync();
 
 		Task<LegendItem> GetLegendItemByIdAsync(int id, int validationSessionId);
+
+		Task<LocalValidation> GetLocalValidationByIdAsync(int id, int validationSessionId);
+
+		Task<IEnumerable<LocalValidation>> GetLocalValidationsByIdAsync(int validationSessionId);
+
+		Task<IEnumerable<LocalValidation>> GetLocalValidationsWhereNotUploadedByIdAsync(int validationSessionId);
 
 		Task<SampleItem> GetSampleItemByIdAsync(int id, int validationSessionId);
 

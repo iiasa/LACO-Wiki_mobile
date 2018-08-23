@@ -25,6 +25,12 @@ namespace LacoWikiMobile.App.Core.Data
 
 		protected IAppDataContext Context { get; set; }
 
+		public async Task AddLocalValidationAsync(LocalValidation localValidation)
+		{
+			await Context.LocalValidations.AddAsync(localValidation);
+			await SaveChangesAsync();
+		}
+
 		public async Task AddValidationSessionAsync(ValidationSession validationSession)
 		{
 			await ApiAuthentication.EnsureAuthenticatedAsync();
@@ -70,18 +76,33 @@ namespace LacoWikiMobile.App.Core.Data
 
 		public async Task<LegendItem> GetLegendItemByIdAsync(int id, int validationSessionId)
 		{
-			await ApiAuthentication.EnsureAuthenticatedAsync();
-
 			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
 			return await Context.LegendItems.SingleAsync(x => x.Id == id && x.ValidationSession == validationSession);
 		}
 
+		public async Task<LocalValidation> GetLocalValidationByIdAsync(int id, int validationSessionId)
+		{
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+			return await Context.LocalValidations.SingleAsync(x =>
+				x.SampleItem.Id == id && x.SampleItem.ValidationSession == validationSession);
+		}
+
+		public async Task<IEnumerable<LocalValidation>> GetLocalValidationsByIdAsync(int validationSessionId)
+		{
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+			return await Context.LocalValidations.Where(x => x.SampleItem.ValidationSession == validationSession).ToListAsync();
+		}
+
+		public async Task<IEnumerable<LocalValidation>> GetLocalValidationsWhereNotUploadedByIdAsync(int validationSessionId)
+		{
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+			return await Context.LocalValidations.Where(x => x.SampleItem.ValidationSession == validationSession && x.Uploaded == false)
+				.ToListAsync();
+		}
+
 		public async Task<SampleItem> GetSampleItemByIdAsync(int id, int validationSessionId)
 		{
-			await ApiAuthentication.EnsureAuthenticatedAsync();
-
 			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
-
 			return await Context.SampleItems.SingleAsync(x => x.Id == id && x.ValidationSession == validationSession);
 		}
 
