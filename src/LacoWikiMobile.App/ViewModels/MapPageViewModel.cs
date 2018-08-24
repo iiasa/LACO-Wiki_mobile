@@ -31,7 +31,7 @@ namespace LacoWikiMobile.App.ViewModels
 	public class MapPageViewModel : ViewModelBase, IApplicationLifecycleAware, ITargetPositionObserver
 	{
 		// TODO: Discuss threshold
-		protected const double MinimumPointDistanceForValidation = 1;
+		protected const double MinimumPointDistanceForValidation = 0.1;
 
 		public MapPageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<MapPageViewModel> stringLocalizer, IEventAggregator eventAggregator, IApiClient apiClient,
@@ -60,7 +60,11 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				NavigationService.NavigateToValidationUploadAsync(ValidationSessionId);
 			});
+
+			ToogleTileLayerCommand = new DelegateCommand(() => { ShowTileLayer = !ShowTileLayer; });
 		}
+
+		public ICommand ToogleTileLayerCommand { get; set; }
 
 		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
 		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
@@ -146,6 +150,10 @@ namespace LacoWikiMobile.App.ViewModels
 		public bool ShowPrimaryActionButton =>
 			NavigationState == NavigationStateEnum.Navigating || NavigationState == NavigationStateEnum.PointReached;
 
+		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
+		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
+		public Color TileLayerButtonBackgroundColor => ShowTileLayer ? Color.FromHex("#009688") : Color.FromHex("#757575");
+
 		public ICommand MapClickCommand { get; set; }
 
 		public ICommand NavigateToValidationUploadCommand { get; set; }
@@ -159,6 +167,8 @@ namespace LacoWikiMobile.App.ViewModels
 		public SamplePointsViewModel SamplePointsViewModel { get; set; }
 
 		public SamplePointViewModel SelectedPoint { get; set; }
+
+		public bool ShowTileLayer { get; set; } = true;
 
 		protected IApiClient ApiClient { get; set; }
 

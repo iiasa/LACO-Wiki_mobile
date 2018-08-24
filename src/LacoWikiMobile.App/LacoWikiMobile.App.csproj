@@ -13,6 +13,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Core\Tile\Resources\iiasa.mbtiles" />
+		<EmbeddedResource Include="Core\Tile\Resources\iiasa.mbtiles" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="7.0.1" />
 		<PackageReference Include="AutoMapper.Collection" Version="4.0.0" />
 		<PackageReference Include="Flurl.Http" Version="2.3.1" />

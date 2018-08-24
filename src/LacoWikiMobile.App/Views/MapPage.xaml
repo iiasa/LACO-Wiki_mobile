@@ -12,11 +12,23 @@
 	<ContentPage.Content>
 		<RelativeLayout>
 			<customMap:CustomMap StyleClass="Map" Points="{Binding SamplePointsViewModel.Points}" MapClickCommand="{Binding MapClickCommand}" x:Name="MyMap"
-				IsShowingUser="true" MapType="Hybrid"
+				IsShowingUser="true" MapType="Hybrid" ShowTileLayer="{Binding ShowTileLayer}"
 				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
 				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
 				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
 				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-52}" />
+
+			<StackLayout Orientation="Vertical"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=16}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=16}">
+				<Frame WidthRequest="40" HeightRequest="40" Margin="0" Padding="0" BackgroundColor="{Binding TileLayerButtonBackgroundColor}"
+					CornerRadius="20" HasShadow="True">
+					<Image Source="ic_layers_white_24dp" VerticalOptions="Center" HorizontalOptions="Center" />
+					<Frame.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ToogleTileLayerCommand}" />
+					</Frame.GestureRecognizers>
+				</Frame>
+			</StackLayout>
 
 			<RelativeLayout BackgroundColor="{Binding NavigationPaneBackgroundColor}"
 				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"

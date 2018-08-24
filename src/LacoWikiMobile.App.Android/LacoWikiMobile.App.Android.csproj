@@ -50,6 +50,7 @@
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <DocumentationFile>bin\Release\LacoWikiMobile.App.Android.xml</DocumentationFile>
+    <AndroidSupportedAbis />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UITest|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -101,6 +102,7 @@
     <Compile Include="UserInterface\CircularProgressBarRenderer.cs" />
     <Compile Include="UserInterface\CircularProgressBarView.cs" />
     <Compile Include="UserInterface\CustomMapRenderer.cs" />
+    <Compile Include="UserInterface\CustomTileProvider.cs" />
     <Compile Include="UserInterface\PointHandler.cs" />
   </ItemGroup>
   <ItemGroup>
