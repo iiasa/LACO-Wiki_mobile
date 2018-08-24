@@ -23,6 +23,9 @@ namespace LacoWikiMobile.App.UserInterface.CustomMap
 		public static readonly BindableProperty PointsProperty = BindableProperty.Create(nameof(Points), typeof(IEnumerable<IPoint>),
 			typeof(CustomMap), new ObservableCollection<IPoint>());
 
+		public static readonly BindableProperty ShowTileLayerProperty =
+			BindableProperty.Create(nameof(ShowTileLayer), typeof(bool), typeof(CustomMap), true);
+
 		public CustomMap()
 		{
 			IEventAggregator eventAggregator = ((PrismApplicationBase)Application.Current).Container.Resolve<IEventAggregator>();
@@ -45,6 +48,12 @@ namespace LacoWikiMobile.App.UserInterface.CustomMap
 		{
 			get => (IEnumerable<IPoint>)GetValue(CustomMap.PointsProperty);
 			set => SetValue(CustomMap.PointsProperty, value);
+		}
+
+		public bool ShowTileLayer
+		{
+			get => (bool)GetValue(CustomMap.ShowTileLayerProperty);
+			set => SetValue(CustomMap.ShowTileLayerProperty, value);
 		}
 
 		protected void ZoomToExtent(IExtent extent)

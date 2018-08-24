@@ -34,10 +34,10 @@ namespace LacoWikiMobile.App.ViewModels.Map
 			{
 				if (IsValidated)
 				{
-					return 50;
+					return 100;
 				}
 
-				return Selected == false ? 75 : 100;
+				return Selected == false ? 150 : 200;
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace LacoWikiMobile.App.ViewModels.Map
 			}
 		}
 
-		public double StrokeWidth => Selected == false ? 5 : 10;
+		public double StrokeWidth => Selected == false ? 15 : 20;
 
 		public int Id { get; set; }
 

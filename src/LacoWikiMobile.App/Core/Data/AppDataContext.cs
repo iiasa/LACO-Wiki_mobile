@@ -10,7 +10,7 @@ namespace LacoWikiMobile.App.Core.Data
 
 	public class AppDataContext : DbContext, IAppDataContext
 	{
-		public AppDataContext(DbContextOptions options)
+		public AppDataContext(DbContextOptions<AppDataContext> options)
 			: base(options)
 		{
 		}

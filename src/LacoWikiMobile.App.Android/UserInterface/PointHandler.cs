@@ -131,6 +131,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			}
 
 			CircleOptions circleOptions = new CircleOptions();
+			circleOptions.InvokeZIndex(1.0f);
 
 			if (point is ISelectable selectable)
 			{

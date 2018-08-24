@@ -6,12 +6,16 @@
 namespace LacoWikiMobile.App.Core
 {
 	using System;
+	using System.Linq;
+	using System.Reflection;
 	using AutoMapper;
 	using AutoMapper.Configuration;
 	using AutoMapper.EquivalencyExpression;
 	using DryIoc;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
+	using LacoWikiMobile.App.Core.Tile;
+	using LacoWikiMobile.App.Core.Tile.Resources;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Localization;
 	using Microsoft.Extensions.Logging.Abstractions;
@@ -58,12 +62,8 @@ namespace LacoWikiMobile.App.Core
 
 		public static void RegisterAppDataContext(this IContainerRegistry containerRegistry)
 		{
-			containerRegistry.Register<DbContextOptionsBuilder<AppDataContext>, DbContextOptionsBuilder<AppDataContext>>();
 			containerRegistry.GetContainer()
 				.RegisterInitializer<DbContextOptionsBuilder<AppDataContext>>((builder, resolver) => { builder.Configure(); });
-
-			containerRegistry.GetContainer()
-				.Register<DbContextOptions>(made: Made.Of(r => ServiceInfo.Of<DbContextOptionsBuilder<AppDataContext>>(), f => f.Options));
 
 			containerRegistry.RegisterSingleton<IAppDataContext, AppDataContext>();
 			containerRegistry.GetContainer()
@@ -122,6 +122,37 @@ namespace LacoWikiMobile.App.Core
 					}, new SingletonReuse());
 
 			containerRegistry.GetContainer().Register(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
+		}
+
+		public static void RegisterSharedContextClasses(this IContainerRegistry containerRegistry)
+		{
+			containerRegistry.GetContainer()
+				.Register(typeof(DbContextOptionsBuilder<>),
+					made: Made.Of(typeof(DbContextOptionsBuilder<>).GetConstructor(Type.EmptyTypes)));
+
+			containerRegistry.GetContainer()
+				.Register(typeof(DbContextOptions<>),
+					made: Made.Of(
+						r => typeof(DbContextOptionsBuilder<>).MakeGenericType(r.ServiceType.GenericTypeArguments.Single())
+							.GetProperty("Options", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly),
+						r => ServiceInfo.Of(
+							typeof(DbContextOptionsBuilder<>).MakeGenericType(r.ServiceType.GenericTypeArguments.Single()))));
+		}
+
+		public static void RegisterTileService(this IContainerRegistry containerRegistry)
+		{
+			containerRegistry.GetContainer()
+				.RegisterInitializer<DbContextOptionsBuilder<TileContext>>((builder, resolver) =>
+				{
+					if (!builder.FileExists("iiasa.mbtiles"))
+					{
+						builder.CopyFromStream(Resources.GetIIASATiles(), "iiasa.mbtiles");
+					}
+
+					builder.Configure("iiasa.mbtiles");
+				});
+
+			containerRegistry.Register<IReadOnlyTileService, ReadOnlyTileService>();
 		}
 	}
 }

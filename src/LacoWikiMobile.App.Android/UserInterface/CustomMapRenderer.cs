@@ -15,6 +15,8 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 	using System.ComponentModel;
 	using Android.Content;
 	using Android.Gms.Maps;
+	using Android.Gms.Maps.Model;
+	using LacoWikiMobile.App.Core.Tile;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
 	using Xamarin.Forms.Maps;
 	using Xamarin.Forms.Maps.Android;
@@ -32,6 +34,8 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		protected bool IsInitialized { get; set; }
 
 		protected PointHandler PointHandler { get; set; }
+
+		protected TileOverlay TileOverlay { get; set; }
 
 		protected override void Dispose(bool disposing)
 		{
@@ -79,6 +83,18 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 					PointHandler.Points = CustomMap.Points;
 				}
 			}
+
+			if (CustomMap.ShowTileLayerProperty.PropertyName == e.PropertyName)
+			{
+				if (CustomMap.ShowTileLayer)
+				{
+					TileOverlay.Visible = true;
+				}
+				else
+				{
+					TileOverlay.Visible = false;
+				}
+			}
 		}
 
 		protected void OnMapClicked(object sender, EventArgs e)
@@ -102,6 +118,14 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			{
 				return;
 			}
+
+			// Find a better way to get dependencies
+			TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
+				.InvokeTileProvider(
+					new CustomTileProvider(
+						(IReadOnlyTileService)((App)Application.Current).Container.Resolve(typeof(IReadOnlyTileService))));
+
+			TileOverlay = this.NativeMap.AddTileOverlay(options);
 
 			IsInitialized = true;
 
