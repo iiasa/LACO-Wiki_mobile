@@ -112,7 +112,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			// Disable rotation, so that the rotation button doesn't appear
 			map.UiSettings.RotateGesturesEnabled = false;
 
-			map.MapType = GoogleMap.MapTypeTerrain;
+			map.MapType = GoogleMap.MapTypeSatellite;
 
 			if (IsInitialized)
 			{
