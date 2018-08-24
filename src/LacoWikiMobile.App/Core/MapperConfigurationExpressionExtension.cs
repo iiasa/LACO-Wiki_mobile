@@ -135,6 +135,8 @@ namespace LacoWikiMobile.App.Core
 				.ForMember(dest => dest.FillColor, opt => opt.Ignore())
 				.ForMember(dest => dest.StrokeColor, opt => opt.Ignore())
 				.ForMember(dest => dest.StrokeWidth, opt => opt.Ignore())
+				.ForMember(dest => dest.ValidationSessionId, opt => opt.Ignore())
+				.ForMember(dest => dest.LegendItemId, opt => opt.Ignore())
 				.AfterMap((src, dest) =>
 				{
 					Wkx.Point geometry = Geometry.Deserialize<WktSerializer>(src.Geometry) as Wkx.Point;
