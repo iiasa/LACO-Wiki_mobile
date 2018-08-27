@@ -18,6 +18,28 @@
 					<ContentView StyleClass="SubHeader">
 						<Label>Step 1: Class correct?</Label>
 					</ContentView>
+					<ContentView StyleClass="ListWithImage">
+						<Grid BindingContext="{Binding LegendItem}" StyleClass="List,ListDoubleLine">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="72" />
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="56" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<ContentView Grid.Row="0" Grid.Column="0" StyleClass="Image">
+								<Frame BorderColor="#444444" BackgroundColor="{Binding Color}" />
+							</ContentView>
+
+							<ContentView Grid.Row="0" Grid.Column="1" StyleClass="LineContainer">
+								<StackLayout Spacing="0" VerticalOptions="Center">
+									<Label Margin="0" Text="{Binding Name}" StyleClass="FirstLine" />
+								</StackLayout>
+							</ContentView>
+						</Grid>
+					</ContentView>
+
 					<Grid Margin="0" Padding="16,0,16,8">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"></RowDefinition>
