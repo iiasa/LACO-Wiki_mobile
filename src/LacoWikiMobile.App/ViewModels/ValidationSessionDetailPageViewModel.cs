@@ -11,14 +11,17 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
+	using System.Windows.Input;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
 	using Microsoft.Extensions.Localization;
 	using Plugin.Permissions.Abstractions;
 	using Prism.Navigation;
 	using Xamarin.Essentials;
+	using Xamarin.Forms;
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
 	{
+
 		public ValidationSessionDetailPageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<ValidationSessionDetailPageViewModel> localizer, IApiClient apiClient, IAppDataService appDataService,
 			IMapper mapper)
@@ -27,6 +30,7 @@ namespace LacoWikiMobile.App.ViewModels
 			ApiClient = apiClient;
 			AppDataService = appDataService;
 			Mapper = mapper;
+			OnClickDownloadTilesCommand = new Command(DownloadTiles);
 		}
 
 		public bool ShowDetails => !ShowLoading;
@@ -37,11 +41,15 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public bool ShowLoading { get; set; } = true;
 
+		public ICommand OnClickDownloadTilesCommand { get; private set; }
+
 		public ValidationSessionDetailViewModel ViewModel { get; set; }
 
 		protected IMapper Mapper { get; set; }
 
 		protected int ValidationSessionId { get; set; }
+
+
 
 		// TODO: Disable primary action button until data is loaded
 		protected override async Task ExecutePrimaryActionAsync()
@@ -104,5 +112,11 @@ namespace LacoWikiMobile.App.ViewModels
 					});
 			}
 		}
+
+		void DownloadTiles()
+		{
+			System.Console.WriteLine("Download tiles");
+		}
 	}
+
 }

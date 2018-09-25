@@ -20,6 +20,7 @@ namespace LacoWikiMobile.App.ViewModels
 
 	public class ViewModelBase : INotifyPropertyChanged, INavigatingAware, INavigatedAware
 	{
+
 		public ViewModelBase(INavigationService navigationService, IPermissionService permissionService, IStringLocalizer stringLocalizer)
 		{
 			NavigationService = navigationService;
@@ -33,6 +34,7 @@ namespace LacoWikiMobile.App.ViewModels
 				PrimaryActionButtonTappedAsync();
 #pragma warning restore 4014
 			}, () => PrimaryActionButtonEnabled).ObservesProperty(() => PrimaryActionButtonEnabled);
+
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -254,5 +256,6 @@ namespace LacoWikiMobile.App.ViewModels
 
 			return true;
 		}
+
 	}
 }

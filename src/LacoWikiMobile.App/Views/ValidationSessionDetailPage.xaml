@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:ui="clr-namespace:LacoWikiMobile.App.UserInterface;assembly=LacoWikiMobile.App"
@@ -22,11 +22,12 @@
 							<Label Text="Description" StyleClass="Primary" />
 							<Label Text="{Binding Description}" StyleClass="Secondary" />
 							<BoxView StyleClass="Separator" />
+            
 							<Label Text="Progress" FontSize="Medium" />
 							<Label Text="{Binding ProgressText}" StyleClass="Secondary" Margin="0,0,0,8" />
 							<RelativeLayout HorizontalOptions="Center" WidthRequest="100" HeightRequest="100" Margin="0,0,0,16">
 								<ui:CircularProgressBar x:Name="circularProgressBar" ProgressColor="#009688" ProgressBackgroundColor="#80CBC4"
-								StrokeWidth="16"
+							    StrokeWidth="16"
 								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
 								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
 								RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
@@ -76,6 +77,9 @@
 							</ContentView>
 						</StackLayout>
 					</StackLayout>
+                    <BoxView StyleClass="Separator" />
+                    <Button Text="Download tiles" Margin="35, 5" Command="{Binding OnClickDownloadTilesCommand}"/>
+          
 				</StackLayout>
 			</ScrollView>
 			<Frame StyleClass="FloatingActionButton"
