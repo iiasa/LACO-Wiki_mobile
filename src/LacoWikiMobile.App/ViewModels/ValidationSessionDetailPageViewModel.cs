@@ -18,6 +18,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using Prism.Navigation;
 	using Xamarin.Essentials;
 	using Xamarin.Forms;
+	using System.Collections.Generic;
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
 	{
@@ -31,6 +32,14 @@ namespace LacoWikiMobile.App.ViewModels
 			AppDataService = appDataService;
 			Mapper = mapper;
 			OnClickDownloadTilesCommand = new Command(DownloadTiles);
+			List<OfflineCacheItemViewModel> listItems = new List<OfflineCacheItemViewModel>(4);
+			OfflineCacheItemViewModel cacheModel = new OfflineCacheItemViewModel();
+			cacheModel.Name = "dfdfdfdfd";
+			cacheModel.Size = "56MB";
+			listItems.Add(cacheModel);
+			listItems.Add(cacheModel);
+			CacheItems = listItems;
+
 		}
 
 		public bool ShowDetails => !ShowLoading;
@@ -42,6 +51,8 @@ namespace LacoWikiMobile.App.ViewModels
 		public bool ShowLoading { get; set; } = true;
 
 		public ICommand OnClickDownloadTilesCommand { get; private set; }
+
+		public IEnumerable<OfflineCacheItemViewModel> CacheItems { get; set; }
 
 		public ValidationSessionDetailViewModel ViewModel { get; set; }
 
@@ -99,6 +110,7 @@ namespace LacoWikiMobile.App.ViewModels
 				await ApiClient.GetValidationSessionByIdAsync(ValidationSessionId)
 					.ContinueWith(result =>
 					{
+					System.Console.WriteLine("DEBUG - Result "+result);
 						if (ViewModel == null)
 						{
 							ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(result.Result);

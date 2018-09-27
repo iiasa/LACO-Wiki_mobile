@@ -27,6 +27,10 @@ namespace LacoWikiMobile.App.Core.Api
 		{
 			try
 			{
+				string res = await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
+					.AppendPathSegment($"validationsessions/{id}")
+					.GetStringAsync();
+				System.Console.WriteLine("DEBUG - Result raw " + res);
 				return await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
 					.AppendPathSegment($"validationsessions/{id}")
 					.GetJsonAsync<ValidationSessionDetailModel>();

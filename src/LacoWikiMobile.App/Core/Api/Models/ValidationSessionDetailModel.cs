@@ -6,6 +6,7 @@
 namespace LacoWikiMobile.App.Core.Api.Models
 {
 	using System.Collections.Generic;
+	using LacoWikiMobile.App.Core.Data.Entities;
 
 	// Source: LacoWiki.Portal.Mvc.Models.Mobile
 	public class ValidationSessionDetailModel : ValidationSessionModel
@@ -17,6 +18,8 @@ namespace LacoWikiMobile.App.Core.Api.Models
 		public string Description { get; set; }
 
 		public IEnumerable<LegendItemModel> LegendItems { get; set; }
+
+		public IEnumerable<OfflineCache> OfflineCaches { get; set; }
 
 		public ValidationSessionProgressModel Progress { get; set; }
 

@@ -78,7 +78,13 @@
 						</StackLayout>
 					</StackLayout>
                     <BoxView StyleClass="Separator" />
-                    <Button Text="Download tiles" Margin="35, 5" Command="{Binding OnClickDownloadTilesCommand}"/>
+                    <ui:RepeaterStackLayout ItemsSource="{Binding CacheItems}" StyleClass="List,ListDoubleLine">
+                        <ui:RepeaterStackLayout.ItemTemplate>
+                             <DataTemplate>
+                                  <Button Text="Download tiles" Margin="35, 5" Command="{Binding OnClickDownloadTilesCommand}"/>
+                             </DataTemplate>
+                        </ui:RepeaterStackLayout.ItemTemplate>
+                     </ui:RepeaterStackLayout>
           
 				</StackLayout>
 			</ScrollView>
