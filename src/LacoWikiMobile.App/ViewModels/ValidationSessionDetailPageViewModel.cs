@@ -128,6 +128,25 @@ namespace LacoWikiMobile.App.ViewModels
 		void DownloadTiles()
 		{
 			System.Console.WriteLine("Download tiles");
+			TaskDownloadTiles();
+		}
+
+		async Task TaskDownloadTiles()
+		{
+
+			//async download
+			string cacheId = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
+			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+			{
+				await ApiClient.GetCacheAsync(cacheId)
+					.ContinueWith(result =>
+					{
+						System.Console.WriteLine("Download tiles done");
+						byte[] cacheBytes = result.Result;
+						System.Console.WriteLine("size tiles "+cacheBytes.Length);
+						FileManager.saveFileToDirectory(cacheId, cacheBytes);
+					});
+			}
 		}
 	}
 
