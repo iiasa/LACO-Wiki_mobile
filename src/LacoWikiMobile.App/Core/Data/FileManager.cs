@@ -22,5 +22,16 @@ namespace LacoWikiMobile.App.Core.Data
 
 		}
 
+		public static bool CacheFileExists(string cacheId)
+		{
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), cacheId);
+			return File.Exists(fileName);
+		}
+
+		public static void DeleteCache(string cacheId) {
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), cacheId);
+			File.Delete(fileName);
+		}
+
 	}
 }

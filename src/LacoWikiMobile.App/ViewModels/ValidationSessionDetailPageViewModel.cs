@@ -31,14 +31,26 @@ namespace LacoWikiMobile.App.ViewModels
 			ApiClient = apiClient;
 			AppDataService = appDataService;
 			Mapper = mapper;
-			OnClickDownloadTilesCommand = new Command(DownloadTiles);
+			OnClickDownloadTilesCommand = new Command<string>(DownloadTiles);
 			List<OfflineCacheItemViewModel> listItems = new List<OfflineCacheItemViewModel>(4);
 			OfflineCacheItemViewModel cacheModel = new OfflineCacheItemViewModel();
-			cacheModel.Name = "dfdfdfdfd";
+
+			cacheModel.Name = "Download";
 			cacheModel.Size = "56MB";
+			cacheModel.Id = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
+			cacheModel.ParameterCacheId = cacheModel.Id;
+			if(FileManager.CacheFileExists(cacheModel.Id)) {
+				cacheModel.CacheButtonText = "Delete cache";
+				cacheModel.isDownloaded = true;
+			}
+			else {
+				cacheModel.CacheButtonText = cacheModel.Name + " " + cacheModel.Size;
+				cacheModel.isDownloaded = false;
+			}
 			listItems.Add(cacheModel);
 			listItems.Add(cacheModel);
 			CacheItems = listItems;
+
 
 		}
 
@@ -59,8 +71,6 @@ namespace LacoWikiMobile.App.ViewModels
 		protected IMapper Mapper { get; set; }
 
 		protected int ValidationSessionId { get; set; }
-
-
 
 		// TODO: Disable primary action button until data is loaded
 		protected override async Task ExecutePrimaryActionAsync()
@@ -125,17 +135,22 @@ namespace LacoWikiMobile.App.ViewModels
 			}
 		}
 
-		void DownloadTiles()
+		void DownloadTiles(string cacheId)
 		{
 			System.Console.WriteLine("Download tiles");
-			TaskDownloadTiles();
+			if (FileManager.CacheFileExists(cacheId)) {
+				//remove files
+				FileManager.DeleteCache(cacheId);
+			}
+
+			else TaskDownloadTiles(cacheId);
 		}
 
-		async Task TaskDownloadTiles()
+		async Task TaskDownloadTiles(string cacheId)
 		{
 
 			//async download
-			string cacheId = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
+			//string cacheId = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
 			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
 			{
 				await ApiClient.GetCacheAsync(cacheId)

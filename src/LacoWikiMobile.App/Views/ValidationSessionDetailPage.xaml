@@ -81,7 +81,7 @@
                     <ui:RepeaterStackLayout ItemsSource="{Binding CacheItems}" StyleClass="List,ListDoubleLine" x:Name="ButtonCache">
                         <ui:RepeaterStackLayout.ItemTemplate>
                              <DataTemplate>
-                                  <Button Text="Download tiles" Margin="35, 5" Command="{Binding Source={x:Reference Name=ButtonCache}, Path=BindingContext.OnClickDownloadTilesCommand}" CommandParameter="{Binding}" />
+                                  <Button Text="{Binding CacheButtonText}" Margin="35, 5" Command="{Binding Source={x:Reference Name=ButtonCache}, Path=BindingContext.OnClickDownloadTilesCommand}" CommandParameter="{Binding ParameterCacheId}" />
                              </DataTemplate>
                         </ui:RepeaterStackLayout.ItemTemplate>
                      </ui:RepeaterStackLayout>
