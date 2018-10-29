@@ -21,6 +21,7 @@ namespace LacoWikiMobile.App.Core.Tile
 		{
 			lock (TileContext)
 			{
+		
 				return TileContext.Tiles.SingleOrDefault(tile =>
 					tile.ZoomLevel == zoomLevel && tile.TileColumn == tileColumn && tile.TileRow == tileRow);
 			}
