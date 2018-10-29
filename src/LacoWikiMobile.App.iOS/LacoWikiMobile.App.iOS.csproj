@@ -50,12 +50,15 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: Moamen Saad (5SV4C6BL2A)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <CodesignEntitlements>
+    </CodesignEntitlements>
     <DocumentationFile>bin\iPhone\Debug\LacoWikiMobile.App.iOS.xml</DocumentationFile>
-    <CodesignProvision />
+    <CodesignProvision>VS: WildCard Development</CodesignProvision>
     <MtouchFastDev>true</MtouchFastDev>
+    <CodesignExtraArgs />
+    <CodesignResourceRules />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -102,6 +105,9 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
+    <Reference Include="Xamarin.GooglePlayServices.Maps">
+      <HintPath>C:\Users\saad\.nuget\packages\xamarin.googleplayservices.maps\42.1021.1\lib\MonoAndroid70\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
@@ -115,7 +121,7 @@
     <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
     <!-- See https://github.com/xamarin/Xamarin.Forms/issues/1380 -->
     <PackageReference Include="System.Reflection.Emit" Version="4.3.0">
-        <ExcludeAssets>all</ExcludeAssets>
+      <ExcludeAssets>all</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +135,7 @@
     <Compile Include="UserInterface\CircularProgressBarRenderer.cs" />
     <Compile Include="UserInterface\CircularProgressBarView.cs" />
     <Compile Include="UserInterface\CustomMapRenderer.cs" />
+    <Compile Include="UserInterface\CustomTileProvider.cs" />
     <Compile Include="UserInterface\PointHandler.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist">

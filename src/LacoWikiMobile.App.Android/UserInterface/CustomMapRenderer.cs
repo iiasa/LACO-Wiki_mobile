@@ -86,14 +86,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 			if (CustomMap.ShowTileLayerProperty.PropertyName == e.PropertyName)
 			{
-				if (CustomMap.ShowTileLayer)
-				{
-					TileOverlay.Visible = true;
-				}
-				else
-				{
-					TileOverlay.Visible = false;
-				}
+				TileOverlay.Visible = CustomMap.ShowTileLayer;
 			}
 		}
 
@@ -104,38 +97,41 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		protected override void OnMapReady(GoogleMap map)
 		{
-			base.OnMapReady(map);
-
-			// Disable the zoom-in and zoom-out buttons in any case
-			map.UiSettings.ZoomControlsEnabled = false;
-
-			// Disable rotation, so that the rotation button doesn't appear
-			map.UiSettings.RotateGesturesEnabled = false;
-
-			map.MapType = GoogleMap.MapTypeSatellite;
-
 			if (IsInitialized)
 			{
 				return;
 			}
 
-			// Find a better way to get dependencies
-			TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
-				.InvokeTileProvider(
-					new CustomTileProvider(
+			if (map != null)
+			{
+				base.OnMapReady(map);
+
+				// Disable the zoom-in and zoom-out buttons in any case
+				map.UiSettings.ZoomControlsEnabled = false;
+
+				// Disable rotation, so that the rotation button doesn't appear
+				map.UiSettings.RotateGesturesEnabled = false;
+
+				map.MapType = GoogleMap.MapTypeNone;
+
+				// Find a better way to get dependencies
+				TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
+					.InvokeTileProvider(new CustomTileProvider(
 						(IReadOnlyTileService)((App)Application.Current).Container.Resolve(typeof(IReadOnlyTileService))));
 
-			TileOverlay = this.NativeMap.AddTileOverlay(options);
+				TileOverlay = map.AddTileOverlay(options);
 
-			IsInitialized = true;
+				IsInitialized = true;
 
-			PointHandler = new PointHandler()
-			{
-				Map = map,
-				Points = CustomMap.Points,
-			};
+				PointHandler = new PointHandler
+				{
+					Map = map,
+					Points = CustomMap.Points,
+				};
+				PointHandler.OnMapClicked += OnMapClicked;
+			}
 
-			PointHandler.OnMapClicked += OnMapClicked;
+		
 		}
 	}
 }
