@@ -61,6 +61,14 @@ namespace LacoWikiMobile.App.Core
 				.ForMember(dest => dest.ItemSelectedCommand, opt => opt.Ignore())
 				.EqualityComparison((source, dest) => dest.Id == source.LegendItemID);
 
+
+			mapperConfigurationExpression.CreateMap<OfflineCacheModel, OfflineCacheItemViewModel>()
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.LayerName))
+				.ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.FileSize))
+				.ForMember(dest => dest.CacheButtonText, opt => opt.MapFrom(src => src.LayerName))
+				.ForMember(dest => dest.isDownloaded, opt => opt.Ignore())
+				.ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url));
+
 			mapperConfigurationExpression.CreateMap<IEnumerable<SampleItemModel>, SamplePointsViewModel>()
 				.ForMember(dest => dest.Points, opt => opt.MapFrom(src => src));
 
@@ -124,6 +132,16 @@ namespace LacoWikiMobile.App.Core
 				.ForMember(dest => dest.ItemSelectedCommand, opt => opt.Ignore())
 				.EqualityComparison((source, dest) => dest.Id == source.Id);
 
+
+			mapperConfigurationExpression.CreateMap<OfflineCache, OfflineCacheItemViewModel>()
+				.ForMember(dest => dest.Name, opt => opt.Ignore())
+				.ForMember(dest => dest.Size, opt => opt.Ignore())
+				.ForMember(dest => dest.Url, opt => opt.Ignore())
+				.ForMember(dest => dest.CacheButtonText, opt => opt.Ignore())
+				.ForMember(dest => dest.isDownloaded, opt => opt.Ignore());
+
+
+
 			mapperConfigurationExpression.CreateMap<ValidationSession, SamplePointsViewModel>()
 				.ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.SampleItems));
 
@@ -173,6 +191,12 @@ namespace LacoWikiMobile.App.Core
 				.ForMember(dest => dest.ValidationSession, opt => opt.Ignore())
 				.ForMember(dest => dest.SampleItems, opt => opt.Ignore())
 				.EqualityComparison((source, dest) => dest.Id == source.Id);
+
+			mapperConfigurationExpression.CreateMap<OfflineCacheItemViewModel, OfflineCache>()
+			.ForMember(dest => dest.LayerName, opt => opt.MapFrom(src => src.Name))
+			.ForMember(dest => dest.FileSize, opt => opt.MapFrom(src => src.Size))
+			.ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url))
+			.EqualityComparison((source, dest) => dest.LayerName == source.Name);
 
 			mapperConfigurationExpression.CreateMap<SamplePointsViewModel, ValidationSession>(MemberList.Source)
 				.ForMember(dest => dest.SampleItems, opt => opt.MapFrom(src => src.Points));

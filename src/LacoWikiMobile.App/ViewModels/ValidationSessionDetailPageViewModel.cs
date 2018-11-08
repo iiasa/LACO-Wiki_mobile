@@ -31,8 +31,9 @@ namespace LacoWikiMobile.App.ViewModels
 			ApiClient = apiClient;
 			AppDataService = appDataService;
 			Mapper = mapper;
-			OnClickDownloadTilesCommand = new Command<string>(DownloadTiles);
-			List<OfflineCacheItemViewModel> listItems = new List<OfflineCacheItemViewModel>(4);
+			OnClickDownloadTilesCommand = new Command<OfflineCacheItemViewModel>(DownloadTiles);
+			/*List<OfflineCacheItemViewModel> listItems = new List<OfflineCacheItemViewModel>(4);
+
 			OfflineCacheItemViewModel cacheModel = new OfflineCacheItemViewModel();
 
 			cacheModel.Name = "Download";
@@ -50,6 +51,7 @@ namespace LacoWikiMobile.App.ViewModels
 			listItems.Add(cacheModel);
 			listItems.Add(cacheModel);
 			CacheItems = listItems;
+			*/
 
 
 		}
@@ -131,35 +133,56 @@ namespace LacoWikiMobile.App.ViewModels
 							// TODO: Save updated progress
 							Mapper.Map(result.Result, ViewModel);
 						}
+						//handle offline cache
+						//System.Console.WriteLine("DEBUG - Result cache " + result);
+						CacheItems = ViewModel.OfflineCaches;
+						foreach (OfflineCacheItemViewModel cacheModel in CacheItems) {
+							if(FileManager.CacheFileExists(cacheModel.Name)) {
+								cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
+							}
+
+						}
+
 					});
 			}
 		}
 
-		void DownloadTiles(string cacheId)
+		void DownloadTiles(OfflineCacheItemViewModel cacheButton)
 		{
 			System.Console.WriteLine("Download tiles");
-			if (FileManager.CacheFileExists(cacheId)) {
+			if (FileManager.CacheFileExists(cacheButton.Name)) {
 				//remove files
-				FileManager.DeleteCache(cacheId);
+				FileManager.DeleteCache(cacheButton.Name);
+				cacheButton.CacheButtonText = "Download "+cacheButton.Name;
 			}
 
-			else TaskDownloadTiles(cacheId);
+			else TaskDownloadTiles(cacheButton);
 		}
 
-		async Task TaskDownloadTiles(string cacheId)
+		async Task TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)
 		{
 
 			//async download
 			//string cacheId = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
 			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
 			{
-				await ApiClient.GetCacheAsync(cacheId)
+				//cacheButton.CacheButtonText = "Downloading " + cacheButton.Name;
+				foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
+				{
+					if (string.Equals(cacheModel.Name,cacheButton.Name ))
+					{
+						cacheModel.CacheButtonText = "Downloading " + cacheModel.Name;
+					}
+
+				}
+				await ApiClient.GetCacheAsync(cacheButton.Url)
 					.ContinueWith(result =>
 					{
 						System.Console.WriteLine("Download tiles done");
 						byte[] cacheBytes = result.Result;
 						System.Console.WriteLine("size tiles "+cacheBytes.Length);
-						FileManager.saveFileToDirectory(cacheId, cacheBytes);
+						FileManager.saveFileToDirectory(cacheButton.Name, cacheBytes);
+						cacheButton.CacheButtonText = cacheButton.Name + " saved";
 					});
 			}
 		}

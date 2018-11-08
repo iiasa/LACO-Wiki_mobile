@@ -28,6 +28,8 @@ namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 
 		public IEnumerable<ItemViewModel> LegendItems { get; set; }
 
+		public IEnumerable<OfflineCacheItemViewModel> OfflineCaches { get; set; }
+
 		public string Name { get; set; }
 
 		public int ProgressSamplesTotal { get; set; }

@@ -10,8 +10,8 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 		}
 
-		public static void saveFileToDirectory(string cacheId, byte[] bytesArray) {
-			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), cacheId);
+		public static void saveFileToDirectory(string layerName, byte[] bytesArray) {
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);
 			System.Console.WriteLine("Filename "+fileName);
 			try {
 				File.WriteAllBytes(fileName, bytesArray);
@@ -22,16 +22,16 @@ namespace LacoWikiMobile.App.Core.Data
 
 		}
 
-		public static bool CacheFileExists(string cacheId)
+		public static bool CacheFileExists(string layerName)
 		{
-			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), cacheId);
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);
 			return File.Exists(fileName);
 		}
 
-		public static void DeleteCache(string cacheId) {
-			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), cacheId);
+		public static void DeleteCache(string layerName) 
+		{
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);
 			File.Delete(fileName);
 		}
-
 	}
 }

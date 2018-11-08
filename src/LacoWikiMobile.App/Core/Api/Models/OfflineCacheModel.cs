@@ -1,12 +1,11 @@
 ﻿using System;
-namespace LacoWikiMobile.App.Core.Data.Entities
+namespace LacoWikiMobile.App.Core.Api.Models
 {
-	public class OfflineCache
+	public class OfflineCacheModel
 	{
 		public long FileSize { get; set; }
 		public string LayerName { get; set; }
 		public string Url { get; set; }
-		// Additional properties TBD
 
 	}
 }

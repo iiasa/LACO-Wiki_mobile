@@ -19,7 +19,7 @@ namespace LacoWikiMobile.App.Core.Api.Models
 
 		public IEnumerable<LegendItemModel> LegendItems { get; set; }
 
-		public IEnumerable<OfflineCache> OfflineCaches { get; set; }
+		public IEnumerable<OfflineCacheModel> OfflineCaches { get; set; }
 
 		public ValidationSessionProgressModel Progress { get; set; }
 

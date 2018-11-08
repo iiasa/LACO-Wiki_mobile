@@ -19,7 +19,7 @@ namespace LacoWikiMobile.App.Core.Api
 			ApiAuthentication = apiAuthentication;
 		}
 
-		protected string BaseUrl => "https://laco-wiki.net/api/mobile";
+		protected string BaseUrl => "https://dev.laco-wiki.net/api/mobile";// //https://laco-wiki.net/api/mobile
 		protected string BaseCacheUrl => "https://tilecache.dev.geo-wiki.org/v1/";
 
 		protected IApiAuthentication ApiAuthentication { get; set; }
@@ -31,7 +31,7 @@ namespace LacoWikiMobile.App.Core.Api
 				string res = await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
 					.AppendPathSegment($"validationsessions/{id}")
 					.GetStringAsync();
-				System.Console.WriteLine("DEBUG - Result raw " + res);
+
 				return await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
 					.AppendPathSegment($"validationsessions/{id}")
 					.GetJsonAsync<ValidationSessionDetailModel>();
@@ -84,18 +84,18 @@ namespace LacoWikiMobile.App.Core.Api
 			}
 		}
 
-		public async Task<byte[]> GetCacheAsync(string cacheId)
+		public async Task<byte[]> GetCacheAsync(string url)
 		{
 			try
 			{
 				//return await BaseCacheUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
 				//                  .AppendPathSegment($"tilecaches/{cacheId}/download")
 
-				return await BaseCacheUrl.WithTimeout(4).AppendPathSegment($"tilecaches/{cacheId}/download")
-					.GetBytesAsync();
+				return await url.WithTimeout(70).GetBytesAsync();
 			}
 			catch (FlurlHttpException e)
 			{
+				System.Console.WriteLine("DEBUG - Error " + e.Message);
 				throw TokenExpiredOrOriginalException(e);
 			}
 		}
