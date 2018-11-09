@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using LacoWikiMobile.App.Core.Api;
-using LacoWikiMobile.App.Core.Data;
-using Xamarin.Essentials;
+using System.ComponentModel;
 using Xamarin.Forms;
 
 namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 {
-	public class OfflineCacheItemViewModel
+	public class OfflineCacheItemViewModel : INotifyPropertyChanged
 	{
 		public OfflineCacheItemViewModel()
 		{
 
 		}
 
-		public string CacheButtonText { get; set; }
+		public event PropertyChangedEventHandler PropertyChanged;
 
+		public string CacheButtonText { get; set; }
 
 		public string Name { get; set; }
 
 		public string Size { get; set; }
 
 		public string Url { get; set; }
+
+		public string ImageButton { get; set; }
 
 		//public string ParameterCacheId { get; set; }
 

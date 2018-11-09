@@ -139,8 +139,9 @@ namespace LacoWikiMobile.App.ViewModels
 						foreach (OfflineCacheItemViewModel cacheModel in CacheItems) {
 							if(FileManager.CacheFileExists(cacheModel.Name)) {
 								cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
+								cacheModel.ImageButton = "ic_delete";
 							}
-
+							else cacheModel.ImageButton = "ic_download";
 						}
 
 					});
@@ -166,15 +167,8 @@ namespace LacoWikiMobile.App.ViewModels
 			//string cacheId = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
 			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
 			{
-				//cacheButton.CacheButtonText = "Downloading " + cacheButton.Name;
-				foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
-				{
-					if (string.Equals(cacheModel.Name,cacheButton.Name ))
-					{
-						cacheModel.CacheButtonText = "Downloading " + cacheModel.Name;
-					}
+				cacheButton.CacheButtonText = "Downloading " + cacheButton.Name;
 
-				}
 				await ApiClient.GetCacheAsync(cacheButton.Url)
 					.ContinueWith(result =>
 					{
@@ -183,6 +177,7 @@ namespace LacoWikiMobile.App.ViewModels
 						System.Console.WriteLine("size tiles "+cacheBytes.Length);
 						FileManager.saveFileToDirectory(cacheButton.Name, cacheBytes);
 						cacheButton.CacheButtonText = cacheButton.Name + " saved";
+						cacheButton.ImageButton = "ic_delete";
 					});
 			}
 		}
