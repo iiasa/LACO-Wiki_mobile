@@ -61,10 +61,48 @@ namespace LacoWikiMobile.App.ViewModels
 				NavigationService.NavigateToValidationUploadAsync(ValidationSessionId);
 			});
 
-			ToogleTileLayerCommand = new DelegateCommand(() => { ShowTileLayer = !ShowTileLayer; });
+			ValidateSwitchLayerCommand = new DelegateCommand(() =>
+			{
+				ViewSwitchLayer = false;
+				ShowTileLayer = true;
+			});
+
+			ToogleTileLayerCommand = new DelegateCommand(() =>
+			{
+				ShowTileLayer = !ShowTileLayer;
+				ViewSwitchLayer = !ViewSwitchLayer;
+			});
+
+			LayerItemTapped = new Command(OnTapItem);
+
+			LayerItemViewModel layer;
+
+			layer = LayerService.AddLayer(1, "Point", "ic_pin_white_24dp");
+			layer = LayerService.AddLayer(0, "GoogleMap", "ic_layers_white_24dp");
+			layer = LayerService.AddLayer(2, "Test", "ic_pin_white_24dp");
+			layer = LayerService.AddLayer(3, "Other", "ic_layers_white_24dp");
+		}
+
+		public void OnTapItem(object item)
+		{
+			ViewSwitchLayer = false;
+			int id = (int)item;
+			LayerItemViewModel layer = LayerService.getLayerById(id);
+			if (layer != null)
+			{
+				layer.Name = "ooh ohh !";
+			}
 		}
 
 		public ICommand ToogleTileLayerCommand { get; set; }
+
+		public ICommand ValidateSwitchLayerCommand { get; set; }
+
+		public ICollection<LayerItemViewModel> LayerItems { get; set; } = LayerService.LayerItems;
+
+		public ICommand LayerItemTapped { get; set; }
+
+		public bool ViewSwitchLayer { get; set; } = false;
 
 		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
 		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
@@ -230,6 +268,7 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			SensorService.UnsubscribeToTargetPositionEventsAsync(this);
 		}
+
 
 		protected override async Task InitializeAsync(INavigationParameters parameters)
 		{
