@@ -91,7 +91,7 @@ namespace LacoWikiMobile.App.Core.Api
 				//return await BaseCacheUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
 				//                  .AppendPathSegment($"tilecaches/{cacheId}/download")
 
-				return await url.WithTimeout(70).GetBytesAsync();
+				return await url.GetBytesAsync();
 			}
 			catch (FlurlHttpException e)
 			{

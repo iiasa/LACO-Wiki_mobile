@@ -5,20 +5,20 @@
 
 namespace LacoWikiMobile.App.ViewModels
 {
+	using System.Collections.Generic;
 	using System.Threading.Tasks;
+	using System.Windows.Input;
 	using AutoMapper;
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
-	using System.Windows.Input;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
 	using Microsoft.Extensions.Localization;
 	using Plugin.Permissions.Abstractions;
 	using Prism.Navigation;
 	using Xamarin.Essentials;
 	using Xamarin.Forms;
-	using System.Collections.Generic;
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
 	{
@@ -32,27 +32,6 @@ namespace LacoWikiMobile.App.ViewModels
 			AppDataService = appDataService;
 			Mapper = mapper;
 			OnClickDownloadTilesCommand = new Command<OfflineCacheItemViewModel>(DownloadTiles);
-			/*List<OfflineCacheItemViewModel> listItems = new List<OfflineCacheItemViewModel>(4);
-
-			OfflineCacheItemViewModel cacheModel = new OfflineCacheItemViewModel();
-
-			cacheModel.Name = "Download";
-			cacheModel.Size = "56MB";
-			cacheModel.Id = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
-			cacheModel.ParameterCacheId = cacheModel.Id;
-			if(FileManager.CacheFileExists(cacheModel.Id)) {
-				cacheModel.CacheButtonText = "Delete cache";
-				cacheModel.isDownloaded = true;
-			}
-			else {
-				cacheModel.CacheButtonText = cacheModel.Name + " " + cacheModel.Size;
-				cacheModel.isDownloaded = false;
-			}
-			listItems.Add(cacheModel);
-			listItems.Add(cacheModel);
-			CacheItems = listItems;
-			*/
-
 
 		}
 
@@ -122,7 +101,7 @@ namespace LacoWikiMobile.App.ViewModels
 				await ApiClient.GetValidationSessionByIdAsync(ValidationSessionId)
 					.ContinueWith(result =>
 					{
-					System.Console.WriteLine("DEBUG - Result "+result);
+						System.Console.WriteLine("DEBUG - Result " + result);
 						if (ViewModel == null)
 						{
 							ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(result.Result);
@@ -133,51 +112,57 @@ namespace LacoWikiMobile.App.ViewModels
 							// TODO: Save updated progress
 							Mapper.Map(result.Result, ViewModel);
 						}
+
 						//handle offline cache
 						//System.Console.WriteLine("DEBUG - Result cache " + result);
 						CacheItems = ViewModel.OfflineCaches;
-						foreach (OfflineCacheItemViewModel cacheModel in CacheItems) {
-							if(FileManager.CacheFileExists(cacheModel.Name)) {
+						foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
+						{
+							if (FileManager.CacheFileExists(cacheModel.Name))
+							{
 								cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
 								cacheModel.ImageButton = "ic_delete";
 							}
 							else cacheModel.ImageButton = "ic_download";
 						}
-
 					});
 			}
 		}
 
-		void DownloadTiles(OfflineCacheItemViewModel cacheButton)
+		public void DownloadTiles(OfflineCacheItemViewModel cacheButton)
 		{
-			System.Console.WriteLine("Download tiles");
-			if (FileManager.CacheFileExists(cacheButton.Name)) {
+			if (FileManager.CacheFileExists(cacheButton.Name))
+			{
 				//remove files
 				FileManager.DeleteCache(cacheButton.Name);
-				cacheButton.CacheButtonText = "Download "+cacheButton.Name;
+				cacheButton.CacheButtonText = "Download " + cacheButton.Name;
+				cacheButton.ImageButton = "ic_download";
 			}
 
 			else TaskDownloadTiles(cacheButton);
 		}
 
-		async Task TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)
+		private async Task TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)
 		{
 
 			//async download
-			//string cacheId = "0d1c0773-33a4-4896-8572-62d0cb50aa4c";
 			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
 			{
 				cacheButton.CacheButtonText = "Downloading " + cacheButton.Name;
-
+				cacheButton.ImageButton = "ic_download";
 				await ApiClient.GetCacheAsync(cacheButton.Url)
 					.ContinueWith(result =>
 					{
-						System.Console.WriteLine("Download tiles done");
-						byte[] cacheBytes = result.Result;
-						System.Console.WriteLine("size tiles "+cacheBytes.Length);
-						FileManager.saveFileToDirectory(cacheButton.Name, cacheBytes);
-						cacheButton.CacheButtonText = cacheButton.Name + " saved";
-						cacheButton.ImageButton = "ic_delete";
+						if (!result.IsFaulted)
+						{
+							System.Console.WriteLine("Download tiles done");
+							byte[] cacheBytes = result.Result;
+							System.Console.WriteLine("size tiles " + cacheBytes.Length);
+							FileManager.saveFileToDirectory(cacheButton.Name, cacheBytes);
+							cacheButton.CacheButtonText = cacheButton.Name + " saved";
+							cacheButton.ImageButton = "ic_delete";
+						}
+
 					});
 			}
 		}

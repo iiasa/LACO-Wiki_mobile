@@ -233,7 +233,7 @@ namespace LacoWikiMobile.App.ViewModels
 					Console.WriteLine(e.ToString());
 
 					// TODO: Swallow and ignore?
-					Helper.RunOnMainThreadIfRequired(() => throw e);
+						Helper.RunOnMainThreadIfRequired(() => throw e);
 				}
 			}
 			catch (NotAuthenticatedException)
