@@ -15,6 +15,8 @@ namespace LacoWikiMobile.App.Core
 		/// </summary>
 		public const int LAYERPOINTS = 1;
 
+		public static IUpdatable MapRenderer { get; set; } = null;
+
 		/// <summary>
 		/// Gets or sets list of layer loaded.
 		/// </summary>
@@ -77,6 +79,7 @@ namespace LacoWikiMobile.App.Core
 				};
 				LayerItems.Add(currentItem);
 			}
+
 			return currentItem;
 		}
 
@@ -100,6 +103,11 @@ namespace LacoWikiMobile.App.Core
 			{
 				layer.IsChecked = isChecked;
 			}
+
+			if (MapRenderer != null)
+			{
+				MapRenderer.Update();
+			}
 		}
 
 		/// <summary>
@@ -114,6 +122,7 @@ namespace LacoWikiMobile.App.Core
 			{
 				return layer.IsChecked;
 			}
+
 			return false;
 		}
 	}

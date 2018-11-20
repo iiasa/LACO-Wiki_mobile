@@ -16,17 +16,19 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 	using Android.Content;
 	using Android.Gms.Maps;
 	using Android.Gms.Maps.Model;
+	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Tile;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
 	using Xamarin.Forms.Maps;
 	using Xamarin.Forms.Maps.Android;
 	using Xamarin.Forms.Platform.Android;
 
-	public class CustomMapRenderer : MapRenderer
+	public class CustomMapRenderer : MapRenderer, IUpdatable
 	{
 		public CustomMapRenderer(Context context)
 			: base(context)
 		{
+			LayerService.MapRenderer = this;
 		}
 
 		protected CustomMap CustomMap => Element as CustomMap;
@@ -36,6 +38,24 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		protected PointHandler PointHandler { get; set; }
 
 		protected TileOverlay TileOverlay { get; set; }
+
+		private bool OldVisibility { get; set; } = true;
+
+		public void Update()
+		{
+			SynchronizeWithLayerService();
+		}
+
+		public void SynchronizeWithLayerService()
+		{
+			// Check point layers
+			bool pointsVisibles = LayerService.GetIsCheckedById(LayerService.LAYERPOINTS);
+			if (pointsVisibles != OldVisibility)
+			{
+				PointHandler.ChangeVisibility(pointsVisibles);
+				OldVisibility = pointsVisibles;
+			}
+		}
 
 		protected override void Dispose(bool disposing)
 		{
