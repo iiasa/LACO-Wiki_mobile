@@ -65,11 +65,10 @@
 							<ui:RepeaterStackLayout ItemsSource="{Binding LayerItems}" StyleClass="List">
 								<ui:RepeaterStackLayout.ItemTemplate>
 									<DataTemplate>
-										<ContentView BackgroundColor="{Binding BackgroundColor}">
+										<ContentView>
 											<ContentView.GestureRecognizers>
-												<TapGestureRecognizer Command="{Binding LayerItemTapped}" CommandParameter="{Binding Id}" />
+												<TapGestureRecognizer Command="{Binding ItemTappedCommand}" />
 											</ContentView.GestureRecognizers>
-
 											<Grid BindingContext="{Binding .}">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="56" />
@@ -109,7 +108,7 @@
 							</ui:RepeaterStackLayout>
 						</ScrollView>
 						<Frame StyleClass="FloatingActionButton"
-							BackgroundColor="{Binding PrimaryActionButtonBackgroundColor}"
+							BackgroundColor="{Binding CheckOK}"
 							IsVisible="true"
 							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
 							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-124}"

@@ -1,19 +1,12 @@
 ﻿namespace LacoWikiMobile.App.ViewModels.Map
 {
+	using System;
 	using System.ComponentModel;
 	using LacoWikiMobile.App.ViewModels.Main;
-	using LacoWikiMobile.App.ViewModels.Shared;
+	using LacoWikiMobile.App.ViewModels.Map;
 
-	public class LayerItemViewModel : INotifyPropertyChanged
+	public class LayerItemViewModel : ItemViewModel
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
-
 		public string Icon { get; set; }
-
-		public int Id { get; set; }
-
-		public bool IsChecked { get; set; }
-
-		public string Name { get; set; }
 	}
 }

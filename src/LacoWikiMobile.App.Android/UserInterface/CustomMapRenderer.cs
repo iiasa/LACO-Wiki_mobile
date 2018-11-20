@@ -130,8 +130,6 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				};
 				PointHandler.OnMapClicked += OnMapClicked;
 			}
-
-		
 		}
 	}
 }
