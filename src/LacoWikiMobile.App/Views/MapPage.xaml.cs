@@ -5,6 +5,8 @@
 
 namespace LacoWikiMobile.App.Views
 {
+	using System;
+	using LacoWikiMobile.App.ViewModels.Map;
 	using Xamarin.Forms;
 	using Xamarin.Forms.Xaml;
 

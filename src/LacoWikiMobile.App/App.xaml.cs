@@ -47,9 +47,8 @@ namespace LacoWikiMobile.App
 			: base(initializer)
 		{
 #if DEBUG
-
 // Initialize Live Reload.
-			//LiveReload.Init();
+//			LiveReload.Init();
 #endif
 		}
 
