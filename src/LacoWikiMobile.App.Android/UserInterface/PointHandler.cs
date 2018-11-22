@@ -166,7 +166,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		protected void AddPoints()
 		{
-			foreach (IPoint point in Points.ToList())
+			foreach (IPoint point in Points.ToList()) //crash here
 			{
 				AddPoint(point);
 			}
