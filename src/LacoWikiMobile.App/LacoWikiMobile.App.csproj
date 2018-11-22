@@ -36,8 +36,12 @@
 		<PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<PackageReference Include="Xamarin.Auth" Version="1.6.0.2" />
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
+=======
+		<PackageReference Include="Xamarin.Auth" Version="1.6.0.4" />
+>>>>>>> d618fe9... Fix crash because of downloading tiles
 =======
 		<PackageReference Include="Xamarin.Auth" Version="1.6.0.4" />
 >>>>>>> d618fe9... Fix crash because of downloading tiles
