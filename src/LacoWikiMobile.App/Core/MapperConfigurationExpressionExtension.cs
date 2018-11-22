@@ -49,6 +49,7 @@ namespace LacoWikiMobile.App.Core
 			mapperConfigurationExpression.CreateMap<ValidationSessionDetailModel, ValidationSessionDetailViewModel>()
 				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ValidationSessionID))
 				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ValidationSessionName))
+				.ForMember(dest => dest.OfflineCaches, opt => opt.MapFrom(src => src.OfflineCaches))
 				.ForMember(dest => dest.ValidationMethod, opt => opt.MapFrom(src => src.ValidationMethodEnum));
 
 			mapperConfigurationExpression.CreateMap<LegendItemModel, ItemViewModel>()
@@ -184,6 +185,7 @@ namespace LacoWikiMobile.App.Core
 			mapperConfigurationExpression.CreateMap<ValidationSessionDetailViewModel, ValidationSession>()
 				.ForMember(dest => dest.UserId, opt => opt.Ignore())
 				.ForMember(dest => dest.User, opt => opt.Ignore())
+				.ForMember(dest => dest.OfflineCaches, opt => opt.Ignore())
 				.ForMember(dest => dest.SampleItems, opt => opt.Ignore());
 
 			mapperConfigurationExpression.CreateMap<ItemViewModel, LegendItem>()

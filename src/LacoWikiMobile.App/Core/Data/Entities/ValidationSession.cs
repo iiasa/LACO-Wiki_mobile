@@ -14,6 +14,8 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 	{
 		private ICollection<LegendItem> legendItems = new List<LegendItem>();
 
+		public ICollection<OfflineCache> OfflineCaches = new List<OfflineCache>();
+
 		private ICollection<SampleItem> sampleItems = new List<SampleItem>();
 
 		private User user;
@@ -47,6 +49,12 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 		public int ProgressSamplesTotal { get; set; }
 
 		public int ProgressSamplesValidated { get; set; }
+
+		//public ICollection<OfflineCache> OfflineCaches
+		//{
+		//	get => LazyLoader.Load(this, ref this.offlineCaches);
+		//	set => this.offlineCaches = value;
+		//}
 
 		public ICollection<SampleItem> SampleItems
 		{
