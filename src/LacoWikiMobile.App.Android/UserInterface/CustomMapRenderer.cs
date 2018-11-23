@@ -41,6 +41,8 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		private bool OldVisibility { get; set; } = true;
 
+		private int OldRasterId { get; set; } = 1;
+
 		public void Update()
 		{
 			SynchronizeWithLayerService();
@@ -55,6 +57,19 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				PointHandler.ChangeVisibility(pointsVisibles);
 				OldVisibility = pointsVisibles;
 			}
+
+			// Check raster layer
+			int rasterId = LayerService.GetCurrentRasterId();
+			if (rasterId != OldRasterId)
+			{
+				// Make the chance
+				OldRasterId = rasterId;
+				UpdateRasterLayer(rasterId);
+			}
+		}
+
+		private void UpdateRasterLayer(int rasterId)
+		{
 		}
 
 		protected override void Dispose(bool disposing)

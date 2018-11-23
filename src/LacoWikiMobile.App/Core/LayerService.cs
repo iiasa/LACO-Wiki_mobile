@@ -61,25 +61,35 @@ namespace LacoWikiMobile.App.Core
 		/// <summary>
 		/// Add a layer if not exists.
 		/// </summary>
-		/// <param name="id">Id of layer to add.</param>
 		/// <param name="name">Name of layer to add.</param>
-		/// <param name="icon">Icon of layer to add.</param>
+		/// <param name="isEnabled">Set if layer can be activate or not.</param>
 		/// <returns>void.</returns>
-		public static LayerItemViewModel AddLayer(int id, string name, string icon)
+		public static LayerItemViewModel AddLayerPoints(string name, bool isEnabled)
 		{
-			LayerItemViewModel currentItem = GetLayerById(id);
-			if (currentItem == null)
+			LayerItemViewModel currentItem = new LayerItemViewModel
 			{
-				currentItem = new LayerItemViewModel
-				{
-					Id = id,
-					IsChecked = true,
-					Name = name,
-					Icon = icon,
-				};
-				LayerItems.Add(currentItem);
-			}
+				Id = LAYERPOINTS,
+				IsChecked = isEnabled,
+				Name = name,
+				Icon = "ic_pin_white_24dp",
+				IsEnabled = isEnabled,
+			};
+			LayerItems.Add(currentItem);
 
+			return currentItem;
+		}
+
+		public static LayerItemViewModel AddLayerRaster(string name, bool isEnabled, bool isChecked)
+		{
+			LayerItemViewModel currentItem = new LayerItemViewModel
+			{
+				Id = GetMaxId() + 1,
+				IsChecked = isChecked,
+				Name = name,
+				Icon = "ic_layers_white_24dp",
+				IsEnabled = isEnabled,
+			};
+			LayerItems.Add(currentItem);
 			return currentItem;
 		}
 
@@ -102,7 +112,18 @@ namespace LacoWikiMobile.App.Core
 			if (layer != null)
 			{
 				layer.IsChecked = isChecked;
+				if (layer.Id != LAYERPOINTS)
+				{
+					foreach (LayerItemViewModel lay in LayerItems)
+					{
+						if ( (lay.Id != layer.Id) && ( lay.Id != LAYERPOINTS))
+						{
+							lay.IsChecked = false;
+						}
+					}
+				}
 			}
+			
 
 			if (MapRenderer != null)
 			{
@@ -111,10 +132,30 @@ namespace LacoWikiMobile.App.Core
 		}
 
 		/// <summary>
+		/// Return the current raster layer Id selected.
+		/// </summary>
+		/// <returns>Id of the current raster layer selected.</returns>
+		public static int GetCurrentRasterId()
+		{
+			foreach (LayerItemViewModel lay in LayerItems)
+			{
+				if (lay.Id != LAYERPOINTS)
+				{
+					if (lay.IsChecked)
+					{
+						return lay.Id;
+					}
+				}
+			}
+
+			return -1;
+		}
+
+		/// <summary>
 		/// Get the visiblity of a layer by its Id.
 		/// </summary>
 		/// <param name="id">Id of layer.</param>
-		/// <returns>Visibility</returns>
+		/// <returns>Visibility.</returns>
 		public static bool GetIsCheckedById(int id)
 		{
 			LayerItemViewModel layer = GetLayerById(id);
@@ -124,6 +165,20 @@ namespace LacoWikiMobile.App.Core
 			}
 
 			return false;
+		}
+
+		private static int GetMaxId()
+		{
+			int max = -1;
+			foreach (LayerItemViewModel layer in LayerService.LayerItems)
+			{
+				if (layer.Id > max)
+				{
+					max = layer.Id;
+				}
+			}
+
+			return max;
 		}
 	}
 }

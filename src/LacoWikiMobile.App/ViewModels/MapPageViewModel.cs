@@ -75,12 +75,8 @@ namespace LacoWikiMobile.App.ViewModels
 				ViewSwitchLayer = !ViewSwitchLayer;
 			});
 
-			LayerItemViewModel layer;
-
-			layer = LayerService.AddLayer(LayerService.LAYERPOINTS, "Point", "ic_pin_white_24dp");
-			layer = LayerService.AddLayer(0, "GoogleMap", "ic_layers_white_24dp");
-
-			LayerItems.ForEach(x => x.ItemTapped += OnItemTapped);
+			// Update tape action on each LayerItemViewModel
+			LayerItems.ForEach(x => { if (x.IsEnabled) { x.ItemTapped += OnItemTapped; } });
 		}
 
 		public ICommand ToogleTileLayerCommand { get; set; }

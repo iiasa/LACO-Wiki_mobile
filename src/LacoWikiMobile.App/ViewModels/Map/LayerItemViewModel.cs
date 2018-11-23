@@ -1,12 +1,32 @@
 ﻿namespace LacoWikiMobile.App.ViewModels.Map
 {
-	using System;
-	using System.ComponentModel;
 	using LacoWikiMobile.App.ViewModels.Main;
-	using LacoWikiMobile.App.ViewModels.Map;
 
 	public class LayerItemViewModel : ItemViewModel
 	{
 		public string Icon { get; set; }
+
+		public bool IsEnabled { get; set; }
+
+		public bool IsRaster { get; set; }
+
+		public string TextColor
+		{
+			get
+			{
+				if (IsEnabled)
+				{
+					return "#000000";
+				}
+				else
+				{
+					return "#CCCCCC";
+				}
+			}
+
+			set
+			{
+			}
+		}
 	}
 }

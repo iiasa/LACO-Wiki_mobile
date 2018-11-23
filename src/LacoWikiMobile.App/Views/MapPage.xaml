@@ -86,12 +86,12 @@
 												</ContentView>
 
 												<ContentView Grid.Row="0" Grid.Column="1" StyleClass="FirstLine">
-													<Label Margin="0" Text="{Binding Name}" />
+													<Label Margin="0" Text="{Binding Name}" TextColor="{Binding TextColor}"/>
 												</ContentView>
 
 												<ContentView Grid.Row="0" Grid.Column="2" Padding="0,0,16,0">
 													<ContentView>
-														<ui:Checkbox HorizontalOptions="End" VerticalOptions="Center" WidthRequest="26" HeightRequest="26" CheckColor="#009688" IsChecked="{Binding IsChecked}">
+														<ui:Checkbox IsEnabled="False" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="26" HeightRequest="26" CheckColor="#009688" IsChecked="{Binding IsChecked}">
 															<ui:Checkbox.Margin>
 																<OnPlatform x:TypeArguments="Thickness">
 																	<!-- See https://stackoverflow.com/questions/40990664/android-appcompatcheckbox-padding-margin-gravity -->
