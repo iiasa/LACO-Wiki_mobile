@@ -59,6 +59,9 @@
     <PackageReference Include="NUnitTestAdapter">
       <Version>2.1.1</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.Build.Download">
+      <Version>0.4.11</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.UITest">
       <Version>2.2.4.1749-dev</Version>
     </PackageReference>
