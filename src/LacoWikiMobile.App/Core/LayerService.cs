@@ -16,6 +16,7 @@ namespace LacoWikiMobile.App.Core
 		public const int LAYERPOINTS = 1;
 
 		public static IUpdatable MapRenderer { get; set; } = null;
+		public static object CurrentMap { get; set; } = null;
 
 		/// <summary>
 		/// Gets or sets list of layer loaded.
@@ -79,7 +80,7 @@ namespace LacoWikiMobile.App.Core
 			return currentItem;
 		}
 
-		public static LayerItemViewModel AddLayerRaster(string name, bool isEnabled, bool isChecked)
+		public static LayerItemViewModel AddLayerRaster(string name, bool isEnabled, bool isChecked,string fileName)
 		{
 			LayerItemViewModel currentItem = new LayerItemViewModel
 			{
@@ -88,6 +89,7 @@ namespace LacoWikiMobile.App.Core
 				Name = name,
 				Icon = "ic_layers_white_24dp",
 				IsEnabled = isEnabled,
+				FileName = fileName,
 			};
 			LayerItems.Add(currentItem);
 			return currentItem;
@@ -123,7 +125,6 @@ namespace LacoWikiMobile.App.Core
 					}
 				}
 			}
-			
 
 			if (MapRenderer != null)
 			{
@@ -165,6 +166,21 @@ namespace LacoWikiMobile.App.Core
 			}
 
 			return false;
+		}
+
+		public static bool IsGoogleMap(int rasterId)
+		{
+			return rasterId == 0;
+		}
+
+		public static string GetMBTileFileName(int rasterId)
+		{
+			LayerItemViewModel layer = GetLayerById(rasterId);
+			if (layer != null)
+			{
+				return layer.FileName;
+			}
+			return null;
 		}
 
 		private static int GetMaxId()

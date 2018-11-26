@@ -140,17 +140,17 @@ namespace LacoWikiMobile.App.ViewModels
 
 			layer = LayerService.AddLayerPoints("Points", true);
 
-			layer = LayerService.AddLayerRaster("GoogleMap", true,true);
-			int cpt = 10;
+			layer = LayerService.AddLayerRaster("GoogleMap", true, true, null);
+
 			foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
 			{
 				if (FileManager.CacheFileExists(cacheModel.Name))
 				{
-					layer = LayerService.AddLayerRaster(cacheModel.Name, true, false);
+					layer = LayerService.AddLayerRaster(cacheModel.Name, true, false, FileManager.GetCompleteFileName(cacheModel.Name));
 				}
 				else
 				{
-					layer = LayerService.AddLayerRaster(cacheModel.Name , false, false);
+					layer = LayerService.AddLayerRaster(cacheModel.Name , false, false, null);
 				}
 			}
 		}

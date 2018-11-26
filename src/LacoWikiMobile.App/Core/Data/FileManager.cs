@@ -22,6 +22,11 @@ namespace LacoWikiMobile.App.Core.Data
 
 		}
 
+		public static string GetCompleteFileName(string fileName)
+		{
+			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), fileName);
+		}
+
 		public static bool CacheFileExists(string layerName)
 		{
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);

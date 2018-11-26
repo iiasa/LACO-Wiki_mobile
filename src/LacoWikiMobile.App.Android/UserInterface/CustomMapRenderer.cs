@@ -68,8 +68,55 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			}
 		}
 
+		/// <summary>
+		/// Set the mbtiles layer filename specified in parameter as background raster layer.
+		/// </summary>
+		/// <param name="mbtilesFileName">FileName of the mbtiles.</param>
+		public void SetMbTilesAsBackground(string mbtilesFileName)
+		{
+			string connectionString = string.Format("Data Source={0}", mbtilesFileName);
+			MBTileProvider mbTileProvider = new MBTileProvider(connectionString);
+
+			if (TileOverlay != null)
+			{
+				TileOverlay.Remove();
+			}
+
+			TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
+				.InvokeTileProvider(mbTileProvider);
+
+			GoogleMap map = (GoogleMap)LayerService.CurrentMap;
+			TileOverlay = map.AddTileOverlay(options);
+		}
+
+		/// <summary>
+		/// Set Google Map as background raster layer.
+		/// </summary>
+		public void SetGoogleMapAsBackground()
+		{
+			if (TileOverlay != null)
+			{
+				TileOverlay.Remove();
+			}
+
+			// Find a better way to get dependencies
+			TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
+				.InvokeTileProvider(new CustomTileProvider(
+					(IReadOnlyTileService)((App)Application.Current).Container.Resolve(typeof(IReadOnlyTileService))));
+
+			GoogleMap map = (GoogleMap)LayerService.CurrentMap;
+			TileOverlay = map.AddTileOverlay(options);
+		}
+
 		private void UpdateRasterLayer(int rasterId)
 		{
+			if (LayerService.IsGoogleMap(rasterId))
+			{
+				SetGoogleMapAsBackground();
+			} else
+			{
+				SetMbTilesAsBackground(LayerService.GetMBTileFileName(rasterId));
+			}
 		}
 
 		protected override void Dispose(bool disposing)
@@ -132,6 +179,8 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		protected override void OnMapReady(GoogleMap map)
 		{
+			LayerService.CurrentMap = map;
+
 			if (IsInitialized)
 			{
 				return;
@@ -149,12 +198,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 				map.MapType = GoogleMap.MapTypeNone;
 
-				// Find a better way to get dependencies
-				TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
-					.InvokeTileProvider(new CustomTileProvider(
-						(IReadOnlyTileService)((App)Application.Current).Container.Resolve(typeof(IReadOnlyTileService))));
-
-				TileOverlay = map.AddTileOverlay(options);
+				SetGoogleMapAsBackground();
 
 				IsInitialized = true;
 
