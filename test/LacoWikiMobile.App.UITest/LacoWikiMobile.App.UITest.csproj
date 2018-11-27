@@ -59,6 +59,12 @@
     <PackageReference Include="NUnitTestAdapter">
       <Version>2.1.1</Version>
     </PackageReference>
+    <PackageReference Include="System.Data.SQLite">
+      <Version>1.0.109.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Drawing.Common">
+      <Version>4.5.1</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Build.Download">
       <Version>0.4.11</Version>
     </PackageReference>

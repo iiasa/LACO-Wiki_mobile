@@ -19,6 +19,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.Core.Tile;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
+	using Microsoft.EntityFrameworkCore;
 	using Xamarin.Forms.Maps;
 	using Xamarin.Forms.Maps.Android;
 	using Xamarin.Forms.Platform.Android;
@@ -28,6 +29,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		public CustomMapRenderer(Context context)
 			: base(context)
 		{
+			// Store the current Map Renderer into LayerService
 			LayerService.MapRenderer = this;
 		}
 
@@ -39,15 +41,19 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		protected TileOverlay TileOverlay { get; set; }
 
+		// Keep trace of old visiblity
 		private bool OldVisibility { get; set; } = true;
 
+		// Keep trace of old raster Id
 		private int OldRasterId { get; set; } = 1;
 
+		// Apply switch layer changes into this map renderer
 		public void Update()
 		{
 			SynchronizeWithLayerService();
 		}
 
+		// Adapt the map with changes into switch layer
 		public void SynchronizeWithLayerService()
 		{
 			// Check point layers
@@ -74,23 +80,38 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		/// <param name="mbtilesFileName">FileName of the mbtiles.</param>
 		public void SetMbTilesAsBackground(string mbtilesFileName)
 		{
-			string connectionString = string.Format("Data Source={0}", mbtilesFileName);
-			MBTileProvider mbTileProvider = new MBTileProvider(connectionString);
-
+			// Remove previous TileOverlay if created
 			if (TileOverlay != null)
 			{
 				TileOverlay.Remove();
 			}
 
-			TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
-				.InvokeTileProvider(mbTileProvider);
+			// Make Db Context Options Builder to create sqlite db builder
+			DbContextOptionsBuilder<TileContext> myContextBuilder = new DbContextOptionsBuilder<TileContext>();
+			myContextBuilder.UseSqlite($"Filename={mbtilesFileName}");
 
+			// Initialize TileContext with this builder
+			TileContext tileContext = new TileContext(myContextBuilder.Options);
+
+			// Create TileService with this TileConext
+			ReadOnlyTileService readOnlyTileService = new ReadOnlyTileService(tileContext);
+
+			// Create CustomTileProvider with this TileService
+			CustomTileProvider customTileProvider = new CustomTileProvider(readOnlyTileService);
+
+			// And finally, create the TileOverlayOptions
+			TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
+				.InvokeTileProvider(customTileProvider);
+
+			// And TileOverlay
 			GoogleMap map = (GoogleMap)LayerService.CurrentMap;
 			TileOverlay = map.AddTileOverlay(options);
 		}
 
 		/// <summary>
 		/// Set Google Map as background raster layer.
+		/// TODO : remove it, not useful, the GoogleMap do not need an overlay raster.
+		/// DEPRECATED.
 		/// </summary>
 		public void SetGoogleMapAsBackground()
 		{
@@ -108,17 +129,10 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			TileOverlay = map.AddTileOverlay(options);
 		}
 
-		private void UpdateRasterLayer(int rasterId)
-		{
-			if (LayerService.IsGoogleMap(rasterId))
-			{
-				SetGoogleMapAsBackground();
-			} else
-			{
-				SetMbTilesAsBackground(LayerService.GetMBTileFileName(rasterId));
-			}
-		}
-
+		/// <summary>
+		/// Dispose the map renderer.
+		/// </summary>
+		/// <param name="disposing">Disposing.</param>
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
@@ -168,7 +182,10 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 			if (CustomMap.ShowTileLayerProperty.PropertyName == e.PropertyName)
 			{
-				TileOverlay.Visible = CustomMap.ShowTileLayer;
+				if (TileOverlay != null)
+				{
+					TileOverlay.Visible = CustomMap.ShowTileLayer;
+				}
 			}
 		}
 
@@ -179,7 +196,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		protected override void OnMapReady(GoogleMap map)
 		{
-			LayerService.CurrentMap = map;
+			base.OnMapReady(map);
 
 			if (IsInitialized)
 			{
@@ -198,7 +215,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 				map.MapType = GoogleMap.MapTypeNone;
 
-				SetGoogleMapAsBackground();
+				LayerService.CurrentMap = map;
 
 				IsInitialized = true;
 
@@ -210,5 +227,32 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				PointHandler.OnMapClicked += OnMapClicked;
 			}
 		}
+
+		/// <summary>
+		/// Update a raster layer.
+		/// </summary>
+		/// <param name="rasterId">Layer id.</param>
+		private void UpdateRasterLayer(int rasterId)
+		{
+			// Check if google map backgroup layer is displayed or not
+			GoogleMap map = (GoogleMap)LayerService.CurrentMap;
+			if (LayerService.IsGoogleMapChecked())
+			{
+				// Displayed !
+				map.MapType = GoogleMap.MapTypeSatellite;
+			}
+			else
+			{
+				// Not displayed !
+				map.MapType = GoogleMap.MapTypeNone;
+			}
+
+			if (!LayerService.IsGoogleMap(rasterId))
+			{
+				// We need to display a mbtiles layer
+				SetMbTilesAsBackground(LayerService.GetMBTileFileName(rasterId));
+			}
+		}
 	}
+
 }

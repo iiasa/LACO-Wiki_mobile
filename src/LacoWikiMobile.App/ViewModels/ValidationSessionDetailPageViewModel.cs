@@ -125,8 +125,6 @@ namespace LacoWikiMobile.App.ViewModels
 							}
 							else cacheModel.ImageButton = "ic_download";
 						}
-
-						UpdateLayers();
 					});
 			}
 
@@ -166,6 +164,13 @@ namespace LacoWikiMobile.App.ViewModels
 			}
 
 			else TaskDownloadTiles(cacheButton);
+		}
+
+		protected override async Task PrimaryActionButtonTappedAsync()
+		{
+			UpdateLayers();
+			await base.PrimaryActionButtonTappedAsync();
+			
 		}
 
 		private async Task TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)

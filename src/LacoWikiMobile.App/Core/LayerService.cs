@@ -16,6 +16,7 @@ namespace LacoWikiMobile.App.Core
 		public const int LAYERPOINTS = 1;
 
 		public static IUpdatable MapRenderer { get; set; } = null;
+
 		public static object CurrentMap { get; set; } = null;
 
 		/// <summary>
@@ -80,7 +81,7 @@ namespace LacoWikiMobile.App.Core
 			return currentItem;
 		}
 
-		public static LayerItemViewModel AddLayerRaster(string name, bool isEnabled, bool isChecked,string fileName)
+		public static LayerItemViewModel AddLayerRaster(string name, bool isEnabled, bool isChecked, string fileName)
 		{
 			LayerItemViewModel currentItem = new LayerItemViewModel
 			{
@@ -118,7 +119,7 @@ namespace LacoWikiMobile.App.Core
 				{
 					foreach (LayerItemViewModel lay in LayerItems)
 					{
-						if ( (lay.Id != layer.Id) && ( lay.Id != LAYERPOINTS))
+						if ((lay.Id != layer.Id) && (lay.Id != LAYERPOINTS))
 						{
 							lay.IsChecked = false;
 						}
@@ -170,7 +171,13 @@ namespace LacoWikiMobile.App.Core
 
 		public static bool IsGoogleMap(int rasterId)
 		{
-			return rasterId == 0;
+			return rasterId == 2;
+		}
+
+		public static bool IsGoogleMapChecked()
+		{
+			LayerItemViewModel layer = GetLayerById(2);
+			return layer.IsChecked;
 		}
 
 		public static string GetMBTileFileName(int rasterId)
@@ -180,6 +187,7 @@ namespace LacoWikiMobile.App.Core
 			{
 				return layer.FileName;
 			}
+
 			return null;
 		}
 

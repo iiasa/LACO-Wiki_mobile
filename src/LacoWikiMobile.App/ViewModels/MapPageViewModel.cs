@@ -75,6 +75,8 @@ namespace LacoWikiMobile.App.ViewModels
 				ViewSwitchLayer = !ViewSwitchLayer;
 			});
 
+			LayerItems = LayerService.LayerItems;
+
 			// Update tape action on each LayerItemViewModel
 			LayerItems.ForEach(x => { if (x.IsEnabled) { x.ItemTapped += OnItemTapped; } });
 		}

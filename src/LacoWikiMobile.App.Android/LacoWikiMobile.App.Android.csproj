@@ -115,7 +115,6 @@
     <Compile Include="UserInterface\CircularProgressBarView.cs" />
     <Compile Include="UserInterface\CustomMapRenderer.cs" />
     <Compile Include="UserInterface\CustomTileProvider.cs" />
-    <Compile Include="UserInterface\MBTileProvider.cs" />
     <Compile Include="UserInterface\PointHandler.cs" />
   </ItemGroup>
   <ItemGroup>
