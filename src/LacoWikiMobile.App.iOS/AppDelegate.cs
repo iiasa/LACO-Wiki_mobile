@@ -6,8 +6,11 @@
 namespace LacoWikiMobile.App.iOS
 {
 	using System;
+	using System.IO;
 	using Foundation;
 	using LacoWikiMobile.App.Core.Api;
+	using Plugin.DownloadManager;
+	using Plugin.DownloadManager.Abstractions;
 	using Prism;
 	using Prism.Ioc;
 	using UIKit;
@@ -34,6 +37,13 @@ namespace LacoWikiMobile.App.iOS
 #endif
 
 			Forms.Init();
+			//Download manager
+			LacoWikiMobile.App.Core.Data.FileManager.SavingPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			CrossDownloadManager.Current.PathNameForDownloadedFile = new Func<IDownloadFile, string> (file => {
+			    string fileName = file.Url.GetHashCode().ToString();
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName);
+				return path;
+			});
 
 			AuthenticationConfiguration.Init();
 			UIApplication.SharedApplication.StatusBarHidden = false;
