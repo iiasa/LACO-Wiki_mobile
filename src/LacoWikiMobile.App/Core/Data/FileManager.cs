@@ -1,10 +1,12 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 
 namespace LacoWikiMobile.App.Core.Data
 {
 	public class FileManager
 	{
+		public static string SavingPath;
 
 		public FileManager()
 		{
@@ -22,16 +24,32 @@ namespace LacoWikiMobile.App.Core.Data
 
 		}
 
-		public static bool CacheFileExists(string layerName)
+		/**
+		 * Check if the cache for a specified url is saved on cache or not
+		 */
+		public static bool CacheFileExists(string url)
 		{
-			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);
-			return File.Exists(fileName);
+			string fileName = url.GetHashCode().ToString();
+			string path;
+    		path = Path.Combine (SavingPath, fileName);
+			return File.Exists(path);
 		}
 
-		public static void DeleteCache(string layerName) 
+		public static string getFullPath(string fileName) 
 		{
-			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);
-			File.Delete(fileName);
+			string path;
+
+    		path = Path.Combine (SavingPath, fileName);
+
+			return path;
+		}
+
+		public static void DeleteOfflineCache(string url) 
+		{
+			string fileName = url.GetHashCode().ToString();
+			string path;
+    		path = Path.Combine (SavingPath, fileName);
+			File.Delete(path);
 		}
 	}
 }

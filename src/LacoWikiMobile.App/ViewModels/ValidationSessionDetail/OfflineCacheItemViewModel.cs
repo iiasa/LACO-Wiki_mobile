@@ -23,7 +23,7 @@ namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 
 		public string ImageButton { get; set; }
 
-		//public string ParameterCacheId { get; set; }
+		public string Path { get; set; }
 
 		public bool isDownloaded { get; set; }
 

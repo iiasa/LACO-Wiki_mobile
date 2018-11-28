@@ -5,10 +5,14 @@
 
 namespace LacoWikiMobile.App.Droid
 {
+	using System;
+	using System.IO;
 	using Android.App;
 	using Android.Content.PM;
 	using Android.OS;
 	using Plugin.CurrentActivity;
+	using Plugin.DownloadManager;
+	using Plugin.DownloadManager.Abstractions;
 	using Plugin.Permissions;
 	using Xamarin;
 	using Xamarin.Auth;
@@ -44,6 +48,16 @@ namespace LacoWikiMobile.App.Droid
 
 			Forms.Init(this, bundle);
 
+			LacoWikiMobile.App.Core.Data.FileManager.SavingPath = ApplicationContext.GetExternalFilesDir(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
+
+			// Donwload manager
+			CrossDownloadManager.Current.PathNameForDownloadedFile = new Func<IDownloadFile, string>(file =>
+			{
+				string fileName = file.Url.GetHashCode().ToString();
+				string path = Path.Combine(ApplicationContext.GetExternalFilesDir(Android.OS.Environment.DirectoryDownloads).AbsolutePath, fileName);
+
+				return path;
+			});
 			CustomTabsConfiguration.CustomTabsClosingMessage = null;
 			AuthenticationConfiguration.Init(this, bundle);
 			CrossCurrentActivity.Current.Init(this, bundle);

@@ -69,6 +69,7 @@ namespace LacoWikiMobile.App.Core
 				.ForMember(dest => dest.CacheButtonText, opt => opt.MapFrom(src => src.LayerName+" ("+String.Format("{0:0.00}",src.FileSize/1000000.0)+"MB)"))
 				.ForMember(dest => dest.isDownloaded, opt => opt.Ignore())
 				.ForMember(dest => dest.ImageButton, opt => opt.Ignore())
+				.ForMember(dest => dest.Path, opt => opt.Ignore())
 				.ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url));
 
 			mapperConfigurationExpression.CreateMap<IEnumerable<SampleItemModel>, SamplePointsViewModel>()
@@ -141,6 +142,7 @@ namespace LacoWikiMobile.App.Core
 				.ForMember(dest => dest.Url, opt => opt.Ignore())
 				.ForMember(dest => dest.CacheButtonText, opt => opt.Ignore())
 				.ForMember(dest => dest.ImageButton, opt => opt.Ignore())
+				.ForMember(dest => dest.Path, opt => opt.Ignore())
 				.ForMember(dest => dest.isDownloaded, opt => opt.Ignore());
 
 

@@ -16,6 +16,8 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
 	using Microsoft.Extensions.Localization;
 	using Plugin.Permissions.Abstractions;
+	using Plugin.DownloadManager;
+	using Plugin.DownloadManager.Abstractions;
 	using Prism.Navigation;
 	using Xamarin.Essentials;
 	using Xamarin.Forms;
@@ -118,12 +120,20 @@ namespace LacoWikiMobile.App.ViewModels
 						CacheItems = ViewModel.OfflineCaches;
 						foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
 						{
-							if (FileManager.CacheFileExists(cacheModel.Name))
+							if (FileManager.CacheFileExists(cacheModel.Url))
 							{
 								cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
 								cacheModel.ImageButton = "ic_delete";
 							}
 							else cacheModel.ImageButton = "ic_download";
+							/*
+								if (FileManager.CacheFileExists(cacheModel.Name))
+								{
+									cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
+									cacheModel.ImageButton = "ic_delete";
+								}
+								else cacheModel.ImageButton = "ic_download";
+								*/
 						}
 					});
 			}
@@ -131,18 +141,19 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public void DownloadTiles(OfflineCacheItemViewModel cacheButton)
 		{
-			if (FileManager.CacheFileExists(cacheButton.Name))
+			if (FileManager.CacheFileExists(cacheButton.Url))
 			{
 				//remove files
-				FileManager.DeleteCache(cacheButton.Name);
+				FileManager.DeleteOfflineCache(cacheButton.Url);
 				cacheButton.CacheButtonText = "Download " + cacheButton.Name;
 				cacheButton.ImageButton = "ic_download";
+				cacheButton.Path = null;
 			}
 
 			else TaskDownloadTiles(cacheButton);
 		}
 
-		private async Task TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)
+		private void TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)
 		{
 
 			//async download
@@ -150,20 +161,36 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				cacheButton.CacheButtonText = "Downloading " + cacheButton.Name;
 				cacheButton.ImageButton = "ic_download";
-				await ApiClient.GetCacheAsync(cacheButton.Url)
-					.ContinueWith(result =>
-					{
-						if (!result.IsFaulted)
-						{
-							System.Console.WriteLine("Download tiles done");
-							byte[] cacheBytes = result.Result;
-							System.Console.WriteLine("size tiles " + cacheBytes.Length);
-							FileManager.saveFileToDirectory(cacheButton.Name, cacheBytes);
-							cacheButton.CacheButtonText = cacheButton.Name + " saved";
-							cacheButton.ImageButton = "ic_delete";
-						}
+				//test url
+				string testUrl = "http://www.ovh.net/files/10Mio.dat";
+				IDownloadFile File = CrossDownloadManager.Current.CreateDownloadFile(cacheButton.Url);
 
-					});
+				CrossDownloadManager.Current.Start(File);
+				File.PropertyChanged += (sender, e) =>
+				{
+
+					// Update UI if download-status changed.
+					if (e.PropertyName == "Status")
+					{
+						switch (((IDownloadFile)sender).Status)
+						{
+							case DownloadFileStatus.COMPLETED:
+								cacheButton.CacheButtonText = cacheButton.Name + " saved";
+								cacheButton.ImageButton = "ic_delete";
+								cacheButton.Path = File.DestinationPathName;
+								System.Console.WriteLine("Downloading finished. " + File.DestinationPathName);
+								break;
+
+							case DownloadFileStatus.FAILED:
+							case DownloadFileStatus.CANCELED:
+
+								System.Console.WriteLine("Downloading error. ");
+
+
+								break;
+						}
+					}
+				};
 			}
 		}
 	}
