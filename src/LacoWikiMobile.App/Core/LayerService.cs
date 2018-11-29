@@ -14,6 +14,7 @@ namespace LacoWikiMobile.App.Core
 		/// Constante for the points layer.
 		/// </summary>
 		public const int LAYERPOINTS = 1;
+		public const int LAYERGOOGLEMAP = 2;
 
 		public static IUpdatable MapRenderer { get; set; } = null;
 
@@ -115,11 +116,11 @@ namespace LacoWikiMobile.App.Core
 			if (layer != null)
 			{
 				layer.IsChecked = isChecked;
-				if (layer.Id != LAYERPOINTS)
+				if ((layer.Id != LAYERPOINTS) && (layer.Id != LAYERGOOGLEMAP))
 				{
 					foreach (LayerItemViewModel lay in LayerItems)
 					{
-						if ((lay.Id != layer.Id) && (lay.Id != LAYERPOINTS))
+						if ((lay.Id != layer.Id) && (lay.Id != LAYERPOINTS) && (lay.Id != LAYERGOOGLEMAP))
 						{
 							lay.IsChecked = false;
 						}
@@ -137,11 +138,11 @@ namespace LacoWikiMobile.App.Core
 		/// Return the current raster layer Id selected.
 		/// </summary>
 		/// <returns>Id of the current raster layer selected.</returns>
-		public static int GetCurrentRasterId()
+		public static int GetCurrentOfflineRasterId()
 		{
 			foreach (LayerItemViewModel lay in LayerItems)
 			{
-				if (lay.Id != LAYERPOINTS)
+				if ((lay.Id != LAYERPOINTS) && (lay.Id != LAYERGOOGLEMAP))
 				{
 					if (lay.IsChecked)
 					{

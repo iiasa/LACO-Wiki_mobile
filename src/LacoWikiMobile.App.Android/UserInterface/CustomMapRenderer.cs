@@ -44,8 +44,11 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		// Keep trace of old visiblity
 		private bool OldVisibility { get; set; } = true;
 
+		// Keep trace of old Google map visibility
+		private bool OldGoogleMapVisibility { get; set; } = true;
+
 		// Keep trace of old raster Id
-		private int OldRasterId { get; set; } = 1;
+		private int OldOfflineRasterId { get; set; } = 1;
 
 		// Apply switch layer changes into this map renderer
 		public void Update()
@@ -64,13 +67,21 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				OldVisibility = pointsVisibles;
 			}
 
-			// Check raster layer
-			int rasterId = LayerService.GetCurrentRasterId();
-			if (rasterId != OldRasterId)
+			// Check Google map layer
+			bool googleMapVisible = LayerService.GetIsCheckedById(LayerService.LAYERGOOGLEMAP);
+			if (googleMapVisible != OldGoogleMapVisibility)
+			{
+				UpdateGoogleMapLayer(googleMapVisible);
+				OldGoogleMapVisibility = googleMapVisible;
+			}
+
+			// Check offline raster layer
+			int offlineRasterId = LayerService.GetCurrentOfflineRasterId();
+			if (offlineRasterId != OldOfflineRasterId)
 			{
 				// Make the chance
-				OldRasterId = rasterId;
-				UpdateRasterLayer(rasterId);
+				OldOfflineRasterId = offlineRasterId;
+				UpdateRasterLayer(offlineRasterId);
 			}
 		}
 
@@ -104,27 +115,6 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				.InvokeTileProvider(customTileProvider);
 
 			// And TileOverlay
-			GoogleMap map = (GoogleMap)LayerService.CurrentMap;
-			TileOverlay = map.AddTileOverlay(options);
-		}
-
-		/// <summary>
-		/// Set Google Map as background raster layer.
-		/// TODO : remove it, not useful, the GoogleMap do not need an overlay raster.
-		/// DEPRECATED.
-		/// </summary>
-		public void SetGoogleMapAsBackground()
-		{
-			if (TileOverlay != null)
-			{
-				TileOverlay.Remove();
-			}
-
-			// Find a better way to get dependencies
-			TileOverlayOptions options = new TileOverlayOptions().InvokeZIndex(0f)
-				.InvokeTileProvider(new CustomTileProvider(
-					(IReadOnlyTileService)((App)Application.Current).Container.Resolve(typeof(IReadOnlyTileService))));
-
 			GoogleMap map = (GoogleMap)LayerService.CurrentMap;
 			TileOverlay = map.AddTileOverlay(options);
 		}
@@ -229,14 +219,13 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		}
 
 		/// <summary>
-		/// Update a raster layer.
+		/// Update the google map visibility.
 		/// </summary>
-		/// <param name="rasterId">Layer id.</param>
-		private void UpdateRasterLayer(int rasterId)
+		/// <param name="visible">Visiblity.</param>
+		private void UpdateGoogleMapLayer(bool visible)
 		{
-			// Check if google map backgroup layer is displayed or not
 			GoogleMap map = (GoogleMap)LayerService.CurrentMap;
-			if (LayerService.IsGoogleMapChecked())
+			if (visible == true)
 			{
 				// Displayed !
 				map.MapType = GoogleMap.MapTypeSatellite;
@@ -246,13 +235,16 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				// Not displayed !
 				map.MapType = GoogleMap.MapTypeNone;
 			}
+		}
 
-			if (!LayerService.IsGoogleMap(rasterId))
-			{
-				// We need to display a mbtiles layer
-				SetMbTilesAsBackground(LayerService.GetMBTileFileName(rasterId));
-			}
+		/// <summary>
+		/// Update a raster layer.
+		/// </summary>
+		/// <param name="rasterId">Layer id.</param>
+		private void UpdateRasterLayer(int rasterId)
+		{
+			// We need to display a mbtiles layer
+			SetMbTilesAsBackground(LayerService.GetMBTileFileName(rasterId));
 		}
 	}
-
 }
