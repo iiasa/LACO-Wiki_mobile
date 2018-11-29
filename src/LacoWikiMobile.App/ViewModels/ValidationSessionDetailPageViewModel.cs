@@ -15,16 +15,15 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Data.Entities;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
 	using Microsoft.Extensions.Localization;
-	using Plugin.Permissions.Abstractions;
 	using Plugin.DownloadManager;
 	using Plugin.DownloadManager.Abstractions;
+	using Plugin.Permissions.Abstractions;
 	using Prism.Navigation;
 	using Xamarin.Essentials;
 	using Xamarin.Forms;
 
 	public class ValidationSessionDetailPageViewModel : ViewModelBase
 	{
-
 		public ValidationSessionDetailPageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<ValidationSessionDetailPageViewModel> localizer, IApiClient apiClient, IAppDataService appDataService,
 			IMapper mapper)
@@ -34,7 +33,6 @@ namespace LacoWikiMobile.App.ViewModels
 			AppDataService = appDataService;
 			Mapper = mapper;
 			OnClickDownloadTilesCommand = new Command<OfflineCacheItemViewModel>(DownloadTiles);
-
 		}
 
 		public bool ShowDetails => !ShowLoading;
@@ -54,6 +52,22 @@ namespace LacoWikiMobile.App.ViewModels
 		protected IMapper Mapper { get; set; }
 
 		protected int ValidationSessionId { get; set; }
+
+		public void DownloadTiles(OfflineCacheItemViewModel cacheButton)
+		{
+			if (FileManager.CacheFileExists(cacheButton.Url))
+			{
+				// remove files
+				FileManager.DeleteOfflineCache(cacheButton.Url);
+				cacheButton.CacheButtonText = "Download " + cacheButton.Name;
+				cacheButton.ImageButton = "ic_download";
+				cacheButton.Path = null;
+			}
+			else
+			{
+				TaskDownloadTiles(cacheButton);
+			}
+		}
 
 		// TODO: Disable primary action button until data is loaded
 		protected override async Task ExecutePrimaryActionAsync()
@@ -115,8 +129,7 @@ namespace LacoWikiMobile.App.ViewModels
 							Mapper.Map(result.Result, ViewModel);
 						}
 
-						//handle offline cache
-						//System.Console.WriteLine("DEBUG - Result cache " + result);
+						// handle offline cache
 						CacheItems = ViewModel.OfflineCaches;
 						foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
 						{
@@ -125,51 +138,28 @@ namespace LacoWikiMobile.App.ViewModels
 								cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
 								cacheModel.ImageButton = "ic_delete";
 							}
-							else cacheModel.ImageButton = "ic_download";
-							/*
-								if (FileManager.CacheFileExists(cacheModel.Name))
-								{
-									cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
-									cacheModel.ImageButton = "ic_delete";
-								}
-								else cacheModel.ImageButton = "ic_download";
-								*/
+							else 
+							{
+								cacheModel.ImageButton = "ic_download";
+							}
 						}
 					});
 			}
 		}
 
-		public void DownloadTiles(OfflineCacheItemViewModel cacheButton)
-		{
-			if (FileManager.CacheFileExists(cacheButton.Url))
-			{
-				//remove files
-				FileManager.DeleteOfflineCache(cacheButton.Url);
-				cacheButton.CacheButtonText = "Download " + cacheButton.Name;
-				cacheButton.ImageButton = "ic_download";
-				cacheButton.Path = null;
-			}
-
-			else TaskDownloadTiles(cacheButton);
-		}
-
 		private void TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)
 		{
-
-			//async download
 			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
 			{
 				cacheButton.CacheButtonText = "Downloading " + cacheButton.Name;
 				cacheButton.ImageButton = "ic_download";
-				//test url
+				// test url
 				string testUrl = "http://www.ovh.net/files/10Mio.dat";
-				IDownloadFile File = CrossDownloadManager.Current.CreateDownloadFile(cacheButton.Url);
+				IDownloadFile file = CrossDownloadManager.Current.CreateDownloadFile(cacheButton.Url);
 
-				CrossDownloadManager.Current.Start(File);
-				File.PropertyChanged += (sender, e) =>
+				CrossDownloadManager.Current.Start(file);
+				file.PropertyChanged += (sender, e) =>
 				{
-
-					// Update UI if download-status changed.
 					if (e.PropertyName == "Status")
 					{
 						switch (((IDownloadFile)sender).Status)
@@ -177,16 +167,13 @@ namespace LacoWikiMobile.App.ViewModels
 							case DownloadFileStatus.COMPLETED:
 								cacheButton.CacheButtonText = cacheButton.Name + " saved";
 								cacheButton.ImageButton = "ic_delete";
-								cacheButton.Path = File.DestinationPathName;
-								System.Console.WriteLine("Downloading finished. " + File.DestinationPathName);
+								cacheButton.Path = file.DestinationPathName;
+								System.Console.WriteLine("Downloading finished. " + file.DestinationPathName);
 								break;
 
 							case DownloadFileStatus.FAILED:
 							case DownloadFileStatus.CANCELED:
-
 								System.Console.WriteLine("Downloading error. ");
-
-
 								break;
 						}
 					}
@@ -194,5 +181,4 @@ namespace LacoWikiMobile.App.ViewModels
 			}
 		}
 	}
-
 }

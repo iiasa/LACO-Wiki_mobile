@@ -12,9 +12,9 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 
 	public class ValidationSession
 	{
-		private ICollection<LegendItem> legendItems = new List<LegendItem>();
-
 		public ICollection<OfflineCache> OfflineCaches = new List<OfflineCache>();
+
+		private ICollection<LegendItem> legendItems = new List<LegendItem>();
 
 		private ICollection<SampleItem> sampleItems = new List<SampleItem>();
 
@@ -49,12 +49,6 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 		public int ProgressSamplesTotal { get; set; }
 
 		public int ProgressSamplesValidated { get; set; }
-
-		//public ICollection<OfflineCache> OfflineCaches
-		//{
-		//	get => LazyLoader.Load(this, ref this.offlineCaches);
-		//	set => this.offlineCaches = value;
-		//}
 
 		public ICollection<SampleItem> SampleItems
 		{

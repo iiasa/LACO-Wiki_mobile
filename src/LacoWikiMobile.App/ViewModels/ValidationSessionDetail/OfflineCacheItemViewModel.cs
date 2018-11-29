@@ -1,14 +1,16 @@
-﻿using System;
-using System.ComponentModel;
-using Xamarin.Forms;
+﻿// <copyright file="ValidationSessionDetail.cs" company="IIASA">
+// Copyright (c) IIASA. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 {
+	using System.ComponentModel;
+
 	public class OfflineCacheItemViewModel : INotifyPropertyChanged
 	{
 		public OfflineCacheItemViewModel()
 		{
-
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -24,8 +26,5 @@ namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 		public string ImageButton { get; set; }
 
 		public string Path { get; set; }
-
-		public bool isDownloaded { get; set; }
-
 	}
 }

@@ -1,9 +1,8 @@
-﻿
-using System;
-using System.IO;
-
-namespace LacoWikiMobile.App.Core.Data
+﻿namespace LacoWikiMobile.App.Core.Data
 {
+	using System;
+	using System.IO;
+
 	public class FileManager
 	{
 		public static string SavingPath;
@@ -12,13 +11,16 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 		}
 
-		public static void saveFileToDirectory(string layerName, byte[] bytesArray) {
+		public static void SaveFileToDirectory(string layerName, byte[] bytesArray)
+		{
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);
-			System.Console.WriteLine("Filename "+fileName);
-			try {
+			System.Console.WriteLine("Filename " + fileName);
+			try
+			{
 				File.WriteAllBytes(fileName, bytesArray);
 			}
-			catch(Exception e) {
+			catch (Exception e)
+			{
 				Console.WriteLine(e.ToString());
 			}
 
@@ -31,24 +33,22 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 			string fileName = url.GetHashCode().ToString();
 			string path;
-    		path = Path.Combine (SavingPath, fileName);
+			path = Path.Combine(SavingPath, fileName);
 			return File.Exists(path);
 		}
 
-		public static string getFullPath(string fileName) 
+		public static string getFullPath(string fileName)
 		{
 			string path;
-
-    		path = Path.Combine (SavingPath, fileName);
-
+			path = Path.Combine(SavingPath, fileName);
 			return path;
 		}
 
-		public static void DeleteOfflineCache(string url) 
+		public static void DeleteOfflineCache(string url)
 		{
 			string fileName = url.GetHashCode().ToString();
 			string path;
-    		path = Path.Combine (SavingPath, fileName);
+			path = Path.Combine(SavingPath, fileName);
 			File.Delete(path);
 		}
 	}
