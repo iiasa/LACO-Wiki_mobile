@@ -20,6 +20,7 @@ namespace LacoWikiMobile.App.Core.Api
 		}
 
 		protected string BaseUrl => "https://dev.laco-wiki.net/api/mobile"; // //https://laco-wiki.net/api/mobile
+
 		protected string BaseCacheUrl => "https://tilecache.dev.geo-wiki.org/v1/";
 
 		protected IApiAuthentication ApiAuthentication { get; set; }
