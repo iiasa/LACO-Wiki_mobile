@@ -19,7 +19,7 @@ namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 
 		public string Name { get; set; }
 
-		public string Size { get; set; }
+		public long Size { get; set; }
 
 		public string Url { get; set; }
 

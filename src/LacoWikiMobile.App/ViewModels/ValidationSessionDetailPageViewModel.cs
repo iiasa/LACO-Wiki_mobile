@@ -5,6 +5,7 @@
 
 namespace LacoWikiMobile.App.ViewModels
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 	using System.Windows.Input;
@@ -59,7 +60,7 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				// remove files
 				FileManager.DeleteOfflineCache(cacheButton.Url);
-				cacheButton.CacheButtonText = "Download " + cacheButton.Name;
+				cacheButton.CacheButtonText = cacheButton.Name + " (" + String.Format("{0:0.00}", cacheButton.Size / 1000000.0) + "MB)";
 				cacheButton.ImageButton = "ic_download";
 				cacheButton.Path = null;
 			}
