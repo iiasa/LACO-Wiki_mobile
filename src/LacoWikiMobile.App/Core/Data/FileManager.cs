@@ -10,7 +10,19 @@ namespace LacoWikiMobile.App.Core.Data
 
 	public class FileManager
 	{
-		public static string SavingPath;
+		private static string savingPath;
+
+		public static string SavingPath
+		{
+			get
+			{
+				return savingPath;
+			}
+			set
+			{
+				savingPath = value;
+			}
+		}
 
 		public FileManager()
 		{
