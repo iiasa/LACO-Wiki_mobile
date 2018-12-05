@@ -30,7 +30,7 @@ namespace LacoWikiMobile.App.Core.Data
 			ChangeTracker.AutoDetectChangesEnabled = false;
 		}
 
-		public void EnableDetectChanges() //crash?
+		public void EnableDetectChanges() // crash?
 		{
 			ChangeTracker.AutoDetectChangesEnabled = true;
 			ChangeTracker.DetectChanges();

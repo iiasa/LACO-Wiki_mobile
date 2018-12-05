@@ -256,6 +256,5 @@ namespace LacoWikiMobile.App.ViewModels
 
 			return true;
 		}
-
 	}
 }

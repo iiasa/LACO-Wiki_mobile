@@ -19,7 +19,8 @@ namespace LacoWikiMobile.App.Core.Api
 			ApiAuthentication = apiAuthentication;
 		}
 
-		protected string BaseUrl => "https://dev.laco-wiki.net/api/mobile";// //https://laco-wiki.net/api/mobile
+		protected string BaseUrl => "https://dev.laco-wiki.net/api/mobile"; // https://laco-wiki.net/api/mobile
+
 		protected string BaseCacheUrl => "https://tilecache.dev.geo-wiki.org/v1/";
 
 		protected IApiAuthentication ApiAuthentication { get; set; }
@@ -80,22 +81,6 @@ namespace LacoWikiMobile.App.Core.Api
 			}
 			catch (FlurlHttpException e)
 			{
-				throw TokenExpiredOrOriginalException(e);
-			}
-		}
-
-		public async Task<byte[]> GetCacheAsync(string url)
-		{
-			try
-			{
-				//return await BaseCacheUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
-				//                  .AppendPathSegment($"tilecaches/{cacheId}/download")
-
-				return await url.GetBytesAsync();
-			}
-			catch (FlurlHttpException e)
-			{
-				System.Console.WriteLine("DEBUG - Error " + e.Message);
 				throw TokenExpiredOrOriginalException(e);
 			}
 		}

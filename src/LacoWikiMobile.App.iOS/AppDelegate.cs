@@ -37,10 +37,11 @@ namespace LacoWikiMobile.App.iOS
 #endif
 
 			Forms.Init();
-			//Download manager
+			// Download manager
 			LacoWikiMobile.App.Core.Data.FileManager.SavingPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			CrossDownloadManager.Current.PathNameForDownloadedFile = new Func<IDownloadFile, string> (file => {
-			    string fileName = file.Url.GetHashCode().ToString();
+			CrossDownloadManager.Current.PathNameForDownloadedFile = new Func<IDownloadFile, string>(file =>
+			{
+				string fileName = file.Url.GetHashCode().ToString();
 				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName);
 				return path;
 			});

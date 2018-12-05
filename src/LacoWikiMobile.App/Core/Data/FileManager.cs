@@ -1,4 +1,9 @@
-﻿namespace LacoWikiMobile.App.Core.Data
+﻿// <copyright file="FileManager.cs" company="IIASA">
+// Copyright (c) IIASA. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace LacoWikiMobile.App.Core.Data
 {
 	using System;
 	using System.IO;
@@ -23,12 +28,9 @@
 			{
 				Console.WriteLine(e.ToString());
 			}
-
 		}
 
-		/**
-		 * Check if the cache for a specified url is saved on cache or not
-		 */
+		// Check if the cache for a specified url is saved on cache or not
 		public static bool CacheFileExists(string url)
 		{
 			string fileName = url.GetHashCode().ToString();
@@ -37,7 +39,7 @@
 			return File.Exists(path);
 		}
 
-		public static string getFullPath(string fileName)
+		public static string GetFullPath(string fileName)
 		{
 			string path;
 			path = Path.Combine(SavingPath, fileName);

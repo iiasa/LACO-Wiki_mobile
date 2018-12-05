@@ -139,7 +139,7 @@ namespace LacoWikiMobile.App.ViewModels
 								cacheModel.CacheButtonText = "Delete " + cacheModel.Name;
 								cacheModel.ImageButton = "ic_delete";
 							}
-							else 
+							else
 							{
 								cacheModel.ImageButton = "ic_download";
 							}
@@ -154,10 +154,7 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				cacheButton.CacheButtonText = "Downloading " + cacheButton.Name;
 				cacheButton.ImageButton = "ic_download";
-				// test url
-				string testUrl = "http://www.ovh.net/files/10Mio.dat";
 				IDownloadFile file = CrossDownloadManager.Current.CreateDownloadFile(cacheButton.Url);
-
 				CrossDownloadManager.Current.Start(file);
 				file.PropertyChanged += (sender, e) =>
 				{
