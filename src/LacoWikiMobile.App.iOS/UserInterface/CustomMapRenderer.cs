@@ -12,17 +12,24 @@ using Xamarin.Forms;
 namespace LacoWikiMobile.App.iOS.UserInterface
 {
 	using System;
+	using System.ComponentModel;
+	using LacoWikiMobile.App.Core.Tile;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
 	using MapKit;
+	using ObjCRuntime;
 	using Xamarin.Forms;
 	using Xamarin.Forms.Maps.iOS;
 	using Xamarin.Forms.Platform.iOS;
 
 	public class CustomMapRenderer : MapRenderer
 	{
+		private MKMapView map;
+
 		protected CustomMap CustomMap => Element as CustomMap;
 
 		protected PointHandler PointHandler { get; set; }
+
+		protected MKTileOverlay TileOverlay { get; set; }
 
 		protected override void Dispose(bool disposing)
 		{
@@ -40,35 +47,67 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 		protected override void OnElementChanged(ElementChangedEventArgs<View> e)
 		{
 			base.OnElementChanged(e);
-
-			if (e.OldElement != null)
-			{
-				// Unsubscribe from event handlers and cleanup any resources
-			}
-
 			if (e.NewElement != null)
 			{
-				// Configure the control and subscribe to event handlers
-				MKMapView nativeMap = Control as MKMapView;
-
-				PointHandler = new PointHandler()
+				this.map = Control as MKMapView;
+				TileOverlay = new CustomTileProvider(
+					(IReadOnlyTileService)((App)Application.Current).Container.Resolve(typeof(IReadOnlyTileService)));
+				if (this.map != null)
 				{
-					Map = nativeMap,
-					Points = CustomMap.Points,
-				};
+					this.map.AddOverlay(TileOverlay);
+					PointHandler = new PointHandler
+					{
+						Map = this.map,
+						Points = CustomMap.Points,
+					};
+					this.map.OverlayRenderer = OverlayRenderer;
+					PointHandler.OnMapClicked += OnMapClicked;
+				}
+			}
+		}
 
-				PointHandler.OnMapClicked += OnMapClicked;
+		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			base.OnElementPropertyChanged(sender, e);
+			if (CustomMap.PointsProperty.PropertyName == e.PropertyName)
+			{
+				if (PointHandler != null)
+				{
+					PointHandler.Points = CustomMap.Points;
+				}
 			}
 
-			if (Control == null)
+			if (CustomMap.ShowTileLayerProperty.PropertyName == e.PropertyName)
 			{
-				// Instantiate the native control and assign it to the Control property with the SetNativeControl method
+				if (this.map == null)
+				{
+					return;
+				}
+
+				if (CustomMap.ShowTileLayer)
+				{
+					this.map.AddOverlay(TileOverlay, MKOverlayLevel.AboveRoads);
+				}
+				else
+				{
+					this.map.RemoveOverlay(TileOverlay);
+				}
 			}
 		}
 
 		protected void OnMapClicked(object sender, EventArgs e)
 		{
 			CustomMap.MapClickCommand?.Execute(null);
+		}
+
+		protected MKOverlayRenderer OverlayRenderer(MKMapView mapview, IMKOverlay overlay)
+		{
+			if (!(Runtime.GetNSObject(overlay.Handle) is MKCircle circle))
+			{
+				return new MKTileOverlayRenderer((MKTileOverlay)overlay);
+			}
+
+			return PointHandler.GetCircleRenderer(circle);
 		}
 	}
 }

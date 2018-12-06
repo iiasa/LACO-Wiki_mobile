@@ -14,6 +14,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
+	using LacoWikiMobile.App.ViewModels.Map;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
 	using Microsoft.Extensions.Localization;
 	using Plugin.DownloadManager;
@@ -146,6 +147,36 @@ namespace LacoWikiMobile.App.ViewModels
 						}
 					});
 			}
+
+
+		}
+
+		private void UpdateLayers()
+		{
+			LayerService.Reset();
+			LayerItemViewModel layer;
+
+			layer = LayerService.AddLayerPoints("Points", true);
+
+			layer = LayerService.AddLayerRaster("GoogleMap", true, true, null);
+
+			foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
+			{
+				if (FileManager.CacheFileExists(cacheModel.Name))
+				{
+					layer = LayerService.AddLayerRaster(cacheModel.Name, true, false, FileManager.GetFullPath(cacheModel.Name));
+				}
+				else
+				{
+					layer = LayerService.AddLayerRaster(cacheModel.Name , false, false, null);
+				}
+			}
+		}
+
+		protected override async Task PrimaryActionButtonTappedAsync()
+		{
+			UpdateLayers();
+			await base.PrimaryActionButtonTappedAsync();
 		}
 
 		private void TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)

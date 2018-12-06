@@ -121,6 +121,17 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		protected IBictionary<IPoint, Circle> PointsToCirclesMapping { get; set; } = new CircleBictionary<IPoint>();
 
+		public void ChangeVisibility(bool visible)
+		{
+			if (visible == false)
+			{
+				RemovePoints();
+			} else
+			{
+				AddPoints();
+			}
+		}
+
 		protected void AddPoint(IPoint point)
 		{
 			Helper.EnsureOnMainThread();
@@ -273,5 +284,6 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				notifyCollectionChanged.CollectionChanged -= PointsOnCollectionChanged;
 			}
 		}
+
 	}
 }

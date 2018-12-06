@@ -8,6 +8,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using System;
 	using System.Collections.Generic;
 	using System.Collections.ObjectModel;
+	using System.ComponentModel;
 	using System.Linq;
 	using System.Threading.Tasks;
 	using System.Windows.Input;
@@ -27,8 +28,9 @@ namespace LacoWikiMobile.App.ViewModels
 	using PropertyChanged;
 	using Xamarin.Essentials;
 	using Xamarin.Forms;
+	using Xamarin.Forms.Internals;
 
-	public class MapPageViewModel : ViewModelBase, IApplicationLifecycleAware, ITargetPositionObserver
+	public class MapPageViewModel : ViewModelBase, IApplicationLifecycleAware, ITargetPositionObserver, INotifyPropertyChanged
 	{
 		// TODO: Discuss threshold
 		protected const double MinimumPointDistanceForValidation = 0.1;
@@ -61,10 +63,31 @@ namespace LacoWikiMobile.App.ViewModels
 				NavigationService.NavigateToValidationUploadAsync(ValidationSessionId);
 			});
 
-			ToogleTileLayerCommand = new DelegateCommand(() => { ShowTileLayer = !ShowTileLayer; });
+			ValidateSwitchLayerCommand = new DelegateCommand(() =>
+			{
+				ViewSwitchLayer = false;
+				ShowTileLayer = true;
+			});
+
+			ToogleTileLayerCommand = new DelegateCommand(() =>
+			{
+				ShowTileLayer = !ShowTileLayer;
+				ViewSwitchLayer = !ViewSwitchLayer;
+			});
+
+			LayerItems = LayerService.LayerItems;
+
+			// Update tape action on each LayerItemViewModel
+			LayerItems.ForEach(x => { if (x.IsEnabled) { x.ItemTapped += OnItemTapped; } });
 		}
 
 		public ICommand ToogleTileLayerCommand { get; set; }
+
+		public ICommand ValidateSwitchLayerCommand { get; set; }
+
+		public ICollection<LayerItemViewModel> LayerItems { get; set; } = LayerService.LayerItems;
+
+		public bool ViewSwitchLayer { get; set; } = false;
 
 		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
 		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
@@ -150,6 +173,8 @@ namespace LacoWikiMobile.App.ViewModels
 		public bool ShowPrimaryActionButton =>
 			NavigationState == NavigationStateEnum.Navigating || NavigationState == NavigationStateEnum.PointReached;
 
+		public Color CheckOK { get; set; } = Color.FromHex("#311B92");
+
 		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
 		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678
 		public Color TileLayerButtonBackgroundColor => ShowTileLayer ? Color.FromHex("#009688") : Color.FromHex("#757575");
@@ -230,6 +255,7 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			SensorService.UnsubscribeToTargetPositionEventsAsync(this);
 		}
+
 
 		protected override async Task InitializeAsync(INavigationParameters parameters)
 		{
@@ -359,6 +385,13 @@ namespace LacoWikiMobile.App.ViewModels
 			await base.PrimaryActionButtonTappedAsync();
 
 			Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateToValidatePageAsync(SelectedPoint.Id, ValidationSessionId));
+		}
+
+		protected void OnItemTapped(object sender, EventArgs args)
+		{
+			LayerItemViewModel layerItemViewModel = (LayerItemViewModel)sender;
+			layerItemViewModel.IsChecked = !layerItemViewModel.IsChecked;
+			LayerService.UpdateIsChecked(layerItemViewModel.Id, layerItemViewModel.IsChecked);
 		}
 	}
 }

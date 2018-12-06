@@ -63,10 +63,7 @@ namespace LacoWikiMobile.App.UserInterface.CustomMap
 			double distanceY = (extent.Top - extent.Bottom) * 1.5;
 			double distanceX = (extent.Right - extent.Left) * 1.5;
 
-			Helper.RunOnMainThreadIfRequired(() =>
-			{
-				MoveToRegion(new MapSpan(position, distanceY, distanceX));
-			});
+			Helper.RunOnMainThreadIfRequired(() => { MoveToRegion(new MapSpan(position, distanceY, distanceX)); });
 		}
 	}
 }

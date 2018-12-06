@@ -25,7 +25,7 @@ namespace LacoWikiMobile.App.Core.Api
 		public ApiAuthentication(INotificationService notificationService)
 		{
 			NotificationService = notificationService;
-			//https://laco-wiki.net/identity/connect/authorize
+			// https://laco-wiki.net/identity/connect/authorize
 			Authenticator = new ExtendedOAuth2Authenticator("webapi", "webapi", new Uri("https://dev.laco-wiki.net/identity/connect/authorize"),
 				new Uri("laco-wiki-app://"), null, true);
 
