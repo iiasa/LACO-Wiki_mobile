@@ -178,6 +178,18 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 			return circleRenderer;
 		}
 
+		public void ChangeVisibility(bool visible)
+		{
+			if (visible == false)
+			{
+				RemovePoints();
+			}
+			else
+			{
+				AddPoints();
+			}
+		}
+
 		protected void AddPoint(IPoint point)
 		{
 			Helper.EnsureOnMainThread();
