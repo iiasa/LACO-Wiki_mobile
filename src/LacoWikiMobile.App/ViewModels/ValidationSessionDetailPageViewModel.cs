@@ -61,7 +61,7 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				// remove files
 				FileManager.DeleteOfflineCache(cacheButton.Url);
-				cacheButton.CacheButtonText = cacheButton.Name + " (" + String.Format("{0:0.00}", cacheButton.Size / 1000000.0) + "MB)";
+				cacheButton.CacheButtonText = cacheButton.Name + " (" + string.Format("{0:0.00}", cacheButton.Size / 1000000.0) + "MB)";
 				cacheButton.ImageButton = "ic_download";
 				cacheButton.Path = null;
 			}
@@ -147,8 +147,12 @@ namespace LacoWikiMobile.App.ViewModels
 						}
 					});
 			}
+		}
 
-
+		protected override async Task PrimaryActionButtonTappedAsync()
+		{
+			UpdateLayers();
+			await base.PrimaryActionButtonTappedAsync();
 		}
 
 		private void UpdateLayers()
@@ -168,15 +172,9 @@ namespace LacoWikiMobile.App.ViewModels
 				}
 				else
 				{
-					layer = LayerService.AddLayerRaster(cacheModel.Name , false, false, null);
+					layer = LayerService.AddLayerRaster(cacheModel.Name, false, false, null);
 				}
 			}
-		}
-
-		protected override async Task PrimaryActionButtonTappedAsync()
-		{
-			UpdateLayers();
-			await base.PrimaryActionButtonTappedAsync();
 		}
 
 		private void TaskDownloadTiles(OfflineCacheItemViewModel cacheButton)

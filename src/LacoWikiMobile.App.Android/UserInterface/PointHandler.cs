@@ -126,7 +126,8 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 			if (visible == false)
 			{
 				RemovePoints();
-			} else
+			}
+			else
 			{
 				AddPoints();
 			}
@@ -178,7 +179,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 		protected void AddPoints()
 		{
 			// crash here
-			foreach (IPoint point in Points.ToList()) 
+			foreach (IPoint point in Points.ToList())
 			{
 				AddPoint(point);
 			}
@@ -284,6 +285,5 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 				notifyCollectionChanged.CollectionChanged -= PointsOnCollectionChanged;
 			}
 		}
-
 	}
 }

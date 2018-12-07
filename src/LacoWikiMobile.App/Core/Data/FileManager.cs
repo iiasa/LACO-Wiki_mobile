@@ -12,20 +12,21 @@ namespace LacoWikiMobile.App.Core.Data
 	{
 		private static string savingPath;
 
+		public FileManager()
+		{
+		}
+
 		public static string SavingPath
 		{
 			get
 			{
 				return savingPath;
 			}
+
 			set
 			{
 				savingPath = value;
 			}
-		}
-
-		public FileManager()
-		{
 		}
 
 		public static void SaveFileToDirectory(string layerName, byte[] bytesArray)

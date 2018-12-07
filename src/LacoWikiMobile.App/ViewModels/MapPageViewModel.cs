@@ -78,7 +78,13 @@ namespace LacoWikiMobile.App.ViewModels
 			LayerItems = LayerService.LayerItems;
 
 			// Update tape action on each LayerItemViewModel
-			LayerItems.ForEach(x => { if (x.IsEnabled) { x.ItemTapped += OnItemTapped; } });
+			LayerItems.ForEach(x =>
+								{
+									if (x.IsEnabled)
+									{
+										x.ItemTapped += OnItemTapped;
+									}
+								});
 		}
 
 		public ICommand ToogleTileLayerCommand { get; set; }
@@ -255,7 +261,6 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			SensorService.UnsubscribeToTargetPositionEventsAsync(this);
 		}
-
 
 		protected override async Task InitializeAsync(INavigationParameters parameters)
 		{

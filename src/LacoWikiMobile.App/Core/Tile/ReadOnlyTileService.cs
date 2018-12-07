@@ -27,7 +27,8 @@ namespace LacoWikiMobile.App.Core.Tile
 				{
 					returnedTile = TileContext.Tiles.SingleOrDefault(tile =>
 						tile.ZoomLevel == zoomLevel && tile.TileColumn == tileColumn && tile.TileRow == tileRow);
-				} catch (SqliteException e)
+				}
+				catch (SqliteException e)
 				{
 					returnedTile = null;
 				}

@@ -16,7 +16,6 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 
 		private ICollection<LegendItem> legendItems = new List<LegendItem>();
 
-
 		private ICollection<SampleItem> sampleItems = new List<SampleItem>();
 
 		private User user;
