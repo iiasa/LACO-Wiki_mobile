@@ -14,6 +14,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
+	using LacoWikiMobile.App.ViewModels.Map;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
 	using Microsoft.Extensions.Localization;
 	using Plugin.DownloadManager;
@@ -60,7 +61,7 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				// remove files
 				FileManager.DeleteOfflineCache(cacheButton.Url);
-				cacheButton.CacheButtonText = cacheButton.Name + " (" + String.Format("{0:0.00}", cacheButton.Size / 1000000.0) + "MB)";
+				cacheButton.CacheButtonText = cacheButton.Name + " (" + string.Format("{0:0.00}", cacheButton.Size / 1000000.0) + "MB)";
 				cacheButton.ImageButton = "ic_download";
 				cacheButton.Path = null;
 			}
@@ -145,6 +146,34 @@ namespace LacoWikiMobile.App.ViewModels
 							}
 						}
 					});
+			}
+		}
+
+		protected override async Task PrimaryActionButtonTappedAsync()
+		{
+			UpdateLayers();
+			await base.PrimaryActionButtonTappedAsync();
+		}
+
+		private void UpdateLayers()
+		{
+			LayerService.Reset();
+			LayerItemViewModel layer;
+
+			layer = LayerService.AddLayerPoints("Points", true);
+
+			layer = LayerService.AddLayerRaster("GoogleMap", true, true, null);
+
+			foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
+			{
+				if (FileManager.CacheFileExists(cacheModel.Name))
+				{
+					layer = LayerService.AddLayerRaster(cacheModel.Name, true, false, FileManager.GetFullPath(cacheModel.Name));
+				}
+				else
+				{
+					layer = LayerService.AddLayerRaster(cacheModel.Name, false, false, null);
+				}
 			}
 		}
 

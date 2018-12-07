@@ -15,7 +15,6 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 	using LacoWikiMobile.App.Core;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
 	using MapKit;
-	using ObjCRuntime;
 	using UIKit;
 	using Xamarin.Forms;
 	using Xamarin.Forms.Platform.iOS;
@@ -58,7 +57,7 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 						RemovePoint(point);
 					}
 				});
-			}, (sender) =>
+			}, sender =>
 			{
 				Helper.RunOnMainThreadIfRequired(() =>
 				{
@@ -115,7 +114,6 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 
 				if (this.map != null)
 				{
-					this.map.OverlayRenderer = OverlayRenderer;
 					this.map.AddGestureRecognizer(ClickGestureRecognizer);
 				}
 			}
@@ -124,8 +122,7 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 		public IEnumerable<IPoint> Points
 		{
 			get => this.points;
-			set
-			{
+			set =>
 				Helper.RunOnMainThreadIfRequired(() =>
 				{
 					if (this.points != null)
@@ -142,7 +139,6 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 						SubscribePoints();
 					}
 				});
-			}
 		}
 
 		protected IDictionary<IPoint, MKCircleRenderer> CircleRenderers { get; set; } = new Dictionary<IPoint, MKCircleRenderer>();
@@ -152,6 +148,47 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 		protected NotifyCollectionChangedEventHandler PointsOnCollectionChanged { get; set; }
 
 		protected IBictionary<IPoint, MKCircle> PointsToCirclesMapping { get; set; } = new Bictionary<IPoint, MKCircle>();
+
+		public MKOverlayRenderer GetCircleRenderer(MKCircle circle)
+		{
+			IPoint point = PointsToCirclesMapping[circle];
+
+			if (CircleRenderers.ContainsKey(point))
+			{
+				return CircleRenderers[point];
+			}
+
+			MKCircleRenderer circleRenderer = new MKCircleRenderer(circle);
+
+			if (point is IStyleable styleable)
+			{
+				circleRenderer.FillColor = styleable.FillColor.ToUIColor();
+				circleRenderer.StrokeColor = styleable.StrokeColor.ToUIColor();
+				circleRenderer.LineWidth = (float)styleable.StrokeWidth;
+			}
+			else
+			{
+				circleRenderer.FillColor = Color.DodgerBlue.ToUIColor();
+				circleRenderer.StrokeColor = Color.DodgerBlue.AddLuminosity(-0.5).ToUIColor();
+				circleRenderer.LineWidth = 1f;
+			}
+
+			CircleRenderers[point] = circleRenderer;
+
+			return circleRenderer;
+		}
+
+		public void ChangeVisibility(bool visible)
+		{
+			if (visible == false)
+			{
+				RemovePoints();
+			}
+			else
+			{
+				AddPoints();
+			}
+		}
 
 		protected void AddPoint(IPoint point)
 		{
@@ -190,36 +227,6 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 			{
 				AddPoint(point);
 			}
-		}
-
-		protected MKOverlayRenderer OverlayRenderer(MKMapView mapview, IMKOverlay overlay)
-		{
-			MKCircle circle = Runtime.GetNSObject(overlay.Handle) as MKCircle;
-			IPoint point = PointsToCirclesMapping[circle];
-
-			if (CircleRenderers.ContainsKey(point))
-			{
-				return CircleRenderers[point];
-			}
-
-			MKCircleRenderer circleRenderer = new MKCircleRenderer(overlay as MKCircle);
-
-			if (point is IStyleable styleable)
-			{
-				circleRenderer.FillColor = styleable.FillColor.ToUIColor();
-				circleRenderer.StrokeColor = styleable.StrokeColor.ToUIColor();
-				circleRenderer.LineWidth = (float)styleable.StrokeWidth;
-			}
-			else
-			{
-				circleRenderer.FillColor = Color.DodgerBlue.ToUIColor();
-				circleRenderer.StrokeColor = Color.DodgerBlue.AddLuminosity(-0.5).ToUIColor();
-				circleRenderer.LineWidth = 1f;
-			}
-
-			CircleRenderers[point] = circleRenderer;
-
-			return circleRenderer;
 		}
 
 		protected void PointPropertyChanged(object sender, PropertyChangedEventArgs e)

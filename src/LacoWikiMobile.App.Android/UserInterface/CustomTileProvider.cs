@@ -7,6 +7,8 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 {
 	using System;
 	using Android.Gms.Maps.Model;
+	using Android.Util;
+	using Java.Lang;
 	using LacoWikiMobile.App.Core.Tile;
 
 	public class CustomTileProvider : Java.Lang.Object, ITileProvider
@@ -22,14 +24,14 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 		public Tile GetTile(int x, int y, int zoom)
 		{
-			LacoWikiMobile.App.Core.Tile.Entities.Tile tile = TileService.TryGetTile(x, (int)Math.Pow(2, zoom) - 1 - y, zoom);
+				LacoWikiMobile.App.Core.Tile.Entities.Tile tile = TileService.TryGetTile(x, (int)System.Math.Pow(2, zoom) - 1 - y, zoom);
 
-			if (tile == null)
-			{
-				return NoTile.Value;
-			}
+				if (tile == null)
+				{
+					return NoTile.Value;
+				}
 
-			return new Tile(512, 512, tile.TileData);
+				return new Tile(512, 512, tile.TileData);
 		}
 	}
 }

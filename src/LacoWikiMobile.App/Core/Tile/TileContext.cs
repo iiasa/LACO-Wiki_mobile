@@ -11,7 +11,7 @@ namespace LacoWikiMobile.App.Core.Tile
 
 	public class TileContext : DbContext
 	{
-		public TileContext(DbContextOptions<TileContext> options)
+		public TileContext(DbContextOptions options)
 			: base(options)
 		{
 		}

@@ -5,7 +5,7 @@
 
 namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 {
-	using LacoWikiMobile.App.ViewModels.Shared;
+	using LacoWikiMobile.App.ViewModels.Map;
 	using Xamarin.Forms;
 
 	public class ItemViewModel : ItemViewModelBase

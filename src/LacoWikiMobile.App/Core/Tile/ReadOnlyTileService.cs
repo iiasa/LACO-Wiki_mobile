@@ -7,6 +7,7 @@ namespace LacoWikiMobile.App.Core.Tile
 {
 	using System.Linq;
 	using LacoWikiMobile.App.Core.Tile.Entities;
+	using Microsoft.Data.Sqlite;
 
 	public class ReadOnlyTileService : IReadOnlyTileService
 	{
@@ -19,10 +20,20 @@ namespace LacoWikiMobile.App.Core.Tile
 
 		public Tile TryGetTile(int tileColumn, int tileRow, int zoomLevel)
 		{
+			Tile returnedTile = null;
 			lock (TileContext)
 			{
-				return TileContext.Tiles.SingleOrDefault(tile =>
-					tile.ZoomLevel == zoomLevel && tile.TileColumn == tileColumn && tile.TileRow == tileRow);
+				try
+				{
+					returnedTile = TileContext.Tiles.SingleOrDefault(tile =>
+						tile.ZoomLevel == zoomLevel && tile.TileColumn == tileColumn && tile.TileRow == tileRow);
+				}
+				catch (SqliteException e)
+				{
+					returnedTile = null;
+				}
+
+				return returnedTile;
 			}
 		}
 	}

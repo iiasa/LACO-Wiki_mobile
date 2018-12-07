@@ -5,7 +5,7 @@
 
 namespace LacoWikiMobile.App.ViewModels.Main
 {
-	using LacoWikiMobile.App.ViewModels.Shared;
+	using LacoWikiMobile.App.ViewModels.Map;
 
 	public class ItemViewModel : ItemViewModelBase
 	{

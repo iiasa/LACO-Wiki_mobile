@@ -128,6 +128,7 @@
     <Compile Include="UserInterface\CircularProgressBarRenderer.cs" />
     <Compile Include="UserInterface\CircularProgressBarView.cs" />
     <Compile Include="UserInterface\CustomMapRenderer.cs" />
+    <Compile Include="UserInterface\CustomTileProvider.cs" />
     <Compile Include="UserInterface\PointHandler.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist">
