@@ -13,7 +13,6 @@ namespace LacoWikiMobile.App.iOS
 {
 	using SQLitePCL;
 	using UIKit;
-	using Xamarin.Forms.Android.UITests;
 	using Xamarin.Forms.Internals;
 
 	public class Application
@@ -21,7 +20,7 @@ namespace LacoWikiMobile.App.iOS
 		// This is the main entry point of the application.
 		private static void Main(string[] args)
 		{
-			Registrar.ExtraAssemblies = new[] { typeof(StyleProperties).Assembly };
+			//Registrar.ExtraAssemblies = new[] { typeof(StyleProperties).Assembly };
 
 			Batteries_V2.Init();
 

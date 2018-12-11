@@ -103,10 +103,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
-    <PackageReference Include="Xamarin.Forms" Version="3.4.0.1008975" />
     <PackageReference Include="Xamarin.Forms.Maps" Version="3.4.0.1008975" />
     <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.21.7" />
     <PackageReference Include="SaturdayMP.XPlugins.iOS.BEMCheckBox" Version="1.4.3" />
@@ -162,10 +162,6 @@
     <ProjectReference Include="..\LacoWikiMobile.App\LacoWikiMobile.App.csproj">
       <Project>{CA6FA195-0A75-4481-B827-64B84FE8F9A3}</Project>
       <Name>LacoWikiMobile.App</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Xamarin.Forms.Android.UITests\Xamarin.Forms.Android.UITests.csproj">
-      <Project>{ACD018D2-D65E-4F0B-B214-A5727D3BB1FC}</Project>
-      <Name>Xamarin.Forms.Android.UITests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

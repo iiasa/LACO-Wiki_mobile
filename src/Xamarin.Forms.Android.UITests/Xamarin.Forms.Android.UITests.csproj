@@ -8,7 +8,7 @@
 		<PackageReference Include="System.Data.SQLite" Version="1.0.109.2" />
 		<PackageReference Include="System.Drawing.Common" Version="4.5.1" />
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
-		<PackageReference Include="Xamarin.Forms" Version="3.1.0.637273" />
+		<PackageReference Include="Xamarin.Forms" Version="3.4.0.1008975" />
 	</ItemGroup>
 
 	<ItemGroup>
