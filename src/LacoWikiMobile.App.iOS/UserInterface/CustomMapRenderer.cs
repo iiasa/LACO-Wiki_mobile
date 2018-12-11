@@ -92,7 +92,8 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 			// Remove previous TileOverlay if created
 			if (TileOverlay != null)
 			{
-				TileOverlay.Remove();
+				this.map.RemoveOverlays();
+				TileOverlay.Dispose();
 			}
 
 			// Make Db Context Options Builder to create sqlite db builder
