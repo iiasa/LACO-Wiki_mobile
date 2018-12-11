@@ -17,6 +17,7 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 	using LacoWikiMobile.App.Core.Tile;
 	using LacoWikiMobile.App.UserInterface.CustomMap;
 	using MapKit;
+	using Microsoft.EntityFrameworkCore;
 	using ObjCRuntime;
 	using Xamarin.Forms;
 	using Xamarin.Forms.Maps.iOS;
