@@ -63,12 +63,24 @@ namespace LacoWikiMobile.App.ViewModels
 			{
 				try
 				{
-					await ApiClient.PostValidationAsync(ValidationSessionId, item.SampleItemId, Mapper.Map<ValidationCreateModel>(item));
-					item.Uploaded = true;
+					if (!item.IsOpportunisticValidation)
+					{
+						await ApiClient.PostValidationAsync(ValidationSessionId, item.ItemId, Mapper.Map<ValidationCreateModel>(item));
+						item.Uploaded = true;
 
-					LocalValidation localValidation =
-						await AppDataService.GetLocalValidationByIdAsync(item.SampleItemId, ValidationSessionId);
-					localValidation.Uploaded = true;
+						LocalValidation localValidation =
+							await AppDataService.GetLocalValidationByIdAsync(item.ItemId, ValidationSessionId);
+						localValidation.Uploaded = true;
+					}
+					else
+					{
+						await ApiClient.PostOpportunisticValidationAsync(ValidationSessionId, Mapper.Map<ValidationCreateModel>(item));
+						item.Uploaded = true;
+
+						LocalOpportunisticValidation localValidation =
+							await AppDataService.GetGetLocalOpportunisticValidationByIdAsync(item.ItemId, ValidationSessionId);
+						localValidation.Uploaded = true;
+					}
 				}
 				catch (Exception e)
 				{
@@ -86,6 +98,8 @@ namespace LacoWikiMobile.App.ViewModels
 			ValidationSessionId = (int)parameters["id"];
 
 			await LoadLocalValidationsAsync(ValidationSessionId);
+
+			await LocalOpportunisticValidation(ValidationSessionId);
 		}
 
 		protected async Task LoadLocalValidationsAsync(int validationSessionId)
@@ -93,6 +107,18 @@ namespace LacoWikiMobile.App.ViewModels
 			List<LocalValidation> localValidations =
 				(await AppDataService.GetLocalValidationsWhereNotUploadedByIdAsync(validationSessionId)).ToList();
 			Mapper.Map(localValidations, Items);
+		}
+		protected async Task LocalOpportunisticValidation(int validationSessionId)
+		{
+			List<LocalOpportunisticValidation> localopportunisticValidations =
+				(await AppDataService.GetLocalOpportunisticValidationWhereNotUploadedByIdAsync(validationSessionId)).ToList();
+			 List<ItemViewModel> LocalOpportunisticItems=new List<ItemViewModel>() ;
+			Mapper.Map(localopportunisticValidations, LocalOpportunisticItems);
+			foreach (var item in LocalOpportunisticItems)
+			{
+				Items.Add(item);
+			};
+
 		}
 	}
 }

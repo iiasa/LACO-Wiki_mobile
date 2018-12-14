@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
@@ -16,23 +16,11 @@
 				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
 				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
 				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
-				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-52}" />
-
-			<StackLayout Orientation="Vertical"
-				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=16}"
-				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=16}">
-				<Frame WidthRequest="40" HeightRequest="40" Margin="0" Padding="0" BackgroundColor="{Binding TileLayerButtonBackgroundColor}"
-					CornerRadius="20" HasShadow="True">
-					<Image Source="ic_layers_white_24dp" VerticalOptions="Center" HorizontalOptions="Center" />
-					<Frame.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding ToogleTileLayerCommand}" />
-					</Frame.GestureRecognizers>
-				</Frame>
-			</StackLayout>
-
-			<RelativeLayout BackgroundColor="{Binding NavigationPaneBackgroundColor}"
+				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+			
+						<RelativeLayout BackgroundColor="{Binding NavigationPaneBackgroundColor}"
 				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
-				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-52}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=5}"
 				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
 				RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=52}">
 				<ui:AutoFontSizedLabel Text="{Binding NavigationText}" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
@@ -46,6 +34,37 @@
 					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=52}"
 					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=52}" />
 			</RelativeLayout>
+			
+			
+			<StackLayout Orientation="Vertical"
+				RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=16}"
+				RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=62}">
+				<Frame WidthRequest="40" HeightRequest="40" Margin="0" Padding="0" BackgroundColor="{Binding TileLayerButtonBackgroundColor}"
+					CornerRadius="20" HasShadow="True">
+					<Image Source="ic_layers_white_24dp" VerticalOptions="Center" HorizontalOptions="Center" />
+					<Frame.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ToogleTileLayerCommand}" />
+					</Frame.GestureRecognizers>
+				</Frame>
+			</StackLayout>
+			
+			
+	<RelativeLayout IsVisible="{Binding ShowValidateCurrentLocationButton}" BackgroundColor="#009688"
+		RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+		RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-52}"
+		RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+		RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=52}">
+
+			<ui:AutoFontSizedLabel Text="Validate my current location"  IsVisible="{Binding ShowValidateCurrentLocationButton}" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=52}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=8}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-104}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-16}" >
+				<ui:AutoFontSizedLabel.GestureRecognizers>
+			<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
+		</ui:AutoFontSizedLabel.GestureRecognizers>
+		</ui:AutoFontSizedLabel>
+		</RelativeLayout>
 
 			<Frame StyleClass="FloatingActionButton"
 			BackgroundColor="{Binding PrimaryActionButtonBackgroundColor}"

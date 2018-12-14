@@ -31,6 +31,14 @@ namespace LacoWikiMobile.App.Core
 			});
 		}
 
+		public static Task<INavigationResult> NavigateToValidatePageAsync(this INavigationService navigationService, int validationSessionId)
+		{
+			return navigationService.NavigateAsync(nameof(ValidatePage), new NavigationParameters()
+			{
+				{ nameof(validationSessionId), validationSessionId },
+			});
+		}
+
 		public static Task<INavigationResult> NavigateToValidationSessionDetailAsync(this INavigationService navigationService, int id,
 			string name)
 		{

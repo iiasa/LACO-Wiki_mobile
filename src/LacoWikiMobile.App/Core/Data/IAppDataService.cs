@@ -13,6 +13,8 @@ namespace LacoWikiMobile.App.Core.Data
 	{
 		Task AddLocalValidationAsync(LocalValidation localValidation);
 
+		Task AddLocalOpportunisticValidation(LocalOpportunisticValidation localOpportunisticValidation);
+
 		Task AddValidationSessionAsync(ValidationSession validationSession);
 
 		void DisableDetectChanges();
@@ -25,9 +27,15 @@ namespace LacoWikiMobile.App.Core.Data
 
 		Task<LocalValidation> GetLocalValidationByIdAsync(int id, int validationSessionId);
 
+		Task<LocalOpportunisticValidation> GetGetLocalOpportunisticValidationByIdAsync(int id, int validationSessionId);
+
 		Task<IEnumerable<LocalValidation>> GetLocalValidationsByIdAsync(int validationSessionId);
 
+		Task<IEnumerable<LocalOpportunisticValidation>> GetLocalOpportunisticValidationsByIdAsync(int validationSessionId);
+
 		Task<IEnumerable<LocalValidation>> GetLocalValidationsWhereNotUploadedByIdAsync(int validationSessionId);
+
+		Task<IEnumerable<LocalOpportunisticValidation>> GetLocalOpportunisticValidationWhereNotUploadedByIdAsync(int validationSessionId);
 
 		Task<SampleItem> GetSampleItemByIdAsync(int id, int validationSessionId);
 

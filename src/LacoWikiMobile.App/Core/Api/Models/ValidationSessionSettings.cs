@@ -13,6 +13,8 @@ namespace LacoWikiMobile.App.Core.Api.Models
 		// Maximum distance in meters to allow the validation, null => no limitation
 		public int? Distance { get; set; }
 
+		public bool OpportunisticValidationsEnabled { get; set; }
+
 		public bool PointPhotoOptional { get; set; }
 
 		public bool TakeCardinalDirectionPhotos { get; set; }

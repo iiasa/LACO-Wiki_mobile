@@ -22,6 +22,8 @@ namespace LacoWikiMobile.App.Core.Data
 
 		DbSet<LocalValidation> LocalValidations { get; set; }
 
+		DbSet<LocalOpportunisticValidation> LocalOpportunisticValidations { get; set; }
+
 		int SaveChanges();
 
 		int SaveChanges(bool acceptAllChangesOnSuccess);

@@ -16,6 +16,8 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 
 		private ValidationSession validationSession;
 
+		LocalOpportunisticValidation localOpportunisticValidation;
+
 		public LegendItem()
 		{
 		}
@@ -47,6 +49,12 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 		{
 			get => LazyLoader.Load(this, ref this.validationSession);
 			set => this.validationSession = value;
+		}
+
+		public LocalOpportunisticValidation LocalOpportunisticValidation
+		{
+			get => LazyLoader.Load(this, ref this.localOpportunisticValidation);
+			set => this.localOpportunisticValidation = value;
 		}
 
 		public string Value { get; set; }

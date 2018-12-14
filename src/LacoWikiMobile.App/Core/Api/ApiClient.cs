@@ -19,7 +19,7 @@ namespace LacoWikiMobile.App.Core.Api
 			ApiAuthentication = apiAuthentication;
 		}
 
-		protected string BaseUrl => "https://laco-wiki.net/api/mobile";
+		protected string BaseUrl => "https://dev.laco-wiki.net/api/mobile";
 
 		protected IApiAuthentication ApiAuthentication { get; set; }
 
@@ -71,6 +71,20 @@ namespace LacoWikiMobile.App.Core.Api
 			{
 				await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
 					.AppendPathSegment($"validationsessions/{validationSessionId}/sampleitems/{sampleItemId}/validations")
+					.PostJsonAsync(model);
+			}
+			catch (FlurlHttpException e)
+			{
+				throw TokenExpiredOrOriginalException(e);
+			}
+		}
+
+		public async Task PostOpportunisticValidationAsync(int validationSessionId, ValidationCreateModel model)
+		{
+			try
+			{
+				await BaseUrl.WithHeader("Authorization", "Bearer " + await ApiAuthentication.GetAccessTokenAsync())
+					.AppendPathSegment($"validationsessions/{validationSessionId}/validations")
 					.PostJsonAsync(model);
 			}
 			catch (FlurlHttpException e)

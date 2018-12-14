@@ -19,6 +19,8 @@ namespace LacoWikiMobile.App.Core.Data
 
 		public DbSet<LocalValidation> LocalValidations { get; set; }
 
+		public DbSet<LocalOpportunisticValidation> LocalOpportunisticValidations { get; set; }
+
 		public DbSet<SampleItem> SampleItems { get; set; }
 
 		public DbSet<User> Users { get; set; }
@@ -60,6 +62,15 @@ namespace LacoWikiMobile.App.Core.Data
 				.HasKey($"{nameof(SampleItem)}{nameof(SampleItem.Id)}",
 					$"{nameof(SampleItem)}{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.Id)}",
 					$"{nameof(SampleItem)}{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}{nameof(User.Id)}");
+
+		
+			modelBuilder.Entity<LocalOpportunisticValidation>()
+				.HasOne(x => x.LegendItem)
+			.WithOne(x => x.LocalOpportunisticValidation)
+		.HasForeignKey<LocalOpportunisticValidation>($"{nameof(LegendItem)}{nameof(LegendItem.Id)}",
+					$"{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.Id)}",
+					$"{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}{nameof(User.Id)}");
+					
 		}
 	}
 }

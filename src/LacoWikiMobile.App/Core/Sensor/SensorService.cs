@@ -19,7 +19,6 @@ namespace LacoWikiMobile.App.Core.Sensor
 		{
 			Geolocator = geolocator;
 		}
-
 		protected double? CurrentHeading { get; set; }
 
 		protected IPosition CurrentPosition { get; set; }
@@ -30,6 +29,42 @@ namespace LacoWikiMobile.App.Core.Sensor
 
 		protected IDictionary<ITargetPositionObserver, TargetPositionObserverOptions> TargetPositionObservers { get; set; } =
 			new Dictionary<ITargetPositionObserver, TargetPositionObserverOptions>();
+
+		public async Task<Position> GetCurrentPosition()
+		{
+			Plugin.Geolocator.Abstractions.Position geoPosition = null;
+			try
+			{
+
+				Geolocator.DesiredAccuracy = 100;
+
+				geoPosition = await Geolocator.GetLastKnownLocationAsync();
+
+				if (geoPosition != null)
+				{
+					//got a cahched position, so let's use it.
+					return new Position { Latitude = geoPosition.Latitude, Longitude = geoPosition.Longitude };
+				}
+
+				if (!Geolocator.IsGeolocationAvailable || !Geolocator.IsGeolocationEnabled)
+				{
+					//not available or enabled
+					return null;
+				}
+
+				geoPosition = await Geolocator.GetPositionAsync(TimeSpan.FromSeconds(20), null, true);
+
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Unable to get location: " + ex);
+			}
+
+			if (geoPosition == null)
+				return null;
+
+		return new Position { Latitude = geoPosition.Latitude, Longitude = geoPosition.Longitude }; ;
+		}
 
 		public async Task<bool> SubscribeToTargetPositionEventsAsync(ITargetPositionObserver observer,
 			TargetPositionObserverOptions options)
@@ -117,13 +152,15 @@ namespace LacoWikiMobile.App.Core.Sensor
 		protected void NotifyTargetPositionObserver(ITargetPositionObserver observer, TargetPositionObserverOptions options)
 		{
 			IPosition targetPosition = options.TargetPosition;
+			if (targetPosition != null)
+			{
+				double distance = Location.CalculateDistance(new Location(CurrentPosition.Latitude, CurrentPosition.Longitude),
+					new Location(targetPosition.Latitude, targetPosition.Longitude), DistanceUnits.Kilometers);
+				double direction = (CurrentPosition.GetBearing(targetPosition) - CurrentHeading.Value + 360) % 360;
 
-			double distance = Location.CalculateDistance(new Location(CurrentPosition.Latitude, CurrentPosition.Longitude),
-				new Location(targetPosition.Latitude, targetPosition.Longitude), DistanceUnits.Kilometers);
-			double direction = (CurrentPosition.GetBearing(targetPosition) - CurrentHeading.Value + 360) % 360;
-
-			observer.OnDistanceChanged(distance);
-			observer.OnDirectionChanged(direction);
+				observer.OnDistanceChanged(distance);
+				observer.OnDirectionChanged(direction);
+			}
 		}
 
 		protected void NotifyTargetPositionObservers()

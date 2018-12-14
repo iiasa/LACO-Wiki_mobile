@@ -49,5 +49,5 @@ namespace LacoWikiMobile.App.Core.Data
 					throw new NotSupportedException();
 			}
 		}
-	}
+	} 
 }

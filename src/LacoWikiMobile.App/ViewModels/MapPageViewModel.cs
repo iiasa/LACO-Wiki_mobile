@@ -32,7 +32,7 @@ namespace LacoWikiMobile.App.ViewModels
 	{
 		// TODO: Discuss threshold
 		protected const double MinimumPointDistanceForValidation = 0.1;
-
+		bool OpportunisticValidationsEnabled;
 		public MapPageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<MapPageViewModel> stringLocalizer, IEventAggregator eventAggregator, IApiClient apiClient,
 			IAppDataService appDataService, IMapper mapper, INotificationService notificationService, ISensorService sensorService)
@@ -61,7 +61,8 @@ namespace LacoWikiMobile.App.ViewModels
 				NavigationService.NavigateToValidationUploadAsync(ValidationSessionId);
 			});
 
-			ToogleTileLayerCommand = new DelegateCommand(() => { ShowTileLayer = !ShowTileLayer; });
+			ToogleTileLayerCommand = new DelegateCommand(() => 
+			{ ShowTileLayer = !ShowTileLayer; });
 		}
 
 		public ICommand ToogleTileLayerCommand { get; set; }
@@ -123,7 +124,7 @@ namespace LacoWikiMobile.App.ViewModels
 				switch (NavigationState)
 				{
 					case NavigationStateEnum.NoPointSelected:
-						return "Select Point";
+						return "Select point to start navigation";
 
 					case NavigationStateEnum.Initializing:
 						return "Initializing...";
@@ -162,13 +163,15 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public double? NavigationDistance { get; set; }
 
-		public override bool PrimaryActionButtonEnabled => NavigationState == NavigationStateEnum.PointReached;
+		public override bool PrimaryActionButtonEnabled => true;
 
 		public SamplePointsViewModel SamplePointsViewModel { get; set; }
 
 		public SamplePointViewModel SelectedPoint { get; set; }
 
 		public bool ShowTileLayer { get; set; } = true;
+
+		public bool ShowValidateCurrentLocationButton { get; set; }
 
 		protected IApiClient ApiClient { get; set; }
 
@@ -195,6 +198,7 @@ namespace LacoWikiMobile.App.ViewModels
 
 			SelectedPoint = null;
 			NavigationDistance = null;
+			ShowValidateCurrentLocationButton = true;
 		}
 
 		public void OnDirectionChanged(double direction)
@@ -260,11 +264,22 @@ namespace LacoWikiMobile.App.ViewModels
 			ValidationSessionId = (int)parameters["id"];
 			Title = (string)parameters["name"];
 
-			ValidationSession validationSession = await AppDataService.GetValidationSessionByIdAsync(ValidationSessionId);
+			var validationSession = await AppDataService.GetValidationSessionByIdAsync(ValidationSessionId);
+
+	
+
 			Mapper.Map(validationSession, SamplePointsViewModel);
 
 			if (Connectivity.NetworkAccess == NetworkAccess.Internet)
 			{
+				var res = await ApiClient.GetValidationSessionByIdAsync(ValidationSessionId);
+				if (res != null)
+				{
+					OpportunisticValidationsEnabled = res.Settings.OpportunisticValidationsEnabled;
+				}
+				ShowValidateCurrentLocationButton = OpportunisticValidationsEnabled && validationSession?.ValidationMethod == ValidationMethodEnum.Blind ||
+validationSession?.ValidationMethod == ValidationMethodEnum.EnhancedPlausibility;
+
 				// TODO: Localization
 				NotificationService.Notify("Synchronizing points...");
 
@@ -328,6 +343,7 @@ namespace LacoWikiMobile.App.ViewModels
 				// Ensure only one selected item
 				if (selectable.Selected)
 				{
+					ShowValidateCurrentLocationButton = false;
 					Helper.RunOnMainThreadIfRequired(async () =>
 					{
 						// TODO: Show message when result is false
@@ -358,7 +374,13 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			await base.PrimaryActionButtonTappedAsync();
 
-			Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateToValidatePageAsync(SelectedPoint.Id, ValidationSessionId));
+			if(SelectedPoint!=null)
+
+			Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateToValidatePageAsync(SelectedPoint.Id , ValidationSessionId));
+
+			else
+					Helper.RunOnMainThreadIfRequired(() => NavigationService.NavigateToValidatePageAsync(ValidationSessionId));
+
 		}
 	}
 }

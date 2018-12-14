@@ -9,6 +9,8 @@ namespace LacoWikiMobile.App.Core.Sensor
 
 	public interface ISensorService
 	{
+		Task<Position> GetCurrentPosition();
+
 		Task<bool> SubscribeToTargetPositionEventsAsync(ITargetPositionObserver observer, TargetPositionObserverOptions options);
 
 		Task<bool> UnsubscribeToTargetPositionEventsAsync(ITargetPositionObserver observer);

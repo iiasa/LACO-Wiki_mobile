@@ -17,12 +17,14 @@ namespace LacoWikiMobile.App.ViewModels.ValidationUpload
 		public ImageSource ImageSource =>
 			Uploaded ? ImageSource.FromFile("ic_check_all_white_24dp") : ImageSource.FromFile("ic_check_white_24dp");
 
-		public int SampleItemId { get; set; }
+		public int ItemId { get; set; }
 
 		public bool Uploaded { get; set; }
 
+		public bool IsOpportunisticValidation { get; set; }
+
 		// TODO: Localization
-		public string Name => $"Sample #{SampleItemId}";
+		public string Name => IsOpportunisticValidation? $"Opportunistic #{ItemId}" : $"Sample #{ItemId}";
 
 		public bool? Correct { get; set; }
 

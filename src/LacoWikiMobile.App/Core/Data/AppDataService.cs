@@ -5,6 +5,7 @@
 
 namespace LacoWikiMobile.App.Core.Data
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Threading.Tasks;
@@ -25,10 +26,16 @@ namespace LacoWikiMobile.App.Core.Data
 
 		protected IAppDataContext Context { get; set; }
 
+		public async Task AddLocalOpportunisticValidation(LocalOpportunisticValidation localOpportunisticValidation)
+		{
+				await Context.LocalOpportunisticValidations.AddAsync(localOpportunisticValidation);
+				await SaveChangesAsync();
+		}
+
 		public async Task AddLocalValidationAsync(LocalValidation localValidation)
 		{
-			await Context.LocalValidations.AddAsync(localValidation);
-			await SaveChangesAsync();
+				await Context.LocalValidations.AddAsync(localValidation);
+				await SaveChangesAsync();
 		}
 
 		public async Task AddValidationSessionAsync(ValidationSession validationSession)
@@ -74,10 +81,30 @@ namespace LacoWikiMobile.App.Core.Data
 			}
 		}
 
+		public async Task<LocalOpportunisticValidation> GetGetLocalOpportunisticValidationByIdAsync(int id, int validationSessionId)
+		{
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+			return await Context.LocalOpportunisticValidations.SingleAsync(x =>
+				x.LegendItem.Id == id && x.LegendItem.ValidationSession == validationSession);
+		}
+
 		public async Task<LegendItem> GetLegendItemByIdAsync(int id, int validationSessionId)
 		{
 			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
 			return await Context.LegendItems.SingleAsync(x => x.Id == id && x.ValidationSession == validationSession);
+		}
+
+		public async Task<IEnumerable<LocalOpportunisticValidation>> GetLocalOpportunisticValidationsByIdAsync(int validationSessionId)
+		{
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+			return await Context.LocalOpportunisticValidations.Where(x => x.LegendItem.ValidationSession == validationSession).ToListAsync();
+		}
+
+		public async Task<IEnumerable<LocalOpportunisticValidation>> GetLocalOpportunisticValidationWhereNotUploadedByIdAsync(int validationSessionId)
+		{
+			ValidationSession validationSession = await GetValidationSessionByIdAsync(validationSessionId);
+			return await Context.LocalOpportunisticValidations.Where(x => x.LegendItem.ValidationSession == validationSession && x.Uploaded == false)
+				.ToListAsync();
 		}
 
 		public async Task<LocalValidation> GetLocalValidationByIdAsync(int id, int validationSessionId)
@@ -151,5 +178,6 @@ namespace LacoWikiMobile.App.Core.Data
 				await SaveChangesAsync();
 			}
 		}
+
 	}
 }

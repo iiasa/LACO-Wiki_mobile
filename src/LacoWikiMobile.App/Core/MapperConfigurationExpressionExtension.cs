@@ -158,19 +158,32 @@ namespace LacoWikiMobile.App.Core
 				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore())
 				.ForMember(dest => dest.IsSelected, opt => opt.Ignore())
 				.ForMember(dest => dest.ItemSelectedCommand, opt => opt.Ignore())
-				.EqualityComparison((source, destination) => source.SampleItem.Id == destination.SampleItemId);
+				.ForMember(dest => dest.ItemId, opt => opt.MapFrom(src => src.SampleItem.Id))
+				.ForMember(dest => dest.IsOpportunisticValidation, opt => opt.UseValue(false))
+				.EqualityComparison((source, destination) => source.SampleItem.Id == destination.ItemId);
+
+				mapperConfigurationExpression.CreateMap<LocalOpportunisticValidation, ViewModels.ValidationUpload.ItemViewModel>()
+				.ForMember(dest => dest.LegendItemId, opt => opt.MapFrom(src => src.LegendItem == null ? null : (int?)src.LegendItem.Id))
+				.ForMember(dest => dest.Uploaded, opt => opt.Ignore())
+				.ForMember(dest => dest.IsActive, opt => opt.Ignore())
+				.ForMember(dest => dest.ItemTappedCommand, opt => opt.Ignore())
+				.ForMember(dest => dest.IsSelected, opt => opt.Ignore())
+				.ForMember(dest => dest.ItemId, opt => opt.MapFrom(src => src.ValidationId))
+				.ForMember(dest => dest.IsOpportunisticValidation, opt =>opt.UseValue(true))
+				.ForMember(dest => dest.ItemSelectedCommand, opt => opt.Ignore())
+				.EqualityComparison((source, destination) => source.ValidationId == destination.ItemId);
 
 			// View models to entities
 			mapperConfigurationExpression.CreateMap<ValidationSessionDetailViewModel, ValidationSession>()
 				.ForMember(dest => dest.UserId, opt => opt.Ignore())
 				.ForMember(dest => dest.User, opt => opt.Ignore())
 				.ForMember(dest => dest.SampleItems, opt => opt.Ignore());
-
 			mapperConfigurationExpression.CreateMap<ItemViewModel, LegendItem>()
 				.ForMember(dest => dest.Red, opt => opt.MapFrom(src => src.Color.R * 255.0))
 				.ForMember(dest => dest.Green, opt => opt.MapFrom(src => src.Color.G * 255.0))
 				.ForMember(dest => dest.Blue, opt => opt.MapFrom(src => src.Color.B * 255.0))
 				.ForMember(dest => dest.ValidationSession, opt => opt.Ignore())
+						.ForMember(dest => dest.LocalOpportunisticValidation, opt => opt.Ignore())
 				.ForMember(dest => dest.SampleItems, opt => opt.Ignore())
 				.EqualityComparison((source, dest) => dest.Id == source.Id);
 
@@ -206,12 +219,32 @@ namespace LacoWikiMobile.App.Core
 				.AfterMap(async (src, dest, context) =>
 				{
 					IAppDataService appDataService = containerProvider.Resolve<IAppDataService>();
-
 					dest.SampleItem = await appDataService.GetSampleItemByIdAsync(src.SampleItemId, src.ValidationSessionId);
 					dest.LegendItem = src.SelectedLegendItem != null
 						? await appDataService.GetLegendItemByIdAsync(src.SelectedLegendItem.Id, src.ValidationSessionId)
 						: null;
 				});
+
+			mapperConfigurationExpression.CreateMap<ValidatePageViewModel, LocalOpportunisticValidation>()
+	.ForMember(dest => dest.LegendItem, opt => opt.Ignore())
+	.ForMember(dest => dest.Uploaded, opt => opt.Ignore())
+	.ForMember(dest => dest.ValidationId, opt => opt.Ignore())
+		.ForMember(dest => dest.Geometry, configuration =>
+		{
+			configuration.ResolveUsing((source, destination) =>
+			{
+				Wkx.Point point = new Wkx.Point(source.CurrentPosition.Latitude, source.CurrentPosition.Longitude);
+				return point.SerializeString<WktSerializer>();
+			});
+		})
+	.AfterMap(async (src, dest, context) =>
+	{
+		IAppDataService appDataService = containerProvider.Resolve<IAppDataService>();
+		dest.LegendItem = src.SelectedLegendItem != null
+			? await appDataService.GetLegendItemByIdAsync(src.SelectedLegendItem.Id, src.ValidationSessionId)
+			: null;
+
+	});
 		}
 	}
 }

@@ -17,6 +17,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Data.Entities;
+	using LacoWikiMobile.App.Core.Sensor;
 	using LacoWikiMobile.App.ViewModels.ValidationSessionDetail;
 	using Microsoft.Extensions.Localization;
 	using Prism.Commands;
@@ -25,16 +26,19 @@ namespace LacoWikiMobile.App.ViewModels
 	using PropertyChanged;
 	using Xamarin.Forms;
 
-	public class ValidatePageViewModel : ViewModelBase
+	public class ValidatePageViewModel : ViewModelBase, ITargetPositionObserver
 	{
+
+		private int? sampleItemId;
 		public ValidatePageViewModel(INavigationService navigationService, IPermissionService permissionService,
 			IStringLocalizer<ValidatePageViewModel> stringLocalizer, IEventAggregator eventAggregator, IApiClient apiClient,
-			IAppDataService appDataService, IMapper mapper, INotificationService notificationService)
+			IAppDataService appDataService, IMapper mapper, INotificationService notificationService,ISensorService sensorService)
 			: base(navigationService, permissionService, stringLocalizer)
 		{
 			EventAggregator = eventAggregator;
 			ApiClient = apiClient;
 			AppDataService = appDataService;
+			SensorService = sensorService;
 			Mapper = mapper;
 			NotificationService = notificationService;
 
@@ -121,6 +125,10 @@ namespace LacoWikiMobile.App.ViewModels
 
 		public ICollection<ItemViewModel> LegendItems { get; set; }
 
+		public int NavigationDirection { get; set; }
+
+		public double? NavigationDistance { get; set; }
+
 		public override bool PrimaryActionButtonEnabled
 		{
 			get
@@ -145,6 +153,7 @@ namespace LacoWikiMobile.App.ViewModels
 			}
 		}
 
+		public Position CurrentPosition { get; set; }
 		public int SampleItemId { get; protected set; }
 
 		public ItemViewModel SelectedLegendItem { get; set; }
@@ -157,27 +166,55 @@ namespace LacoWikiMobile.App.ViewModels
 
 		protected IAppDataService AppDataService { get; }
 
+		protected ISensorService SensorService { get; }
 		protected IEventAggregator EventAggregator { get; }
 
 		protected IMapper Mapper { get; }
 
+		public ValidationSession ValidationSession { get; set; }
+
 		protected INotificationService NotificationService { get; }
+
+		public void OnDirectionChanged(double direction)
+		{
+			NavigationDirection = (int)direction;
+		}
+
+		public void OnDistanceChanged(double distance)
+		{
+			NavigationDistance = distance;
+		}
+
 
 		protected override async Task InitializeOnceAsync(INavigationParameters parameters)
 		{
 			await base.InitializeOnceAsync(parameters);
 
 			ValidationSessionId = (int)parameters["validationSessionId"];
-			SampleItemId = (int)parameters["sampleItemId"];
+			 sampleItemId = (int?)parameters["sampleItemId"];
+			if (sampleItemId != null)
+				SampleItemId = sampleItemId.Value;
 
-			// TODO: Localization
-			Title = $"Sample #{SampleItemId}";
+			if (sampleItemId != null)
+			{
+				// TODO: Localization
+				Title = $"Sample #{sampleItemId}";
 
-			SampleItem sampleItem = await AppDataService.GetSampleItemByIdAsync(SampleItemId, ValidationSessionId);
+				var sampleItem = await AppDataService.GetSampleItemByIdAsync(sampleItemId.Value, ValidationSessionId);
 
-			ValidationMethod = sampleItem.ValidationSession.ValidationMethod;
-			LegendItem = Mapper.Map<ItemViewModel>(sampleItem.LegendItem);
-			Mapper.Map(sampleItem.ValidationSession.LegendItems, LegendItems);
+				ValidationMethod = sampleItem.ValidationSession.ValidationMethod;
+				LegendItem = Mapper.Map<ItemViewModel>(sampleItem.LegendItem);
+				Mapper.Map(sampleItem.ValidationSession.LegendItems, LegendItems);
+			}
+			else
+			{
+
+				ValidationSession = await AppDataService.GetValidationSessionByIdAsync(ValidationSessionId);
+				CurrentPosition =await SensorService.GetCurrentPosition();
+
+				ValidationMethod = ValidationSession.ValidationMethod;
+				Mapper.Map(ValidationSession.LegendItems, LegendItems);
+			}
 		}
 
 		protected void ItemOnItemSelected(object sender, EventArgs e)
@@ -202,11 +239,22 @@ namespace LacoWikiMobile.App.ViewModels
 		protected override async Task PrimaryActionButtonTappedAsync()
 		{
 			await base.PrimaryActionButtonTappedAsync();
+				if (sampleItemId != null)
+				{
+					var LocalValidation = Mapper.Map<LocalValidation>(this);
 
-			await AppDataService.AddLocalValidationAsync(Mapper.Map<LocalValidation>(this));
+					await AppDataService.AddLocalValidationAsync(LocalValidation);
+				}
+				else
+				{
+					var localOpportunisticValidation = Mapper.Map<LocalOpportunisticValidation>(this);
 
-			// TODO: Localization
-			NotificationService.Notify("Validation saved locally.");
+					await AppDataService.AddLocalOpportunisticValidation(localOpportunisticValidation);
+				}
+
+				// TODO: Localization
+
+				NotificationService.Notify("Validation saved locally.");
 			await NavigationService.GoBackAsync();
 		}
 	}
