@@ -179,7 +179,7 @@ namespace LacoWikiMobile.App.ViewModels
 		public bool ShowPrimaryActionButton =>
 			NavigationState == NavigationStateEnum.Navigating || NavigationState == NavigationStateEnum.PointReached;
 
-		public Color CheckOK { get; set; } = Color.FromHex("#311B92");
+		public Color CheckOK { get; set; } = Color.FromHex("#673AB7");
 
 		// TODO: Pass from CSS to Element to ViewModel when custom CSS properties and runtime class changes are supported
 		// See https://github.com/xamarin/Xamarin.Forms/issues/2891 and https://github.com/xamarin/Xamarin.Forms/issues/2678

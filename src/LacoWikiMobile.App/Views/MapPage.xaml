@@ -91,7 +91,7 @@
 
 												<ContentView Grid.Row="0" Grid.Column="2" Padding="0,0,16,0">
 													<ContentView>
-														<ui:Checkbox IsEnabled="False" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="26" HeightRequest="26" CheckColor="#009688" IsChecked="{Binding IsChecked}">
+														<ui:Checkbox IsEnabled="False" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="26" HeightRequest="26" CheckColor="{Binding CheckOK}" IsChecked="{Binding IsChecked}">
 															<ui:Checkbox.Margin>
 																<OnPlatform x:TypeArguments="Thickness">
 																	<!-- See https://stackoverflow.com/questions/40990664/android-appcompatcheckbox-padding-margin-gravity -->
@@ -110,8 +110,8 @@
 						<Frame StyleClass="FloatingActionButton"
 							BackgroundColor="{Binding CheckOK}"
 							IsVisible="true"
-							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
-							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-124}"
+							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-62}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-82}"
 							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
 							RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
 							<Frame.GestureRecognizers>

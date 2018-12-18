@@ -51,6 +51,13 @@ namespace LacoWikiMobile.App.Core.Data
 			path = Path.Combine(SavingPath, fileName);
 			return File.Exists(path);
 		}
+		public static String GetCacheFilePath(string url)
+		{
+			string fileName = url.GetHashCode().ToString();
+			string path;
+			path = Path.Combine(SavingPath, fileName);
+			return path;
+		}
 
 		public static string GetFullPath(string fileName)
 		{

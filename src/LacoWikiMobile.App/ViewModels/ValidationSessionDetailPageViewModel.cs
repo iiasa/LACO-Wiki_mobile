@@ -166,9 +166,9 @@ namespace LacoWikiMobile.App.ViewModels
 
 			foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
 			{
-				if (FileManager.CacheFileExists(cacheModel.Name))
+				if (FileManager.CacheFileExists(cacheModel.Url))
 				{
-					layer = LayerService.AddLayerRaster(cacheModel.Name, true, false, FileManager.GetFullPath(cacheModel.Name));
+					layer = LayerService.AddLayerRaster(cacheModel.Name, true, false, FileManager.GetCacheFilePath(cacheModel.Url));
 				}
 				else
 				{
