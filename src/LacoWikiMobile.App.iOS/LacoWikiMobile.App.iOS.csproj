@@ -157,6 +157,11 @@
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\ic_download.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\ic_download.imageset\ic_upload_white_24dp.png" />
+    <ImageAsset Include="Assets.xcassets\ic_delete.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\ic_delete.imageset\ic_delete.png" />
+    <ImageAsset Include="Assets.xcassets\ic_download.imageset\ic_download.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\*.png" />
@@ -167,6 +172,10 @@
       <Project>{CA6FA195-0A75-4481-B827-64B84FE8F9A3}</Project>
       <Name>LacoWikiMobile.App</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets.xcassets\ic_download.imageset\" />
+    <Folder Include="Assets.xcassets\ic_delete.imageset\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
