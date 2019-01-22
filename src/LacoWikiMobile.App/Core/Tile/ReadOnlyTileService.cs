@@ -20,15 +20,15 @@ namespace LacoWikiMobile.App.Core.Tile
 
 		public Tile TryGetTile(int tileColumn, int tileRow, int zoomLevel)
 		{
-			Tile returnedTile = null;
 			lock (TileContext)
 			{
+				Tile returnedTile;
 				try
 				{
 					returnedTile = TileContext.Tiles.SingleOrDefault(tile =>
 						tile.ZoomLevel == zoomLevel && tile.TileColumn == tileColumn && tile.TileRow == tileRow);
 				}
-				catch (SqliteException e)
+				catch (SqliteException)
 				{
 					returnedTile = null;
 				}

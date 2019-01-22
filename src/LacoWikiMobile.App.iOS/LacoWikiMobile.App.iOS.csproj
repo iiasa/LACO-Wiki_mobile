@@ -108,9 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="3.4.0.1008975" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="3.4.0.1009999" />
     <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.21.7" />
-    <PackageReference Include="Xamarin.Forms" Version="3.1.0.637273" />
+    <PackageReference Include="Xamarin.Forms" Version="3.4.0.1009999" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.431" />
     <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.21.5" />
     <PackageReference Include="SaturdayMP.XPlugins.iOS.BEMCheckBox" Version="1.4.3" />
@@ -118,7 +118,7 @@
     <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
     <!-- See https://github.com/xamarin/Xamarin.Forms/issues/1380 -->
     <PackageReference Include="System.Reflection.Emit" Version="4.3.0">
-        <ExcludeAssets>all</ExcludeAssets>
+      <ExcludeAssets>all</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -157,11 +157,21 @@
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\ic_download.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\ic_download.imageset\ic_upload_white_24dp.png" />
-    <ImageAsset Include="Assets.xcassets\ic_delete.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\ic_delete.imageset\ic_delete.png" />
-    <ImageAsset Include="Assets.xcassets\ic_download.imageset\ic_download.png" />
+    <ImageAsset Include="Assets.xcassets\ic_download.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\ic_download.imageset\ic_upload_white_24dp.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\ic_delete.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\ic_delete.imageset\ic_delete.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\ic_download.imageset\ic_download.png">
+      <Visible>false</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\*.png" />
@@ -173,9 +183,6 @@
       <Name>LacoWikiMobile.App</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets.xcassets\ic_download.imageset\" />
-    <Folder Include="Assets.xcassets\ic_delete.imageset\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

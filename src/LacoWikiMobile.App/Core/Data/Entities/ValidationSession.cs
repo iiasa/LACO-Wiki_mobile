@@ -12,6 +12,7 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 
 	public class ValidationSession
 	{
+		// TODO: Find out why this cannot be turned into a Property
 		public ICollection<OfflineCache> OfflineCaches = new List<OfflineCache>();
 
 		private ICollection<LegendItem> legendItems = new List<LegendItem>();

@@ -14,6 +14,7 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 	using System.ComponentModel;
 	using Android.Content;
 	using Android.Content.Res;
+	using Android.OS;
 	using Android.Support.V7.Widget;
 	using Android.Widget;
 	using LacoWikiMobile.App.UserInterface;
@@ -110,15 +111,10 @@ namespace LacoWikiMobile.App.Droid.UserInterface
 
 			checkBox.SupportButtonTintList = backgroundColor;
 			checkBox.BackgroundTintList = GetBackgroundColorStateList(Element.InnerColor);
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.Build.VERSION_CODES.M)
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
 			{
 				checkBox.ForegroundTintList = GetBackgroundColorStateList(Element.OutlineColor);
 			}
-			else
-			{
-
-			}
-
 		}
 	}
 }

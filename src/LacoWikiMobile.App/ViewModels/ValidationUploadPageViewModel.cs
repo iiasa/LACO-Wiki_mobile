@@ -70,7 +70,7 @@ namespace LacoWikiMobile.App.ViewModels
 						await AppDataService.GetLocalValidationByIdAsync(item.SampleItemId, ValidationSessionId);
 					localValidation.Uploaded = true;
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					// TODO: Notify user
 				}

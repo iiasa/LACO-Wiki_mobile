@@ -20,19 +20,47 @@ namespace LacoWikiMobile.App.Core.Data
 		{
 			get
 			{
-				return savingPath;
+				return FileManager.savingPath;
 			}
 
 			set
 			{
-				savingPath = value;
+				FileManager.savingPath = value;
 			}
+		}
+
+		// Check if the cache for a specified url is saved on cache or not
+		public static bool CacheFileExists(string url)
+		{
+			string fileName = url.GetHashCode().ToString();
+			string path = Path.Combine(SavingPath, fileName);
+			return File.Exists(path);
+		}
+
+		public static void DeleteOfflineCache(string url)
+		{
+			string fileName = url.GetHashCode().ToString();
+			string path = Path.Combine(SavingPath, fileName);
+			File.Delete(path);
+		}
+
+		public static string GetCacheFilePath(string url)
+		{
+			string fileName = url.GetHashCode().ToString();
+			string path = Path.Combine(SavingPath, fileName);
+			return path;
+		}
+
+		public static string GetFullPath(string fileName)
+		{
+			string path = Path.Combine(SavingPath, fileName);
+			return path;
 		}
 
 		public static void SaveFileToDirectory(string layerName, byte[] bytesArray)
 		{
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), layerName);
-			System.Console.WriteLine("Filename " + fileName);
+			Console.WriteLine("Filename " + fileName);
 			try
 			{
 				File.WriteAllBytes(fileName, bytesArray);
@@ -41,37 +69,6 @@ namespace LacoWikiMobile.App.Core.Data
 			{
 				Console.WriteLine(e.ToString());
 			}
-		}
-
-		// Check if the cache for a specified url is saved on cache or not
-		public static bool CacheFileExists(string url)
-		{
-			string fileName = url.GetHashCode().ToString();
-			string path;
-			path = Path.Combine(SavingPath, fileName);
-			return File.Exists(path);
-		}
-		public static String GetCacheFilePath(string url)
-		{
-			string fileName = url.GetHashCode().ToString();
-			string path;
-			path = Path.Combine(SavingPath, fileName);
-			return path;
-		}
-
-		public static string GetFullPath(string fileName)
-		{
-			string path;
-			path = Path.Combine(SavingPath, fileName);
-			return path;
-		}
-
-		public static void DeleteOfflineCache(string url)
-		{
-			string fileName = url.GetHashCode().ToString();
-			string path;
-			path = Path.Combine(SavingPath, fileName);
-			File.Delete(path);
 		}
 	}
 }
