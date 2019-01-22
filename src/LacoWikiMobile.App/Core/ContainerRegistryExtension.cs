@@ -15,7 +15,6 @@ namespace LacoWikiMobile.App.Core
 	using LacoWikiMobile.App.Core.Api;
 	using LacoWikiMobile.App.Core.Data;
 	using LacoWikiMobile.App.Core.Tile;
-	using LacoWikiMobile.App.Core.Tile.Resources;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Localization;
 	using Microsoft.Extensions.Logging.Abstractions;
@@ -141,17 +140,6 @@ namespace LacoWikiMobile.App.Core
 
 		public static void RegisterTileService(this IContainerRegistry containerRegistry)
 		{
-			containerRegistry.GetContainer()
-				.RegisterInitializer<DbContextOptionsBuilder<TileContext>>((builder, resolver) =>
-				{
-					if (!builder.FileExists("iiasa.mbtiles"))
-					{
-						builder.CopyFromStream(Resources.GetIIASATiles(), "iiasa.mbtiles");
-					}
-
-					builder.Configure("iiasa.mbtiles");
-				});
-
 			containerRegistry.Register<IReadOnlyTileService, ReadOnlyTileService>();
 		}
 	}
