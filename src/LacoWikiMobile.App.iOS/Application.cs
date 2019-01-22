@@ -20,7 +20,7 @@ namespace LacoWikiMobile.App.iOS
 		// This is the main entry point of the application.
 		private static void Main(string[] args)
 		{
-			//Registrar.ExtraAssemblies = new[] { typeof(StyleProperties).Assembly };
+			////Registrar.ExtraAssemblies = new[] { typeof(StyleProperties).Assembly };
 
 			Batteries_V2.Init();
 

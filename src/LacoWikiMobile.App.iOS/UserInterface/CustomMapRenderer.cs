@@ -25,6 +25,8 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 
 	public class CustomMapRenderer : MapRenderer, IUpdatable
 	{
+		private MKMapView map;
+
 		public CustomMapRenderer()
 			: base()
 		{
@@ -32,16 +34,11 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 			LayerService.MapRenderer = this;
 		}
 
-		private MKMapView map;
-
 		protected CustomMap CustomMap => Element as CustomMap;
 
 		protected PointHandler PointHandler { get; set; }
 
 		protected MKTileOverlay TileOverlay { get; set; }
-
-		// Keep trace of old visiblity
-		private bool OldVisibility { get; set; } = true;
 
 		// Keep trace of old Google map visibility
 		private bool OldGoogleMapVisibility { get; set; } = true;
@@ -49,43 +46,11 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 		// Keep trace of old raster Id
 		private int OldOfflineRasterId { get; set; } = 1;
 
-		// Apply switch layer changes into this map renderer
-		public void Update()
-		{
-			SynchronizeWithLayerService();
-		}
-
-		// Adapt the map with changes into switch layer
-		public void SynchronizeWithLayerService()
-		{
-			// Check point layers
-			bool pointsVisibles = LayerService.GetIsCheckedById(LayerService.LAYERPOINTS);
-			if (pointsVisibles != OldVisibility)
-			{
-				PointHandler.ChangeVisibility(pointsVisibles);
-				OldVisibility = pointsVisibles;
-			}
-
-			// Check Google map layer
-			bool googleMapVisible = LayerService.GetIsCheckedById(LayerService.LAYERGOOGLEMAP);
-			if (googleMapVisible != OldGoogleMapVisibility)
-			{
-				UpdateGoogleMapLayer(googleMapVisible);
-				OldGoogleMapVisibility = googleMapVisible;
-			}
-
-			// Check offline raster layer
-			int offlineRasterId = LayerService.GetCurrentOfflineRasterId();
-			if (offlineRasterId != OldOfflineRasterId)
-			{
-				// Make the chance
-				OldOfflineRasterId = offlineRasterId;
-				UpdateRasterLayer(offlineRasterId);
-			}
-		}
+		// Keep trace of old visiblity
+		private bool OldVisibility { get; set; } = true;
 
 		/// <summary>
-		/// Set the mbtiles layer filename specified in parameter as background raster layer.
+		///     Set the mbtiles layer filename specified in parameter as background raster layer.
 		/// </summary>
 		/// <param name="mbtilesFileName">FileName of the mbtiles.</param>
 		public void SetMbTilesAsBackground(string mbtilesFileName)
@@ -118,35 +83,40 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 			}
 		}
 
-		/// <summary>
-		/// Update the google map visibility.
-		/// </summary>
-		/// <param name="visible">Visiblity.</param>
-		private void UpdateGoogleMapLayer(bool visible)
+		// Adapt the map with changes into switch layer
+		public void SynchronizeWithLayerService()
 		{
-			MKMapView map = (MKMapView)LayerService.CurrentMap;
-			if (visible == true)
+			// Check point layers
+			bool pointsVisibles = LayerService.GetIsCheckedById(LayerService.LAYERPOINTS);
+			if (pointsVisibles != OldVisibility)
 			{
-				// Displayed !
-				map.MapType = MKMapType.Standard;
+				PointHandler.ChangeVisibility(pointsVisibles);
+				OldVisibility = pointsVisibles;
 			}
-			else
+
+			// Check Google map layer
+			bool googleMapVisible = LayerService.GetIsCheckedById(LayerService.LAYERGOOGLEMAP);
+			if (googleMapVisible != OldGoogleMapVisibility)
 			{
-				// Not displayed ! (check if it's work, maybe it's not possible)
-				map.MapType = MKMapType.MutedStandard;
+				UpdateGoogleMapLayer(googleMapVisible);
+				OldGoogleMapVisibility = googleMapVisible;
+			}
+
+			// Check offline raster layer
+			int offlineRasterId = LayerService.GetCurrentOfflineRasterId();
+			if (offlineRasterId != OldOfflineRasterId)
+			{
+				// Make the chance
+				OldOfflineRasterId = offlineRasterId;
+				UpdateRasterLayer(offlineRasterId);
 			}
 		}
 
-		/// <summary>
-		/// Update a raster layer.
-		/// </summary>
-		/// <param name="rasterId">Layer id.</param>
-		private void UpdateRasterLayer(int rasterId)
+		// Apply switch layer changes into this map renderer
+		public void Update()
 		{
-			// We need to display a mbtiles layer
-			SetMbTilesAsBackground(LayerService.GetMBTileFileName(rasterId));
+			SynchronizeWithLayerService();
 		}
-
 
 		protected override void Dispose(bool disposing)
 		{
@@ -228,6 +198,35 @@ namespace LacoWikiMobile.App.iOS.UserInterface
 			}
 
 			return PointHandler.GetCircleRenderer(circle);
+		}
+
+		/// <summary>
+		///     Update the google map visibility.
+		/// </summary>
+		/// <param name="visible">Visiblity.</param>
+		private void UpdateGoogleMapLayer(bool visible)
+		{
+			MKMapView map = (MKMapView)LayerService.CurrentMap;
+			if (visible == true)
+			{
+				// Displayed !
+				map.MapType = MKMapType.Standard;
+			}
+			else
+			{
+				// Not displayed ! (check if it's work, maybe it's not possible)
+				map.MapType = MKMapType.MutedStandard;
+			}
+		}
+
+		/// <summary>
+		///     Update a raster layer.
+		/// </summary>
+		/// <param name="rasterId">Layer id.</param>
+		private void UpdateRasterLayer(int rasterId)
+		{
+			// We need to display a mbtiles layer
+			SetMbTilesAsBackground(LayerService.GetMBTileFileName(rasterId));
 		}
 	}
 }

@@ -1,4 +1,9 @@
-﻿namespace LacoWikiMobile.App.iOS.UserInterface
+﻿// <copyright file="CustomTileProvider.cs" company="IIASA">
+// Copyright (c) IIASA. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace LacoWikiMobile.App.iOS.UserInterface
 {
 	using System;
 	using Foundation;
