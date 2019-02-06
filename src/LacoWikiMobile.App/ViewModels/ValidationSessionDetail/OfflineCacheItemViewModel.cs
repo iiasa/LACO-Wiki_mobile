@@ -17,6 +17,8 @@ namespace LacoWikiMobile.App.ViewModels.ValidationSessionDetail
 
 		public string CacheButtonText { get; set; }
 
+		public int Id { get; set; }
+
 		public string Name { get; set; }
 
 		public long Size { get; set; }

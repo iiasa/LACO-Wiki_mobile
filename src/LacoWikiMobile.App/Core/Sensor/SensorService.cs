@@ -164,7 +164,7 @@ namespace LacoWikiMobile.App.Core.Sensor
 
 			Geolocator.PositionChanged += GeolocatorOnPositionChanged;
 
-			return await Geolocator.StartListeningAsync(TimeSpan.FromMilliseconds(100), 1 /* Meters */);
+			return await Geolocator.StartListeningAsync(TimeSpan.FromMilliseconds(10000), 1 /* Meters */);
 		}
 
 		protected Task<bool> StopCompassIfUnusedAsync()

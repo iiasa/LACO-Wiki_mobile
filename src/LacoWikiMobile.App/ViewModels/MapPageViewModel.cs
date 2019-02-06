@@ -335,18 +335,21 @@ namespace LacoWikiMobile.App.ViewModels
 			}
 			else
 			{
-				Extent extent = SamplePointsViewModel.Points.GroupBy(x => true)
-					.Select(x => new
-					{
-						top = x.Max(y => y.Latitude),
-						right = x.Max(y => y.Longitude),
-						bottom = x.Min(y => y.Latitude),
-						left = x.Min(y => y.Longitude),
-					})
-					.Select(x => new Extent(x.top, x.left, x.right, x.bottom))
-					.Single();
+				if (SamplePointsViewModel.Points.Count > 0)
+				{
+					Extent extent = SamplePointsViewModel.Points.GroupBy(x => true)
+						.Select(x => new
+						{
+							top = x.Max(y => y.Latitude),
+							right = x.Max(y => y.Longitude),
+							bottom = x.Min(y => y.Latitude),
+							left = x.Min(y => y.Longitude),
+						})
+						.Select(x => new Extent(x.top, x.left, x.right, x.bottom))
+						.Single();
 
-				EventAggregator.GetEvent<ZoomToExtentEvent>().Publish(extent);
+					EventAggregator.GetEvent<ZoomToExtentEvent>().Publish(extent);
+				}
 			}
 
 			MapClickCommand = new DelegateCommand(MapClickAsync);

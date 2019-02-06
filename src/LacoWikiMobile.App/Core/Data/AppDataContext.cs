@@ -21,6 +21,8 @@ namespace LacoWikiMobile.App.Core.Data
 
 		public DbSet<SampleItem> SampleItems { get; set; }
 
+		public DbSet<OfflineCache> OfflineCaches { get; set; }
+
 		public DbSet<User> Users { get; set; }
 
 		public DbSet<ValidationSession> ValidationSessions { get; set; }
@@ -48,6 +50,9 @@ namespace LacoWikiMobile.App.Core.Data
 			modelBuilder.Entity<SampleItem>()
 				.HasKey(nameof(SampleItem.Id), $"{nameof(LegendItem.ValidationSession)}Id",
 					$"{nameof(LegendItem.ValidationSession)}{nameof(ValidationSession.User)}Id");
+
+			modelBuilder.Entity<OfflineCache>()
+	.HasKey(nameof(OfflineCache.Id));
 
 			modelBuilder.Entity<LocalValidation>()
 				.HasOne(x => x.SampleItem)

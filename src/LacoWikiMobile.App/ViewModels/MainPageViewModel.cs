@@ -19,6 +19,7 @@ namespace LacoWikiMobile.App.ViewModels
 	using LacoWikiMobile.App.Views;
 	using Microsoft.Extensions.Localization;
 	using Prism.Navigation;
+	using Xamarin.Essentials;
 	using Xamarin.Forms.Internals;
 
 	public class MainPageViewModel : ViewModelBase
@@ -77,6 +78,11 @@ namespace LacoWikiMobile.App.ViewModels
 		{
 			await base.InitializeAsync(parameters);
 			await LoadValidationSessionsAsync();
+			SetPrimaryActionButtonAccordingToNetworkConnection();
+		}
+		private void SetPrimaryActionButtonAccordingToNetworkConnection()
+		{
+			PrimaryActionButtonEnabled = Connectivity.NetworkAccess == NetworkAccess.Internet;
 		}
 
 		protected void ItemTapped(object sender, EventArgs args)

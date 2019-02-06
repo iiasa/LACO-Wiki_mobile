@@ -20,6 +20,8 @@ namespace LacoWikiMobile.App.Core.Data
 
 		DbSet<SampleItem> SampleItems { get; set; }
 
+		DbSet<OfflineCache> OfflineCaches { get; set; }
+
 		DbSet<LocalValidation> LocalValidations { get; set; }
 
 		int SaveChanges();

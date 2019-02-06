@@ -108,6 +108,7 @@ namespace LacoWikiMobile.App.ViewModels
 			if (validationSession != null)
 			{
 				ViewModel = Mapper.Map<ValidationSessionDetailViewModel>(validationSession);
+			
 				ShowLoading = false;
 			}
 		}
@@ -147,15 +148,17 @@ namespace LacoWikiMobile.App.ViewModels
 						}
 					});
 			}
+	
 		}
 
 		protected override async Task PrimaryActionButtonTappedAsync()
 		{
-			UpdateLayers();
+			AddBaseLayers();
+			UpdateOfflineLayers(ViewModel.OfflineCaches);
 			await base.PrimaryActionButtonTappedAsync();
 		}
 
-		private void UpdateLayers()
+		private void AddBaseLayers()
 		{
 			LayerService.Reset();
 			LayerItemViewModel layer;
@@ -163,16 +166,22 @@ namespace LacoWikiMobile.App.ViewModels
 			layer = LayerService.AddLayerPoints("Points", true);
 
 			layer = LayerService.AddLayerRaster("GoogleMap", true, true, null);
-
-			foreach (OfflineCacheItemViewModel cacheModel in CacheItems)
+		}
+		private void UpdateOfflineLayers(IEnumerable<OfflineCacheItemViewModel>cachedLayers)
+		{
+		
+			if (cachedLayers != null)
 			{
-				if (FileManager.CacheFileExists(cacheModel.Url))
+				foreach (OfflineCacheItemViewModel cacheModel in cachedLayers)
 				{
-					layer = LayerService.AddLayerRaster(cacheModel.Name, true, false, FileManager.GetCacheFilePath(cacheModel.Url));
-				}
-				else
-				{
-					layer = LayerService.AddLayerRaster(cacheModel.Name, false, false, null);
+					if (FileManager.CacheFileExists(cacheModel.Url))
+					{
+					LayerService.AddLayerRaster(cacheModel.Name, true, false, FileManager.GetCacheFilePath(cacheModel.Url));
+					}
+					else
+					{
+					LayerService.AddLayerRaster(cacheModel.Name, false, false, null);
+					}
 				}
 			}
 		}

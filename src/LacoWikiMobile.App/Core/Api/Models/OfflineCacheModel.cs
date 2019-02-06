@@ -7,6 +7,8 @@ namespace LacoWikiMobile.App.Core.Api.Models
 {
 	public class OfflineCacheModel
 	{
+		public int Id { get; set; }
+
 		public long FileSize { get; set; }
 
 		public string LayerName { get; set; }

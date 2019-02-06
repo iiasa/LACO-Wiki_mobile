@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
@@ -130,24 +130,24 @@
 				</StackLayout>
 			</Frame>
 
-			<!--<Frame StyleClass="FloatingActionButton"
-			BackgroundColor="{Binding PrimaryActionButtonBackgroundColor}"
-			IsVisible="{Binding ShowPrimaryActionButton}"
-			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
-			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-124}"
-			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
-			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
-				<Frame.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
-				</Frame.GestureRecognizers>
-				<RelativeLayout>
-					<Image Source="ic_check_white_24dp"
-					RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
-					RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
-					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
-					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
-				</RelativeLayout>
-			</Frame>-->
+	<Frame StyleClass="FloatingActionButton"
+	BackgroundColor="{Binding PrimaryActionButtonBackgroundColor}"
+	IsVisible="{Binding ShowPrimaryActionButton}"
+	RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-72}"
+	RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-124}"
+	RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=56}"
+	RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=56}">
+		<Frame.GestureRecognizers>
+			<TapGestureRecognizer Command="{Binding PrimaryActionButtonTappedCommand}" />
+		</Frame.GestureRecognizers>
+		<RelativeLayout>
+			<Image Source="ic_check_white_24dp"
+			RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=0}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=0}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=0}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=0}" />
+		</RelativeLayout>
+	</Frame>
 		</RelativeLayout>
 	</ContentPage.Content>
 </ContentPage>

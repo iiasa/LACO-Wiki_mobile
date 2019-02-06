@@ -63,6 +63,7 @@ namespace LacoWikiMobile.App.Core
 				.EqualityComparison((source, dest) => dest.Id == source.LegendItemID);
 
 			mapperConfigurationExpression.CreateMap<OfflineCacheModel, OfflineCacheItemViewModel>()
+					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
 				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.LayerName))
 				.ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.FileSize))
 				.ForMember(dest => dest.CacheButtonText, opt => opt.MapFrom(src => src.LayerName + " (" + string.Format("{0:0.00}", src.FileSize / 1000000.0) + "MB)"))
@@ -134,12 +135,13 @@ namespace LacoWikiMobile.App.Core
 				.EqualityComparison((source, dest) => dest.Id == source.Id);
 
 			mapperConfigurationExpression.CreateMap<OfflineCache, OfflineCacheItemViewModel>()
-				.ForMember(dest => dest.Name, opt => opt.Ignore())
-				.ForMember(dest => dest.Size, opt => opt.Ignore())
-				.ForMember(dest => dest.Url, opt => opt.Ignore())
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(src=>src.LayerName))
+				.ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.FileSize))
+				.ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url))
 				.ForMember(dest => dest.CacheButtonText, opt => opt.Ignore())
 				.ForMember(dest => dest.ImageButton, opt => opt.Ignore())
-				.ForMember(dest => dest.Path, opt => opt.Ignore());
+				.ForMember(dest => dest.Path, opt => opt.Ignore())
+			.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
 
 			mapperConfigurationExpression.CreateMap<ValidationSession, SamplePointsViewModel>()
 				.ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.SampleItems));
@@ -179,9 +181,9 @@ namespace LacoWikiMobile.App.Core
 
 			// View models to entities
 			mapperConfigurationExpression.CreateMap<ValidationSessionDetailViewModel, ValidationSession>()
-				.ForMember(dest => dest.UserId, opt => opt.Ignore())
+				.ForMember(dest => dest.UserId, opt => opt.MapFrom(src=>src.Id))
 				.ForMember(dest => dest.User, opt => opt.Ignore())
-				.ForMember(dest => dest.OfflineCaches, opt => opt.Ignore())
+				.ForMember(dest => dest.OfflineCaches, opt => opt.MapFrom(src => src.OfflineCaches))
 				.ForMember(dest => dest.SampleItems, opt => opt.Ignore());
 
 			mapperConfigurationExpression.CreateMap<ItemViewModel, LegendItem>()
@@ -193,9 +195,12 @@ namespace LacoWikiMobile.App.Core
 				.EqualityComparison((source, dest) => dest.Id == source.Id);
 
 			mapperConfigurationExpression.CreateMap<OfflineCacheItemViewModel, OfflineCache>()
+					
+					.ForMember(dest => dest.ValidationSession, opt => opt.Ignore())
 			.ForMember(dest => dest.LayerName, opt => opt.MapFrom(src => src.Name))
 			.ForMember(dest => dest.FileSize, opt => opt.MapFrom(src => src.Size))
 			.ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url))
+				.EqualityComparison((source, dest) => dest.Id == source.Id)
 			.EqualityComparison((source, dest) => dest.LayerName == source.Name);
 
 			mapperConfigurationExpression.CreateMap<SamplePointsViewModel, ValidationSession>(MemberList.Source)

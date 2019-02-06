@@ -13,7 +13,7 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 	public class ValidationSession
 	{
 		// TODO: Find out why this cannot be turned into a Property
-		public ICollection<OfflineCache> OfflineCaches = new List<OfflineCache>();
+		private ICollection<OfflineCache> offlineCaches = new List<OfflineCache>();
 
 		private ICollection<LegendItem> legendItems = new List<LegendItem>();
 
@@ -44,7 +44,11 @@ namespace LacoWikiMobile.App.Core.Data.Entities
 			get => LazyLoader.Load(this, ref this.legendItems);
 			set => this.legendItems = value;
 		}
-
+		public ICollection<OfflineCache> OfflineCaches
+		{
+			get => LazyLoader.Load(this, ref this.offlineCaches);
+			set => this.offlineCaches = value;
+		}
 		public string Name { get; set; }
 
 		public int ProgressSamplesTotal { get; set; }
